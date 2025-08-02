@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./i18n";
-import("videojs-youtube/dist/Youtube.min.js");
+// import("videojs-youtube/dist/Youtube.min.js");
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

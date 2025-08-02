@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
 import ReviewComponent from "../../components/ReviewComponent";
 import Sources from "../../components/Sources";
-import MoviesRecommendedForYou from "../../components/sections/MoviesRecommendedForYou";
+// import MoviesRecommendedForYou from "../../components/sections/MoviesRecommendedForYou";
 import RatingStar from "../../components/rating-star";
 import { generateImgPath } from "../../StaticData/data";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -357,7 +357,7 @@ const LivePage = memo(() => {
             </div>
           </Container>
         </div>
-        <MoviesRecommendedForYou />
+        {/* <MoviesRecommendedForYou /> */}
       </div>
     </Fragment>
   );

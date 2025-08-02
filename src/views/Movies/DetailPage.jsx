@@ -89,7 +89,7 @@ const MovieDetail = memo(() => {
   // State for Vimeo player
   const [initialPlaybackTime, setInitialPlaybackTime] = useState(0);
   const [playerReady, setPlayerReady] = useState(false);
-  const [progressSaveInterval, setProgressSaveInterval] = useState(null);
+  const progressSaveIntervalRef = useRef(null); // Use ref for interval ID
 
   // Refs for DOM elements
   const videoContainerRef = useRef(null);
@@ -142,9 +142,9 @@ const MovieDetail = memo(() => {
           currentTime: currentTime,
           sessionModelType: sessionModelType,
         });
-        console.log(
-          `Playback progress saved for session ${sessionId} (${sessionModelType}) at ${currentTime} seconds.`
-        );
+        // console.log(
+        //   `Playback progress saved for session ${sessionId} (${sessionModelType}) at ${currentTime} seconds.`
+        // );
       } catch (error) {
         console.error("Error saving playback progress:", error);
       }
@@ -207,9 +207,9 @@ const MovieDetail = memo(() => {
       vimeoPlayerInstance.current = null;
       setPlayerReady(false);
     }
-    if (progressSaveInterval) {
-      clearInterval(progressSaveInterval);
-      setProgressSaveInterval(null);
+    if (progressSaveIntervalRef.current) {
+      clearInterval(progressSaveIntervalRef.current);
+      progressSaveIntervalRef.current = null;
     }
 
     // 2. Conditional Player Initialization: Only initialize if video is free and has ID
@@ -275,8 +275,8 @@ const MovieDetail = memo(() => {
           }
 
           // Clear any old intervals and set up new periodic progress saving
-          if (progressSaveInterval) {
-            clearInterval(progressSaveInterval);
+          if (progressSaveIntervalRef.current) {
+            clearInterval(progressSaveIntervalRef.current);
           }
           const intervalId = setInterval(async () => {
             try {
@@ -286,7 +286,7 @@ const MovieDetail = memo(() => {
               console.warn("Error during periodic progress save:", error);
             }
           }, 10000); // Save every 10 seconds
-          setProgressSaveInterval(intervalId);
+          progressSaveIntervalRef.current = intervalId;
         };
 
         const onPause = async () => {
@@ -298,9 +298,9 @@ const MovieDetail = memo(() => {
               console.warn("Error saving progress on pause:", error);
             }
           }
-          if (progressSaveInterval) {
-            clearInterval(progressSaveInterval);
-            setProgressSaveInterval(null);
+          if (progressSaveIntervalRef.current) {
+            clearInterval(progressSaveIntervalRef.current);
+            progressSaveIntervalRef.current = null;
           }
         };
 
@@ -313,9 +313,9 @@ const MovieDetail = memo(() => {
               console.warn("Error saving progress on end:", error);
             }
           }
-          if (progressSaveInterval) {
-            clearInterval(progressSaveInterval);
-            setProgressSaveInterval(null);
+          if (progressSaveIntervalRef.current) {
+            clearInterval(progressSaveIntervalRef.current);
+            progressSaveIntervalRef.current = null;
           }
         };
 
@@ -332,9 +332,9 @@ const MovieDetail = memo(() => {
 
     // 6. Cleanup Function: Destroys player and saves final progress on unmount or re-render
     return () => {
-      if (progressSaveInterval) {
-        clearInterval(progressSaveInterval);
-        setProgressSaveInterval(null);
+      if (progressSaveIntervalRef.current) {
+        clearInterval(progressSaveIntervalRef.current);
+        progressSaveIntervalRef.current = null;
       }
       if (vimeoPlayerInstance.current) {
         const userIdForCleanup =
@@ -373,7 +373,7 @@ const MovieDetail = memo(() => {
     initialPlaybackTime,
     savePlaybackProgress,
     isFree, // Specific playback/content dependencies
-    progressSaveInterval, // Make sure cleanup re-runs if interval state changes
+    // Removed progressSaveInterval from dependencies as it's a ref
   ]);
 
   // Window beforeunload handler: Use navigator.sendBeacon for reliable last-minute save
@@ -454,8 +454,9 @@ const MovieDetail = memo(() => {
           className="iq-main-slider site-video mb-5"
           style={{
             borderRadius: "0 0 28px 28px",
-            overflow: "hidden",
+            overflow: "hidden", // Keep this for rounded corners
             boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+            position: "relative", // Needed for absolute positioning of overlays
           }}
         >
           {isAuthenticated ? (
@@ -464,7 +465,11 @@ const MovieDetail = memo(() => {
                 <Col>
                   <div className="pt-0">
                     <div
-                      style={{ padding: "45.25% 0 0 0", position: "relative" }}
+                      style={{
+                        // marginTop: "10px",
+                        padding: "57.5% 0 0 0", // Increased from 56.25% to give more room for controls
+                        position: "relative",
+                      }}
                     >
                       {/* --- Conditional Video Playback / Subscribe Button --- */}
                       {!isFree ? ( // If the content is NOT free (i.e., locked)
@@ -483,7 +488,7 @@ const MovieDetail = memo(() => {
                             alignItems: "center",
                             fontSize: "1.5rem",
                             textAlign: "center",
-                            zIndex: 10, // Ensure this overlay is above any video elements
+                            zIndex: 100, // Ensure this overlay is highest
                           }}
                         >
                           <FaExclamationCircle
@@ -522,17 +527,44 @@ const MovieDetail = memo(() => {
                         </div>
                       ) : // If isFree is true, attempt to render the video player or "Video not available" message
                       vimeoVideoId ? (
-                        <div
-                          ref={videoContainerRef}
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0, // Corrected: Should be 0 for full width within aspect ratio parent
-                            width: "100%", // Corrected: Should be 100%
-                            height: "100%", // Corrected: Should be 100%
-                            border: "none",
-                          }}
-                        />
+                        <>
+                          <div
+                            ref={videoContainerRef}
+                            style={{
+                              position: "absolute",
+                              top: "50%", // Center vertically
+                              left: "50%", // Center horizontally
+                              width: "100%", // Still 100% of the parent's width
+                              height: "100%", // Still 100% of the parent's height (which is determined by padding-top)
+                              transform: "translate(-50%, -50%)", // Adjust for element's own size
+                              border: "none",
+                              // paddingBottom: "10px",
+                              // padding: "80px",
+                              // Remove alignItems as it's not a flex container here
+                            }}
+                          />
+                          {/* Loading overlay for video player (appears on top of video, under subscribe button overlay) */}
+                          {!playerReady && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: "rgba(0,0,0,0.8)",
+                                color: "#fff",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                fontSize: "1.1rem",
+                                zIndex: 90, // Higher than video, lower than subscribe overlay
+                              }}
+                            >
+                              Loading video...
+                            </div>
+                          )}
+                        </>
                       ) : (
                         // Display message if vimeoVideoId is missing
                         <div
@@ -550,6 +582,7 @@ const MovieDetail = memo(() => {
                             fontSize: "1.2rem",
                             flexDirection: "column",
                             textAlign: "center",
+                            zIndex: 10,
                           }}
                         >
                           <FaExclamationCircle
@@ -561,28 +594,6 @@ const MovieDetail = memo(() => {
                             Please check if the video ID is correct or
                             available.
                           </small>
-                        </div>
-                      )}
-
-                      {/* Loading overlay for video player (appears on top of video, under subscribe button overlay) */}
-                      {isFree && vimeoVideoId && !playerReady && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: "rgba(0,0,0,0.8)",
-                            color: "#fff",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            fontSize: "1.1rem",
-                            zIndex: 11, // Higher than video, lower than subscribe overlay
-                          }}
-                        >
-                          Loading video...
                         </div>
                       )}
                     </div>
@@ -932,6 +943,7 @@ const MovieDetail = memo(() => {
                             "linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)",
                           borderRadius: "16px",
                           border: "1px solid rgba(25, 118, 210, 0.1)",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                         }}
                       >
                         <div className="d-flex align-items-center">
@@ -1025,7 +1037,7 @@ const MovieDetail = memo(() => {
                     <Nav
                       className="nav-pills mb-5 position-relative"
                       style={{
-                        background: "lightgray", // Consider updating this color to use THEME.background-light or similar
+                        background: THEME.softBlue, // Using a theme color
                         borderRadius: "20px",
                         padding: "8px",
                         gap: "6px",
@@ -1911,7 +1923,7 @@ const MovieDetail = memo(() => {
           </Container>
         </div>
         {/* Recommended Movies/Lectures Section (adjust title as needed) */}
-        <LatestMovies title="Recent Items" />
+        <LatestMovies title="Recent Items" dicomCases={[]} />
       </div>
     </Fragment>
   );
