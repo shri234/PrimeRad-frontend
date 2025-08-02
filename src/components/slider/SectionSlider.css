@@ -1,0 +1,7 @@
+.section-slider-title[style*='cursor: pointer'] {
+  transition: color 0.2s, text-decoration 0.2s;
+}
+.section-slider-title[style*='cursor: pointer']:hover {
+  color: #1976d2;
+  text-decoration: underline;
+} 

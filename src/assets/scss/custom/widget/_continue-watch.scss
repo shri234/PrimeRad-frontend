@@ -1,0 +1,35 @@
+.iq-watching-block {
+  position: relative;
+
+  .block-images {
+    .iq-image-box {
+      position: relative;
+      transition: all 0.5s ease-in-out;
+      border-radius: $border-radius; // Keep if you use clean images
+      overflow: hidden; // Ensure border-radius clips content
+
+      img {
+        border-radius: $border-radius; // Keep if you use clean images
+        
+        // --- CRUCIAL FIX ---
+        mix-blend-mode: normal; // Change this from 'overlay' to 'normal'
+        // If you want a subtle dark overlay, apply it as a separate div *over* the img.
+      }
+    }
+
+    .iq-preogress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: auto;
+      bottom: 1rem; // This will likely be overridden by inline 'bottom: 10px'
+
+      .data-left-timing {
+        margin-bottom: 0.5rem;
+        // Review padding-left: 20px; if inline style has padding or text alignment
+        padding-left: 20px;
+        display: block;
+      }
+    }
+  }
+}

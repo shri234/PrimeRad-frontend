@@ -1,0 +1,390 @@
+.sub-drop {
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: none;
+  padding: 0.5rem 0;
+}
+
+.sub-drop .dropdown-item {
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+}
+
+/* HeaderDefault.css */
+
+/* Base styles for the <header> element */
+
+
+/* Styles for the sticky header when scrolled */
+.header-sticky.sticky {
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+  /* background-color: white; Solid white background when sticky */
+  height: 90px;
+}
+
+/* Collapsed state for the <header> element */
+.header-default.header-minimized {
+  height: 60px; /* Minimized height */
+}
+
+/* Base styles for the <Navbar> component within the header */
+.iq-navbar {
+  /* Default: Navbar spans full width of its parent (.header-default) */
+  width: 100%;
+  max-width: 100%; /* Ensures it doesn't exceed 100% of parent */
+  padding: 0 0px; /* Default horizontal padding for Navbar content */
+  /* background-color: white; */
+  border-radius: 0;
+  box-shadow: none;
+  transition: all 0.3s ease-in-out; /* Smooth transition for width, background, etc. */
+  display: flex; /* Ensure it's a flex container for its inner items */
+  align-items: center;
+}
+
+/* Collapsed state for the <Navbar> component - applies ONLY when header is minimized */
+.iq-navbar.navbar-minimized { /* Apply this rule when both classes are present */
+  width: fit-content; /* <--- NEW: Set the specific minimized width */
+  /* Ensure it respects the max width */
+  border-radius: 10px; /* Rounded corners for the minimized Navbar */
+  /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15); Shadow for the minimized Navbar */
+  /* background-color: rgba(255, 255, 255, 0.95); Slightly transparent white for the minimized Navbar */
+  margin: 0 auto; /* <--- CRITICAL: Centers the Navbar itself within the full-width header */
+}
+
+/* ... (rest of your CSS, including .collapsed-overlay, logo, subscribe/login button, and nav items) ... */
+
+.sub-drop .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.sub-drop .dropdown-divider {
+  margin: 0.5rem 0;
+}
+
+.avatar-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.polished-nav .nav-link {
+  border-radius: 10px;
+  margin: 12px;
+  transition: all 0.3s ease-in-out;
+}
+
+.polished-nav .nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.polished-nav .nav-link.active-link {
+  background-color: lightblue;
+  color: white;
+}
+
+.polished-nav .btn {
+  border-radius: 10px;
+  padding: 10px 20px;
+  background-color: darkslategray;
+  transition: all 0.3s ease-in-out;
+  color: white;
+}
+
+.polished-nav .btn:hover {
+  background-color: lightgray;
+  color: darkslategrey;
+}
+
+.user-icon-button {
+  background-color: white;  
+  padding: 8px 16px;           
+  border-radius: 12px;         
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;                
+  width: 40px;                 
+  cursor: pointer;
+  border: none;
+}
+
+.user-icon-button i {
+  font-size: 18px;             
+  line-height: 1;
+}
+
+.mobile-menu-toggle {
+  border: none;
+  /* background: transparent; */
+  color: #495057;
+  font-size: 1.2rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #495057;
+}
+
+.mobile-menu-toggle:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.mobile-nav-offcanvas {
+  width: 280px !important;
+}
+
+.mobile-nav-offcanvas .offcanvas-header {
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
+}
+
+.mobile-nav-offcanvas .offcanvas-title {
+  font-weight: 600;
+  color: #495057;
+}
+
+.mobile-nav-offcanvas .offcanvas-body {
+  padding: 0;
+}
+
+/* Mobile Navigation Container */
+.mobile-nav-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Mobile Navigation Items */
+.mobile-nav-items {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.mobile-nav-item:hover {
+  background-color: #f8f9fa;
+}
+
+.mobile-nav-item.active {
+  background-color: #e3f2fd;
+  border-left: 4px solid #1976d2;
+}
+
+.mobile-nav-icon {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  color: #6c757d;
+  width: 24px;
+  text-align: center;
+}
+
+.mobile-nav-item.active .mobile-nav-icon {
+  color: #1976d2;
+}
+
+.mobile-nav-label {
+  font-weight: 500;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.mobile-nav-item.active .mobile-nav-label {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+/* Mobile Action Buttons */
+.mobile-action-buttons {
+  padding: 1.5rem;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+}
+
+.mobile-subscribe-btn {
+  background-color: darkslategray;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.mobile-subscribe-btn:hover {
+  background-color: #2c3e50;
+  transform: translateY(-1px);
+}
+
+/* Mobile User Section */
+.mobile-user-section {
+  margin-top: 1rem;
+}
+
+.mobile-user-info {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-user-avatar {
+  font-size: 2.5rem;
+  color: #6c757d;
+  margin-right: 1rem;
+}
+
+.mobile-user-details h6 {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.mobile-user-details p {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.mobile-user-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 991.98px) {
+  .right-panel {
+    display: none !important;
+  }
+  
+  .mobile-menu-toggle {
+    display: block !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}
+
+/* Tablet Responsive */
+@media (max-width: 1199.98px) and (min-width: 992px) {
+  .polished-nav .nav-link {
+    margin: 7px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .polished-nav .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small Mobile Responsive */
+@media (max-width: 575.98px) {
+  .mobile-nav-offcanvas {
+    width: 100% !important;
+  }
+  
+  .mobile-nav-item {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .mobile-nav-label {
+    font-size: 1.1rem;
+  }
+  
+  .mobile-action-buttons {
+    padding: 1rem;
+  }
+}
+
+/* Ensure smooth transitions */
+.mobile-nav-offcanvas {
+  transition: transform 0.3s ease-in-out;
+}
+
+.mobile-nav-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.98);
+}
+
+.header-default, .header-center-home {
+ 
+}
+
+.header-collapsed {
+  transform: translateY(-100%) !important;
+}
+
+.header-expanded {
+  transform: translateY(0) !important;
+}
+
+.nav-indicator {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 991px) {
+  .header-collapsed .mobile-menu-toggle {
+    opacity: 0.8;
+  }
+}
+
+
+.header-minimized {
+  /* backdrop-filter: blur(10px); */
+}
+
+.header-expanded {
+  backdrop-filter: none;
+}
+
+/* Smooth icon transitions */
+.nav-link {
+  display: flex !important;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Tooltip styling for minimized buttons */
+.nav-link[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+  .header-minimized {
+    padding: 0.5rem 0;
+  }
+}
+

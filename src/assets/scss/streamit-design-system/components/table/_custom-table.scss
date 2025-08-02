@@ -1,0 +1,25 @@
+table.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    th {
+      background: var(--table-header-bg);
+      color: var(--table-text);
+      padding: 1.5em 1.25em;
+      text-transform: capitalize;
+      border: none;
+    }
+  }
+
+  tbody {
+    td {
+      background: var(--table-bg);
+      color: var(--table-text);
+      padding: 1.5em 1.25em;
+      text-transform: capitalize;
+      border: none;
+      border-bottom: 0.625em solid #ccc;
+    }
+  }
+}

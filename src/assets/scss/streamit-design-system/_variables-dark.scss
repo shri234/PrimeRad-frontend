@@ -1,0 +1,62 @@
+
+$primary-text-emphasis-light: #000000 !default; // Pure black for primary text
+$secondary-text-emphasis-light: #333333 !default; // Dark gray for secondary text
+$success-text-emphasis-light: $primary-text-emphasis-light !default; // Same as primary text
+$info-text-emphasis-light: #17a2b8 !default; // Teal for informational text
+$warning-text-emphasis-light: #ffc107 !default; // Yellow for warnings
+$danger-text-emphasis-light: #dc3545 !default; // Red for errors
+$light-text-emphasis-light: #666666 !default; // Lighter gray for muted text
+$dark-text-emphasis-light: #000000 !default; // Strong black
+
+$primary-bg-subtle-light: #ffffff !default; // Pure white for primary background
+$secondary-bg-subtle-light: #f8f9fa !default; // Light gray for secondary sections
+$success-bg-subtle-light: lighten(#28a745, 20%) !default; // Light green for success backgrounds
+$info-bg-subtle-light: #d9edf7 !default; // Light teal background for info
+$warning-bg-subtle-light: #fff3cd !default; // Soft yellow for warnings
+$danger-bg-subtle-light: #f8d7da !default; // Soft red for errors
+$light-bg-subtle-light: #ffffff !default; // White for light background
+$dark-bg-subtle-light: #e9ecef !default; // Very light gray for dark contrasts
+
+$primary-border-subtle-light: #000000 !default; // Black for primary borders
+$secondary-border-subtle-light: #cccccc !default; // Light gray for secondary borders
+$success-border-subtle-light: darken(#28a745, 10%) !default; // Dark green for success
+$info-border-subtle-light: #a0c4d6 !default; // Soft blue
+$warning-border-subtle-light: #ffd966 !default; // Soft yellow
+$danger-border-subtle-light: #f5b7b1 !default; // Soft red
+$light-border-subtle-light: #eeeeee !default; // Very light gray
+$dark-border-subtle-light: #343a40 !default; // Dark gray for contrast
+
+$body-color-light: #000000 !default; 
+$body-bg-light: #ffffff !default; 
+$body-secondary-color-light: #666666 !default;
+$body-secondary-bg-light: #f8f9fa !default;
+$body-tertiary-color-light: rgba(#000000, 0.5) !default;
+$body-tertiary-bg-light: #ffffff !default;
+$body-emphasis-color-light: #000000 !default;
+$border-color-light: #cccccc !default;
+$border-color-translucent-light: rgba(#000000, 0.15) !default; 
+$headings-color-light: #000000 !default; // Black for headings
+$link-color-light: #1b5e20 !default; // Dark green links
+$link-hover-color-light: darken(#1b5e20, 10%) !default; // Darker green on hover
+
+
+$form-select-indicator-color-light: #000000 !default;
+$form-select-indicator-light: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$form-select-indicator-color-light}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>") !default;
+
+$form-switch-color-light: rgba(#000000, 0.25) !default;
+$form-switch-bg-image-light: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$form-switch-color-light}'/></svg>") !default;
+
+$form-valid-color-light: #1b5e20 !default; // Lush green for valid inputs
+$form-valid-border-color-light: #1b5e20 !default;
+$form-invalid-color-light: #dc3545 !default; // Red for invalid inputs
+$form-invalid-border-color-light: #dc3545 !default;
+
+//
+// Accordion
+//
+
+$accordion-icon-color-dark: lighten(#28a745, 20%) !default;
+$accordion-icon-active-color-dark: lighten(#28a745, 30%) !default;
+
+$accordion-button-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color-dark}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+$accordion-button-active-icon-dark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-active-color-dark}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;

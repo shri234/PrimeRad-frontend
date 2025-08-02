@@ -1,0 +1,111 @@
+.nav-categories-wrapper {
+  position: relative;
+  top: 94px; /* Matches your header height */
+  left: 0;
+  width: 240px;
+  height: calc(100vh - 74px-100px); /* Full height minus header */
+  margin: 0;
+  /* background-color: #aaa; */
+  padding: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
+  z-index: 998; /* Below header but above content */
+  border-radius: 10px;
+  border-right: 1px solid #eee; /* Clean separation */
+}
+.stop-nav-overlap {
+  position: relative;
+  z-index: 997;
+  margin-top: 100px; /* Adjust based on your footer height */
+}
+.nav-categories-container {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-nav-container {
+  padding: 15px;
+  overflow-y: auto;
+  flex-grow: 1;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 8px 0;
+  z-index: 1;
+}
+
+.selection-count {
+  font-size: 12px;
+  color: #888;
+  margin-left: 5px;
+}
+
+.filter-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 5px; /* Small gap after sticky title */
+}
+
+.filter-item {
+  padding: 8px 15px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-item:hover {
+  background-color: var(--category-color-light);
+}
+
+.filter-item.active {
+  background-color: var(--category-color);
+  color: white;
+  border-color: var(--category-color);
+}
+
+.nav-bottom-closure {
+  height: 1px;
+  background-color: #eee;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Scrollbar styling */
+.nav-categories-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-categories-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.nav-categories-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.nav-categories-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}

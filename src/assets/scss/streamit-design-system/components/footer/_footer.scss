@@ -1,0 +1,41 @@
+:root {
+  --dark-green-bg: #022e2e; // Dark green background
+  --dark-green-text: #ffffff;
+  --darks-late-gray: #2f4f4f; // Light text for contrast
+}
+
+.footer-default {
+  background: var(--darks-late-gray); // Apply dark green background
+
+  .footer-link-title {
+    color: var(--dark-green-text); // Ensure text is readable
+  }
+
+  .footer-top {
+    padding: 5.625rem 0;
+    color: var(--dark-green-text); // Apply text color for child elements
+  }
+
+  .footer-bottom {
+    padding: 3.125rem 0;
+    background: var(); // Match the bottom section color
+  }
+}
+
+.footer-merchandise {
+  background: var(--darks-late-gray); // Apply the same dark green background
+
+  .footer-inner {
+    color: var(--dark-green-text); // Light text color for better readability
+    padding: 7.375rem 0 6.5rem 0;
+  }
+}
+
+footer a {
+  color: var(--dark-green-text); // White for links
+  text-transform: capitalize;
+
+  &:hover {
+    color: #ff9900; // Optional: Add an accent color for hover
+  }
+}
