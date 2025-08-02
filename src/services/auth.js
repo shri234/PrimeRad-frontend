@@ -5,7 +5,7 @@ import axios from "axios";
 export const login = async (identifier, password) => {
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/auth/login`,
+      `https://primerad-backend.onrender.com/api/auth/login`,
       { identifier, password },
       { withCredentials: true } // allow cookies (JWT)
     );
