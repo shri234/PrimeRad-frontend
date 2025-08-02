@@ -3,20 +3,12 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const baseUrl = mode == "production" ? env.VITE_URL : "/";
+  const baseUrl = mode === "production" ? env.VITE_URL : "/";
 
   return {
     base: baseUrl,
     plugins: [react()],
-    define: {
-      global: {},
-      process: { env: {} },
-    },
-    resolve: {
-      alias: {
-        'video.js/dist/video.es.js': 'video.js'
-      }
-    },
+    // Remove or fix the define section!
     build: {
       outDir: "build",
       minify: true,
@@ -31,5 +23,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    // Optional, usually unnecessary:
+    // optimizeDeps: {
+    //   include: ["immer"],
+    // },
   };
 });

@@ -134,7 +134,7 @@ const PaymentPage = () => {
         // Assume you have an endpoint to get a single package by ID
         // If not, you'd fetch all plans and filter by ID here.
         const response = await axios.get(
-          `http://localhost:5000/api/subscription/getPackageById?packageId=${packageId}`
+          `https://primerad-backend.onrender.com/api/subscription/getPackageById?packageId=${packageId}`
         ); // <--- NEW API CALL
         const fetchedPkg = response.data.data; // Assuming response is { data: packageObject }
         console.log(fetchedPkg);
@@ -210,7 +210,7 @@ const PaymentPage = () => {
     try {
       // 1. Create a Razorpay Order on your Backend
       const orderResponse = await axios.post(
-        `http://localhost:5000/api/subscription/initiatePayment?packageId=${packageId}`
+        `https://primerad-backend.onrender.com/api/subscription/initiatePayment?packageId=${packageId}`
       );
 
       const {
@@ -234,7 +234,7 @@ const PaymentPage = () => {
             // 2. Send payment response to your backend for verification
             //    DO NOT call the webhook endpoint here. Create a separate endpoint.
             const verifyResponse = await axios.post(
-              "http://localhost:5000/api/subscription/verify-payment",
+              "https://primerad-backend.onrender.com/api/subscription/verify-payment",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -304,7 +304,7 @@ const PaymentPage = () => {
     try {
       // 1. Create a Stripe Checkout Session on your Backend
       const sessionResponse = await axios.post(
-        "http://localhost:5000/api/payment/stripe-checkout",
+        "https://primerad-backend.onrender.com/api/payment/stripe-checkout",
         {
           priceId: selectedPlanDetails.stripePriceId, // Stripe Price ID from your plan details
           planName: selectedPlanDetails.planName,
@@ -347,7 +347,7 @@ const PaymentPage = () => {
     try {
       // 1. Create a PayPal Order on your Backend
       const orderResponse = await axios.post(
-        `http://localhost:5000/api/subscription/paypal-order?userId=${localStorage.getItem(
+        `https://primerad-backend.onrender.com/api/subscription/paypal-order?userId=${localStorage.getItem(
           "userId"
         )}`,
         {
@@ -365,7 +365,7 @@ const PaymentPage = () => {
       setTimeout(async () => {
         try {
           await axios.get(
-            `http://localhost:5000/api/subscription/paypal-verify?token=${orderId}&PayerID=${localStorage.getItem(
+            `https://primerad-backend.onrender.com/api/subscription/paypal-verify?token=${orderId}&PayerID=${localStorage.getItem(
               "userId"
             )}`
           );

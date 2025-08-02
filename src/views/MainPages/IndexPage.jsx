@@ -46,7 +46,7 @@ const HomePage = memo(() => {
     const fetchFaculty = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/faculty/get"
+          "https://primerad-backend.onrender.com/api/faculty/get"
         );
         // Map the API response data to match your Swiper's expected structure
         const mappedFaculty = response.data.data.map((faculty) => ({
@@ -54,7 +54,10 @@ const HomePage = memo(() => {
           name: faculty.name, // Use 'name' from API for 'instructor' equivalent
           title: faculty.description, // Use 'description' from API for 'title' equivalent
           // Construct the image URL: prepend base URL and fix backslashes
-          image: `http://localhost:5000/${faculty.image.replace(/\\/g, "/")}`,
+          image: `https://primerad-backend.onrender.com/${faculty.image.replace(
+            /\\/g,
+            "/"
+          )}`,
           // Add other fields if needed
         }));
         setFacultyList(mappedFaculty);

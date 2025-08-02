@@ -652,7 +652,7 @@ const SubModuleView = () => {
       setAssessmentError(null);
 
       const response = await axios.get(
-        `http://localhost:5000/api/assessments/getByModule?moduleId=${activeModuleId}&difficulty=${selectedDifficulty.toLowerCase()}`
+        `https://primerad-backend.onrender.com/api/assessments/getByModule?moduleId=${activeModuleId}&difficulty=${selectedDifficulty.toLowerCase()}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -708,7 +708,7 @@ const SubModuleView = () => {
       // Loop through all answers and submit individually
       for (const q of assessmentQuestions) {
         const res = await axios.post(
-          "http://localhost:5000/api/assessments/answer",
+          "https://primerad-backend.onrender.com/api/assessments/answer",
           {
             userId: getUserId,
             assessmentId: q._id,
@@ -1190,7 +1190,7 @@ const SubModuleView = () => {
         setLoadingPathologies(true);
         setPathologiesError(null);
         const response = await axios.get(
-          `http://localhost:5000/api/pathologies/getByModule?moduleId=${activeModuleId}`
+          `https://primerad-backend.onrender.com/api/pathologies/getByModule?moduleId=${activeModuleId}`
         );
 
         if (response.data && Array.isArray(response.data.data)) {
@@ -2245,8 +2245,8 @@ const SubModuleView = () => {
                         >
                           <img
                             src={
-                              `http://localhost:5000${pathologyItem.imageUrl}` ||
-                              `http://localhost:5000${staticSubModuleDataForPathology?.thumbnail}` ||
+                              `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
+                              `https://primerad-backend.onrender.com${staticSubModuleDataForPathology?.thumbnail}` ||
                               "/assets/images/default-thumbnail.jpg" // Fallback thumbnail
                             }
                             alt={pathologyItem.pathologyName}

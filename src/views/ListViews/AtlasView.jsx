@@ -36,7 +36,7 @@ const AtlasView = () => {
         setLoading(true);
         setError(null);
         const response = await axios.get(
-          "http://localhost:5000/api/modules/modules-with-pathology-count"
+          "https://primerad-backend.onrender.com/api/modules/modules-with-pathology-count"
         );
         if (response.data && Array.isArray(response.data.data)) {
           setModulesData(response.data.data);

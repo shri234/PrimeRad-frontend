@@ -75,7 +75,7 @@ const CartPage = memo(() => {
         // Assume you have an endpoint to get a single package by ID
         // If not, you'd fetch all plans and filter by ID here.
         const response = await axios.get(
-          `http://localhost:5000/api/subscription/getPackageById?packageId=${packageId}`
+          `https://primerad-backend.onrender.com/api/subscription/getPackageById?packageId=${packageId}`
         ); // <--- NEW API CALL
         const fetchedPkg = response.data.data; // Assuming response is { data: packageObject }
         console.log(fetchedPkg);

@@ -215,7 +215,7 @@ const MySpacePage = memo(() => {
     const fetchPoints = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/assessments/getUserPoints?userId=${localStorage.getItem(
+          `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
@@ -260,7 +260,7 @@ const MySpacePage = memo(() => {
         setError(null);
 
         const response = await fetch(
-          `http://localhost:5000/api/sessions/getWatchedSessions?userId=${userId}`
+          `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${userId}`
         );
 
         if (!response.ok) {
@@ -308,7 +308,7 @@ const MySpacePage = memo(() => {
           session.difficulty?.slice(1) || "Beginner",
       status: session.isFree ? "Free" : "Locked",
       thumbnail: session.imageUrl_1920x1080
-        ? `http://localhost:5000${session.imageUrl_1920x1080}`
+        ? `https://primerad-backend.onrender.com${session.imageUrl_1920x1080}`
         : "/assets/images/continue-watch/01.jpg", // fallback image
       minutesLeft: remainingMinutes,
       progress: progressPercentage,

@@ -7,7 +7,7 @@ const ContinueWatchCard = memo(
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
 
-    imagePath = `http://localhost:5000${imagePath}`;
+    imagePath = `https://primerad-backend.onrender.com${imagePath}`;
 
     const handleClick = () => {
       navigate("/movies-detail", {

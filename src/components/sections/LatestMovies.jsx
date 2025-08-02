@@ -36,7 +36,7 @@ const LatestMovies = (props) => {
   const fetchSessions = useCallback(async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/sessions/getTopWatchedSessions"
+        "https://primerad-backend.onrender.com/api/sessions/getTopWatchedSessions"
       );
       const data = await res.json();
       if (data?.data) {
@@ -52,7 +52,7 @@ const LatestMovies = (props) => {
   const fetchRecentItems = useCallback(async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/sessions/getRecentItems"
+        "https://primerad-backend.onrender.com/api/sessions/getRecentItems"
       );
       const data = await res.json();
       if (data?.data) {
@@ -68,7 +68,7 @@ const LatestMovies = (props) => {
   const fetchRecommendedLectures = useCallback(async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/sessions/getTopRatedLectures"
+        "https://primerad-backend.onrender.com/api/sessions/getTopRatedLectures"
       );
       const data = await res.json();
       if (data?.data) {
@@ -84,7 +84,7 @@ const LatestMovies = (props) => {
   const fetchRecommendedCases = useCallback(async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/sessions/getTopRatedCases"
+        "https://primerad-backend.onrender.com/api/sessions/getTopRatedCases"
       );
       const data = await res.json();
       if (data?.data) {
@@ -210,8 +210,8 @@ const LatestMovies = (props) => {
             title: data.title,
             description: data.description,
             imageUrl:
-              `http://localhost:5000${data.imageUrl_522x760}` ||
-              `http://localhost:5000${data.imageUrl_1920x1080}`,
+              `https://primerad-backend.onrender.com${data.imageUrl_522x760}` ||
+              `https://primerad-backend.onrender.com${data.imageUrl_1920x1080}`,
             imageUrl_1920x1080: data.imageUrl_1920x1080,
             sessionDuration: data.sessionDuration || "",
             difficulty: data.difficulty,

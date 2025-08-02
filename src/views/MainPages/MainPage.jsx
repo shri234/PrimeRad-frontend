@@ -444,7 +444,7 @@ const MainPage = memo(() => {
     const fetchPoints = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/assessments/getUserPoints?userId=${localStorage.getItem(
+          `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
@@ -472,7 +472,7 @@ const MainPage = memo(() => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/sessions/get?page=${pageNum}&limit=${LIMIT}`
+        `https://primerad-backend.onrender.com/api/sessions/get?page=${pageNum}&limit=${LIMIT}`
       );
 
       const { data: newSessionData, total } = response.data;
@@ -507,9 +507,9 @@ const MainPage = memo(() => {
         level: session.difficulty === "beginner" ? "Beginner" : "Advanced",
         status: session.isFree ? "Free" : "Locked",
         thumbnail: session.imageUrl_1920x1080
-          ? `http://localhost:5000${session.imageUrl_1920x1080}`
+          ? `https://primerad-backend.onrender.com${session.imageUrl_1920x1080}`
           : session.imageUrl
-          ? `http://localhost:5000${session.imageUrl}`
+          ? `https://primerad-backend.onrender.com${session.imageUrl}`
           : "/default-thumbnail.jpg",
         duration: session.sessionDuration || "",
         isFree: session.isFree,

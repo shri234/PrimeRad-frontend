@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import { theme_scheme_direction } from "../../store/setting/selectors";
 import { useTranslation } from "react-i18next";
 
-const API_URL = "http://localhost:5000/api/sessions/getTopRatedLectures";
+const API_URL =
+  "https://primerad-backend.onrender.com/api/sessions/getTopRatedLectures";
 
 const HomeHeroSlider = memo(() => {
   const { t } = useTranslation();
@@ -95,7 +96,7 @@ const HomeHeroSlider = memo(() => {
     category: apiObj.moduleName,
     tags: [], // Assuming tags might come from API in the future
     image: apiObj.imageUrl_1920x1080
-      ? `http://localhost:5000${apiObj.imageUrl_1920x1080}`
+      ? `https://primerad-backend.onrender.com${apiObj.imageUrl_1920x1080}`
       : "https://placehold.co/1920x1080?text=No+Image",
     // detailLink: `/session-detail/${apiObj._id || ""}`, // This can be removed or kept as a fallback
     previewVideoUrl: apiObj.vimeoVideoId

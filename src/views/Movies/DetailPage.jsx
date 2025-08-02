@@ -136,12 +136,15 @@ const MovieDetail = memo(() => {
       }
 
       try {
-        await axios.post("http://localhost:5000/api/playback-progress/save", {
-          userId: userId,
-          sessionId: sessionId,
-          currentTime: currentTime,
-          sessionModelType: sessionModelType,
-        });
+        await axios.post(
+          "https://primerad-backend.onrender.com/api/playback-progress/save",
+          {
+            userId: userId,
+            sessionId: sessionId,
+            currentTime: currentTime,
+            sessionModelType: sessionModelType,
+          }
+        );
         // console.log(
         //   `Playback progress saved for session ${sessionId} (${sessionModelType}) at ${currentTime} seconds.`
         // );
@@ -172,7 +175,7 @@ const MovieDetail = memo(() => {
       }
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/playback-progress/${userId}/${sessionId}`
+          `https://primerad-backend.onrender.com/api/playback-progress/${userId}/${sessionId}`
         );
         if (response.data && typeof response.data.currentTime === "number") {
           setInitialPlaybackTime(response.data.currentTime);
@@ -267,7 +270,7 @@ const MovieDetail = memo(() => {
           // Track session view on backend
           try {
             await axios.post(
-              `http://localhost:5000/api/sessions/track?userId=${userId}&sessionId=${sessionId}`
+              `https://primerad-backend.onrender.com/api/sessions/track?userId=${userId}&sessionId=${sessionId}`
             );
             console.log("✅ Session view tracked");
           } catch (error) {
@@ -394,7 +397,7 @@ const MovieDetail = memo(() => {
             });
             // Send as Blob with correct Content-Type for the backend
             navigator.sendBeacon(
-              "http://localhost:5000/api/playback-progress/save",
+              "https://primerad-backend.onrender.com/api/playback-progress/save",
               new Blob([data], { type: "application/json" })
             );
             console.log("Beacon sent on beforeunload.");
@@ -1615,7 +1618,7 @@ const MovieDetail = memo(() => {
                                       <img
                                         src={
                                           member.image
-                                            ? `http://localhost:5000${member.image}`
+                                            ? `https://primerad-backend.onrender.com${member.image}`
                                             : generateImgPath(
                                                 "/assets/images/faculty1.jpg"
                                               )

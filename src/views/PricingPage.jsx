@@ -260,7 +260,7 @@ const PricingPage = memo(() => {
       setError(null);
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/subscription/get"
+          "https://primerad-backend.onrender.com/api/subscription/get"
         ); // Your API endpoint
         if (response.data && Array.isArray(response.data.data)) {
           // Assuming API returns { data: [...] }

@@ -179,7 +179,7 @@ export default function ScoreBoard() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:5000/api/assessments/getUserPoints?userId=${userId}`
+          `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${userId}`
         );
         const data = await res.json();
         setApiUserPoints(data.totalPoints); // ← extract totalPoints from response

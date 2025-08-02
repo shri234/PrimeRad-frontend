@@ -42,7 +42,7 @@ const ContinueWatching = memo(() => {
     const fetchWatchedSessions = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/sessions/getWatchedSessions?userId=${localStorage.getItem(
+          `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${localStorage.getItem(
             "userId"
           )}`
         );

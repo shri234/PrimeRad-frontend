@@ -41,13 +41,13 @@ const NavCategories = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/modules/get")
+      .get("https://primerad-backend.onrender.com/api/modules/get")
       .then((res) => setAreas(res.data.data || res.data))
       .catch((err) => console.error("Error fetching modules:", err));
 
     // Fetch pathologies
     axios
-      .get("http://localhost:5000/api/pathologies/get")
+      .get("https://primerad-backend.onrender.com/api/pathologies/get")
       .then((res) => setPathologies(res.data.data || res.data))
       .catch((err) => console.error("Error fetching pathologies:", err));
   }, []);
