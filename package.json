@@ -45,7 +45,7 @@
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.9.0",
     "swiper": "~8.4.7",
-    "video.js": "^8.6.1",
+    "video.js": "^7.21.7",
     "videojs-vimeo": "^2.0.2",
     "videojs-youtube": "^3.0.1"
   },
