@@ -41,7 +41,7 @@ const ErrorPage2 = lazy(() => import("../views/ExtraPages/ErrorPage2"));
 
 //login pages
 const LoginPage = lazy(() => import("../views/AuthPages/LoginPage"));
-const SignUpPage = lazy(() => import("../views/AuthPages/SignupPage"));
+const SignUpPage = lazy(() => import("../views/AuthPages/SignUpPage"));
 const LostPassword = lazy(() => import("../views/AuthPages/LostPassword"));
 
 // merchandise pages
