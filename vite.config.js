@@ -31,5 +31,10 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    resolve: {
+    alias: {
+      entries: [{ find: /\.mjs$/, replacement: ".js" }],
+    },
+  },
   };
 });
