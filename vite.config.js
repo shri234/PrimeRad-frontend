@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
     base: baseUrl,
     plugins: [react()],
     define: {
-      global: {},
+      // global: {},
       process: { env: {} },
     },
     resolve: {
