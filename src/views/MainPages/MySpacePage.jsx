@@ -4,7 +4,15 @@ import { useFilter } from "../../context/FilterContext";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
 import { Button } from "react-bootstrap";
-import { FaExclamationCircle } from "react-icons/fa";
+import {
+  FaExclamationCircle,
+  FaBars,
+  FaTimes,
+  FaArrowRight,
+  FaArrowLeft,
+  FaFilter,
+} from "react-icons/fa";
+import { FaSliders } from "react-icons/fa6";
 import NavCategories from "./NavCategories";
 import ProgressBar from "./ProgressBar";
 import { ChevronDown, ChevronUp } from "react-feather";
@@ -12,6 +20,68 @@ import { FaPlay } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const videoCardStyles = `
+.sidebar-container {
+  position: relative;
+  display: flex;
+}
+
+.arrow-toggle {
+  position: fixed;
+  top: 80px;
+  left: 10px;
+  z-index: 1000;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.arrow-toggle:hover {
+  background: #f5f5f5;
+  transform: scale(1.05);
+}
+
+.arrow-toggle.open {
+  left: 260px; /* Adjust based on sidebar width + margin */
+}
+
+.sidebar {
+  transition: transform 0.3s ease;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
+
+/* Media queries for responsive behavior */
+@media (min-width: 350px) and (max-width: 890px) {
+  .arrow-toggle {
+    display: flex;
+  }
+}
+
+@media (max-width: 349px) {
+  .arrow-toggle {
+    display: none;
+  }
+}
+
+@media (min-width: 890px) {
+  .arrow-toggle {
+    display: none;
+  }
+  
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+}
   .video-card {
     position: relative;
     background: none !important;
@@ -143,7 +213,7 @@ const videoCardStyles = `
   }
   
   /* Mobile responsive grid */
-  @media (max-width: 768px) {
+  @media (max-width: 580px) {
     .video-cards-outer-card .video-cards-grid {
       grid-template-columns: 1fr;
       gap: 16px;
@@ -192,6 +262,71 @@ const videoCardStyles = `
   }
 `;
 
+const THEME = {
+  primary: "#1976d2", // blue
+  secondary: "#00bfae", // teal
+  background: "#f4f8fb", // light blue/gray
+  card: "#fff",
+  accent: "#ffb300", // amber
+  text: "#263238", // dark blue-gray
+  border: "#e0e0e0",
+};
+
+const ModuleStatusCard = memo(({ module }) => {
+  console.log(module);
+  const isCompleted = module.progressPercentage === 100;
+
+  const cardStyles = {
+    padding: "16px",
+    background: "#e8f5e9",
+    borderRadius: "16px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+    border: `1px solid ${isCompleted ? "#4caf50" : "#e0e0e0"}`,
+  };
+
+  const progressBarWrapperStyles = {
+    width: "100%",
+    height: "8px",
+    background: "#e0e0e0",
+    borderRadius: "4px",
+    overflow: "hidden",
+    marginTop: "8px",
+  };
+
+  const progressBarStyles = {
+    width: `${Math.round(module.progressPercentage) || 50}%`,
+    height: "100%",
+    background: isCompleted ? "#4caf50" : "#1976d2",
+    transition: "width 0.3s ease-in-out",
+  };
+
+  if (module?.totalSessionsCount > 0) {
+    return (
+      <div style={cardStyles}>
+        <div style={{ fontWeight: 600, fontSize: "14px" }}>
+          {module.moduleName}
+        </div>
+        <div
+          style={{
+            fontSize: "14px",
+            fontWeight: "500",
+            color: "darkslategrey",
+          }}
+        >
+          1 / {module.totalSessionsCount} Sessions
+        </div>
+        <div style={progressBarWrapperStyles}>
+          <div style={progressBarStyles} />
+        </div>
+        <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
+          {Math.round(module.progressPercentage) || 50}% Complete
+        </div>
+      </div>
+    );
+  }
+  return null;
+});
+
 const MySpacePage = memo(() => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [view, setView] = useState("watching");
@@ -199,23 +334,82 @@ const MySpacePage = memo(() => {
   const { activeFilters } = useFilter();
   const buttonRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
-
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const maxPoints = 200;
 
   const [watchedSessions, setWatchedSessions] = useState([]);
+  const [moduleProgress, setModuleProgress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [savedSessions, setSavedSessions] = useState([]);
+  const [completedCount, setCompletedCount] = useState(0);
   const [error, setError] = useState(null);
+  const [moduleSessions, setModuleSessions] = useState([]);
+  const [subscription, setSubscription] = useState({
+    isSubscribed: true,
+    planName: "Free",
+  });
 
   const userId = localStorage.getItem("userId");
 
+  const [isResponsiveRange, setIsResponsiveRange] = useState(false);
+
+  // New function to calculate module-wise progress
+  const getModuleProgress = (sessions) => {
+    const modules = {};
+
+    sessions.forEach((session) => {
+      const moduleName = session.moduleName || "Uncategorized";
+      if (!modules[moduleName]) {
+        modules[moduleName] = {
+          totalSessions: 0,
+          watchedSessions: 0,
+        };
+      }
+      modules[moduleName].totalSessions += 1;
+
+      // Assuming progress is 100% when playbackPercentage is >= 1
+      const isCompleted =
+        session.playbackProgress &&
+        session.playbackProgress.progressPercentage >= 1;
+      if (isCompleted) {
+        modules[moduleName].watchedSessions += 1;
+      }
+    });
+
+    return Object.keys(modules).map((name) => ({
+      moduleName: name,
+      totalSessions: modules[name].totalSessions,
+      watchedSessions: modules[name].watchedSessions,
+      progressPercentage:
+        (modules[name].watchedSessions / modules[name].totalSessions) * 100,
+    }));
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 550);
+      setIsResponsiveRange(width >= 350 && width <= 890);
+      if (width > 890) {
+        setSidebarOpen(false);
+      } else if (width < 350) {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const fetchPoints = async () => {
       try {
         const res = await fetch(
-          `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
+          `http://localhost:5000/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
@@ -233,7 +427,7 @@ const MySpacePage = memo(() => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 590);
     };
 
     checkMobile();
@@ -260,7 +454,7 @@ const MySpacePage = memo(() => {
         setError(null);
 
         const response = await fetch(
-          `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${userId}`
+          `http://localhost:5000/api/sessions/getWatchedSessions?userId=${userId}`
         );
 
         if (!response.ok) {
@@ -268,7 +462,9 @@ const MySpacePage = memo(() => {
         }
 
         const data = await response.json();
-        setWatchedSessions(data.data || []);
+        const sessions = data.data || [];
+        setWatchedSessions(sessions);
+        setModuleProgress(getModuleProgress(sessions));
       } catch (err) {
         console.error("Error fetching watched sessions:", err);
         setError(err.message);
@@ -279,6 +475,74 @@ const MySpacePage = memo(() => {
 
     fetchWatchedSessions();
   }, [isAuthenticated, userId]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !userId) return;
+
+    const fetchCompletedCount = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(
+          `http://localhost:5000/api/sessions/getCompletedSessions?userId=${userId}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const sessions = data.data || [];
+        console.log(data, data.count);
+        setCompletedCount(parseInt(data.count));
+        // setModuleProgress(getModuleProgress(sessions));
+      } catch (err) {
+        console.error("Error fetching watched sessions:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompletedCount();
+  }, [isAuthenticated, userId]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !userId) return;
+    console.log(completedCount, "completed");
+    // if (completedCount) {
+    const fetchModuleSessions = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(
+          `http://localhost:5000/api/modules/getModulesSessionCount`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const sessions = data.data || [];
+        console.log(sessions, typeof sessions);
+        // sessions[0].completedCount = completedCount;
+        // sessions[1].completedCount = completedCount;
+
+        console.log(sessions);
+        setModuleSessions(sessions);
+        setModuleProgress(getModuleProgress(sessions));
+      } catch (err) {
+        console.error("Error fetching watched sessions:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchModuleSessions();
+  }, [isAuthenticated]);
 
   // Transform API data to match your component's expected format
   const transformSessionData = (session) => {
@@ -308,7 +572,7 @@ const MySpacePage = memo(() => {
           session.difficulty?.slice(1) || "Beginner",
       status: session.isFree ? "Free" : "Locked",
       thumbnail: session.imageUrl_1920x1080
-        ? `https://primerad-backend.onrender.com${session.imageUrl_1920x1080}`
+        ? `http://localhost:5000${session.imageUrl_1920x1080}`
         : "/assets/images/continue-watch/01.jpg", // fallback image
       minutesLeft: remainingMinutes,
       progress: progressPercentage,
@@ -328,6 +592,7 @@ const MySpacePage = memo(() => {
   const completedCards = transformedCards.filter((card) => card.progress >= 1);
 
   // Apply filters
+  const savedCards = savedSessions.map(transformSessionData);
   const filteredCards = (
     view === "watching" ? watchingCards : completedCards
   ).filter((card) => {
@@ -358,7 +623,21 @@ const MySpacePage = memo(() => {
 
   const handleCardClick = (card) => {
     if (card.status === "Locked") {
-      navigate("/restricted-content");
+      navigate("/movies-detail", {
+        state: {
+          id: card.id,
+          vimeoVideoId: card.vimeoVideoId,
+          title: card.type,
+          description: card.description,
+          faculty: card.faculty,
+          module: card.module,
+          isFree: card.isFree,
+          submodule: card.submodule,
+          duration: card.sessionDuration,
+          startDate: card.startDate,
+          contentType: card.contentType,
+        },
+      });
     } else {
       navigate("/movies-detail", {
         state: {
@@ -368,6 +647,7 @@ const MySpacePage = memo(() => {
           description: card.description,
           faculty: card.faculty,
           module: card.module,
+          isFree: card.isFree,
           submodule: card.submodule,
           duration: card.sessionDuration,
           startDate: card.startDate,
@@ -455,20 +735,80 @@ const MySpacePage = memo(() => {
         }}
       >
         <style>{videoCardStyles}</style>
-        {!isMobile && (
+        <style jsx>{`
+          @keyframes shimmer {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(100%);
+            }
+          }
+        `}</style>
+        {isResponsiveRange && (
+          <button
+            className={`sidebar-toggle ${sidebarOpen ? "open" : ""}`}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            style={{
+              position: "fixed",
+              top: "60px",
+              left: sidebarOpen ? "0px" : "0px",
+              zIndex: 1001,
+              background: "#fff",
+              border: "1px solid #ddd",
+              borderRadius: "20%",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              marginLeft: "-3px",
+            }}
+          >
+            {sidebarOpen ? <FaTimes /> : <FaFilter />}
+          </button>
+        )}
+
+        {(!isMobile || (isResponsiveRange && sidebarOpen)) && (
           <div
+            className="sidebar-wrapper"
             style={{
               width: "250px",
               flexShrink: 0,
-              position: "sticky",
+              position: isResponsiveRange ? "fixed" : "sticky",
               top: 0,
+              left: isResponsiveRange && !sidebarOpen ? "-250px" : "0",
               height: "100vh",
-              overflowY: "auto",
+              overflowY: "hidden",
+              zIndex: 1000,
+              transition: "left 0.3s ease",
+              boxShadow: isResponsiveRange
+                ? "2px 0 10px rgba(0,0,0,0.1)"
+                : "none",
             }}
           >
             <NavCategories />
           </div>
         )}
+        {isResponsiveRange && sidebarOpen && (
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 999,
+            }}
+          />
+        )}
+
         <div
           style={{
             display: "flex",
@@ -500,7 +840,7 @@ const MySpacePage = memo(() => {
             >
               <div
                 style={{
-                  background: "#e5eaf0",
+                  background: "antiquewhite",
                   borderRadius: isMobile ? 12 : 16,
                   boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                   padding: isMobile ? "12px 16px" : "18px 28px",
@@ -514,6 +854,129 @@ const MySpacePage = memo(() => {
                   flexDirection: isMobile ? "column" : "row",
                 }}
               >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: isMobile ? 8 : 12,
+                    padding: isMobile ? "12px 16px" : "16px 20px",
+                    background: subscription.isSubscribed
+                      ? "linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%)"
+                      : "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
+                    borderRadius: isMobile ? 12 : 16,
+                    border: `2px solid ${
+                      subscription.isSubscribed ? "#4caf50" : "#e0e0e0"
+                    }`,
+                    boxShadow: subscription.isSubscribed
+                      ? "0 4px 20px rgba(76, 175, 80, 0.15)"
+                      : "0 4px 16px rgba(0, 0, 0, 0.08)",
+                    minWidth: isMobile ? 140 : 200,
+                    textAlign: "left",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    cursor: "default",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Status Icon */}
+                  <div
+                    style={{
+                      width: isMobile ? 24 : 28,
+                      height: isMobile ? 24 : 28,
+                      borderRadius: "50%",
+                      background: subscription.isSubscribed
+                        ? "linear-gradient(135deg, #4caf50, #66bb6a)"
+                        : "linear-gradient(135deg, #9e9e9e, #bdbdbd)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: isMobile ? 8 : 10,
+                        height: isMobile ? 8 : 10,
+                        background: "white",
+                        borderRadius: "50%",
+                        opacity: subscription.isSubscribed ? 1 : 0.7,
+                      }}
+                    />
+                  </div>
+
+                  {/* Text Content */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: isMobile ? 12 : 13,
+                        fontWeight: 500,
+                        color: "#666",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                        marginBottom: 2,
+                        lineHeight: 1,
+                      }}
+                    >
+                      Subscription
+                    </div>
+                    <div
+                      style={{
+                        fontSize: isMobile ? 16 : 18,
+                        fontWeight: 700,
+                        color: subscription.isSubscribed
+                          ? "#2e7d32"
+                          : "#5f6368",
+                        lineHeight: 1.2,
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {subscription.planName}
+                    </div>
+                  </div>
+
+                  {/* Premium Badge (if subscribed) */}
+                  {subscription.isSubscribed && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: -1,
+                        right: -1,
+                        background: "linear-gradient(135deg, #ffd700, #ffb300)",
+                        color: "#333",
+                        fontSize: isMobile ? 8 : 9,
+                        fontWeight: 700,
+                        padding: "2px 6px",
+                        borderRadius: "0 14px 0 8px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.3px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                      }}
+                    >
+                      Active
+                    </div>
+                  )}
+
+                  {/* Subtle Animation Overlay */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: subscription.isSubscribed
+                        ? "linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)"
+                        : "none",
+                      animation: subscription.isSubscribed
+                        ? "shimmer 3s infinite"
+                        : "none",
+                      pointerEvents: "none",
+                    }}
+                  />
+                </div>
                 <div
                   style={{
                     fontSize: isMobile ? 16 : 20,
@@ -564,7 +1027,7 @@ const MySpacePage = memo(() => {
                   style={{
                     fontSize: isMobile ? 14 : 18,
                     fontWeight: 400,
-                    minWidth: isMobile ? 120 : 180,
+                    minWidth: isMobile ? 100 : 180,
                     textAlign: isMobile ? "center" : "right",
                   }}
                 >
@@ -572,10 +1035,10 @@ const MySpacePage = memo(() => {
                   <span style={{ fontWeight: 700, color: "#222" }}>Black</span>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: isMobile ? "8px" : "10px" }}>
+              <div style={{ display: "flex", gap: isMobile ? "6px" : "8px" }}>
                 <button
                   style={{
-                    padding: isMobile ? "6px 8px" : "8px 10px",
+                    padding: isMobile ? "4px 6px" : "8px 10px",
                     backgroundColor:
                       view === "watching" ? "darkslategray" : "lightgray",
                     color: view === "watching" ? "white" : "black",
@@ -603,8 +1066,58 @@ const MySpacePage = memo(() => {
                 >
                   Completed ({completedCards.length})
                 </button>
+                <button
+                  style={{
+                    padding: isMobile ? "6px 8px" : "8px 10px",
+                    backgroundColor:
+                      view === "saved" ? "darkslategray" : "lightgray",
+                    color: view === "saved" ? "white" : "black",
+                    border: "none",
+                    borderRadius: isMobile ? "8px" : "10px",
+                    fontSize: isMobile ? "12px" : "14px",
+                    fontWeight: "600",
+                  }}
+                  onClick={() => setView("saved")}
+                >
+                  Saved ({savedCards.length})
+                </button>
               </div>
             </div>
+
+            {/* NEW: Module Progress Section */}
+            {moduleProgress.length > 0 && view !== "saved" && (
+              <div
+                style={{
+                  marginBottom: isMobile ? "24px" : "32px",
+                  padding: isMobile ? "12px" : "18px",
+                  background: "#e5eaf0",
+                  borderRadius: isMobile ? "12px" : "16px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: isMobile ? "20px" : "24px",
+                    marginBottom: "16px",
+                    fontWeight: 700,
+                    color: THEME.text,
+                  }}
+                >
+                  Module Progress
+                </h3>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: isMobile ? "12px" : "20px",
+                  }}
+                >
+                  {moduleSessions.map((mod) => (
+                    <ModuleStatusCard key={mod.moduleName} module={mod} />
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Content Area */}
             <div className="video-cards-outer-card">

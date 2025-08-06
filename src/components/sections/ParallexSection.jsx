@@ -10,7 +10,7 @@ const ParallexSection = memo((props) => {
         id="parallex"
         className="parallax-window bg-attachment-fixed"
         style={{
-          background: "#f0f8f4",
+          background: "lightgray",
           position: "relative",
           overflow: "hidden",
           padding: "48px 0",

@@ -1,6 +1,13 @@
 .streamit-block .swiper-wrapper {
   margin: 0 !important;
 }
+
+.main-content{
+  background: #f8fafc;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
 .top-ten-block .swiper-wrapper {
   margin-bottom: 3rem;
 }

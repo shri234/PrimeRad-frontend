@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./NavCategories.css";
 import { useFilter } from "../../context/FilterContext";
-import cardData from "./MainPageCardData";
 import axios from "axios";
-
-const getPathologiesForAreas = (areas) => {
-  if (!areas || areas.length === 0) {
-    return Array.from(new Set(cardData.map((c) => c.type)));
-  }
-  const pathSet = new Set();
-  cardData.forEach((c) => {
-    if (areas.includes(c.category)) {
-      pathSet.add(c.type);
-    }
-  });
-  return Array.from(pathSet);
-};
 
 const NavCategories = (props) => {
   const { activeFilters, setActiveFilters } = useFilter();
@@ -23,39 +9,68 @@ const NavCategories = (props) => {
   const [pathologies, setPathologies] = useState([]);
   const [selectedAreaId, setSelectedAreaId] = useState("");
 
-  const filteredPathologies = selectedAreaId
-    ? pathologies.filter((p) => p.moduleId === selectedAreaId)
-    : pathologies;
-
-  const handleAreaChange = (e) => {
-    const areaName = e.target.value;
-    const areaObj = areas.find((a) => a.moduleName === areaName);
-    setSelectedAreaId(areaObj ? areaObj._id : "");
-    // Optionally update filter context here
-    setActiveFilters((prev) => ({ ...prev, area: [areaName] }));
-  };
-
-  const handlePathologyChange = (e) => {
-    setActiveFilters((prev) => ({ ...prev, pathology: [e.target.value] }));
-  };
-
+  // This useEffect will now only fetch the areas (modules) on mount.
   useEffect(() => {
     axios
-      .get("https://primerad-backend.onrender.com/api/modules/get")
+      .get("http://localhost:5000/api/modules/get")
       .then((res) => setAreas(res.data.data || res.data))
       .catch((err) => console.error("Error fetching modules:", err));
-
-    // Fetch pathologies
-    axios
-      .get("https://primerad-backend.onrender.com/api/pathologies/get")
-      .then((res) => setPathologies(res.data.data || res.data))
-      .catch((err) => console.error("Error fetching pathologies:", err));
   }, []);
 
-  const dynamicPathologies = getPathologiesForAreas(activeFilters.area);
+  // This NEW useEffect is the key fix. It will run whenever the activeFilters
+  // change and will reset the local state if no area is selected.
+  useEffect(() => {
+    if (activeFilters.area.length > 0) {
+      // Find the area ID from the active filter and set the local state
+      const areaNameFromContext = activeFilters.area[0];
+      const areaObj = areas.find((a) => a.moduleName === areaNameFromContext);
+      if (areaObj && selectedAreaId !== areaObj._id) {
+        setSelectedAreaId(areaObj._id);
+      }
+    } else {
+      // If the area filter is empty, clear the local state
+      setSelectedAreaId("");
+    }
+  }, [activeFilters.area, areas]);
+
+  // This useEffect will fetch pathologies whenever selectedAreaId changes.
+  useEffect(() => {
+    if (selectedAreaId) {
+      axios
+        .get(
+          `http://localhost:5000/api/pathologies/getByModule?moduleId=${selectedAreaId}`
+        )
+        .then((res) => setPathologies(res.data.data || res.data))
+        .catch((err) => console.error("Error fetching pathologies:", err));
+    } else {
+      // Clear pathologies if no area is selected
+      setPathologies([]);
+    }
+  }, [selectedAreaId]);
+
+  const handleFilterClick = (category, value) => {
+    setActiveFilters((prev) => {
+      const newFilters = { ...prev };
+
+      const updatedCategory = new Set(newFilters[category]);
+      if (updatedCategory.has(value)) {
+        updatedCategory.delete(value);
+      } else {
+        updatedCategory.add(value);
+      }
+      newFilters[category] = Array.from(updatedCategory);
+
+      if (category === "area") {
+        newFilters.pathology = [];
+      }
+
+      return newFilters;
+    });
+  };
+
   const filters = {
-    area: ["Ankle", "Elbow", "Hip", "Knee"],
-    pathology: dynamicPathologies,
+    area: areas.map((a) => a.moduleName),
+    pathology: pathologies.map((p) => p.pathologyName),
     level: ["Beginner", "Advanced"],
     status: ["Free", "Locked"],
     type: ["Case", "Video"],
@@ -69,40 +84,6 @@ const NavCategories = (props) => {
     type: "#FF9800",
   };
 
-  const handleFilterClick = (category, value) => {
-    setActiveFilters((prev) => {
-      const updated = [...prev[category]];
-      if (updated.includes(value)) {
-        const newFilters = {
-          ...prev,
-          [category]: updated.filter((item) => item !== value),
-        };
-        if (category === "area") {
-          const validPath = getPathologiesForAreas(newFilters.area);
-          newFilters.pathology = newFilters.pathology.filter((p) =>
-            validPath.includes(p)
-          );
-        }
-        return newFilters;
-      } else {
-        const newFilters = {
-          ...prev,
-          [category]: [...updated, value],
-        };
-        if (category === "area") {
-          const validPath = getPathologiesForAreas(newFilters.area);
-          newFilters.pathology = newFilters.pathology.filter((p) =>
-            validPath.includes(p)
-          );
-        }
-        return newFilters;
-      }
-    });
-  };
-
-  filters.area = areas.map((a) => a.moduleName);
-  filters.pathology = filteredPathologies.map((p) => p.pathologyName);
-
   return (
     <div className="nav-categories-wrapper">
       <div
@@ -113,7 +94,14 @@ const NavCategories = (props) => {
       >
         <div className="filter-nav-container">
           {Object.entries(filters).map(([category, items]) => (
-            <div key={category} className="filter-group">
+            <div
+              key={category}
+              className={`filter-group ${
+                category === "pathology" && activeFilters.area.length === 0
+                  ? "disabled"
+                  : ""
+              }`}
+            >
               <h3
                 className="filter-group-title"
                 style={{ color: categoryColors[category] }}
@@ -121,27 +109,32 @@ const NavCategories = (props) => {
                 {category.charAt(0).toUpperCase() + category.slice(1)}
                 {activeFilters[category].length > 0 && (
                   <span className="selection-count">
-                    {" "}
                     ({activeFilters[category].length})
                   </span>
                 )}
               </h3>
               <div className="filter-items">
-                {items.map((item) => (
-                  <button
-                    key={item}
-                    className={`filter-item ${
-                      activeFilters[category].includes(item) ? "active" : ""
-                    }`}
-                    style={{
-                      "--category-color": categoryColors[category],
-                      "--category-color-light": `${categoryColors[category]}20`,
-                    }}
-                    onClick={() => handleFilterClick(category, item)}
-                  >
-                    {item}
-                  </button>
-                ))}
+                {category === "pathology" && activeFilters.area.length === 0 ? (
+                  <div className="disabled-message">
+                    Select an Area to see pathologies.
+                  </div>
+                ) : (
+                  items.map((item) => (
+                    <button
+                      key={item}
+                      className={`filter-item ${
+                        activeFilters[category].includes(item) ? "active" : ""
+                      }`}
+                      style={{
+                        "--category-color": categoryColors[category],
+                        "--category-color-light": `${categoryColors[category]}20`,
+                      }}
+                      onClick={() => handleFilterClick(category, item)}
+                    >
+                      {item}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           ))}

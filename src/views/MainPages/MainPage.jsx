@@ -654,8 +654,9 @@ const MainPage = memo(() => {
       filters.push(`Status: ${activeFilters.status.join(", ")}`);
     if (activeFilters.type.length > 0)
       filters.push(`Type: ${activeFilters.type.join(", ")}`);
-    if (activeFilters.pathology.length > 0)
+    if (activeFilters.pathology.length > 0) {
       filters.push(`Pathology: ${activeFilters.pathology.join(", ")}`);
+    }
     return filters.join(" | ");
   };
 
@@ -696,7 +697,7 @@ const MainPage = memo(() => {
             position: isMobile ? "fixed" : undefined,
             top: isMobile ? 0 : undefined,
             height: isMobile ? "100vh" : undefined,
-            overflowY: isMobile ? "auto" : undefined,
+            overflowY: isMobile ? "auto" : "hidden",
             background: isMobile ? THEME.card : undefined,
             zIndex: isMobile ? 1000 : undefined,
             transition: isMobile ? "width 0.3s ease" : undefined,

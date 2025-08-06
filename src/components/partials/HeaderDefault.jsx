@@ -304,9 +304,7 @@ const HeaderDefault = memo(() => {
                           </div>
                         </Dropdown.Item>
                         <Dropdown.Divider />
-                        <Dropdown.Item onClick={() => navigate("/account")}>
-                          Profile
-                        </Dropdown.Item>
+
                         <Dropdown.Item
                           onClick={() => {
                             dispatch(logout());
@@ -418,16 +416,6 @@ const HeaderDefault = memo(() => {
                     </div>
                   </div>
                   <div className="mobile-user-actions">
-                    <Button
-                      variant="outline-secondary"
-                      className="w-100 mb-2"
-                      onClick={() => {
-                        navigate("/account");
-                        handleCloseMobileMenu();
-                      }}
-                    >
-                      Profile
-                    </Button>
                     <Button
                       variant="outline-danger"
                       className="w-100"

@@ -6,6 +6,7 @@
   height: calc(100vh - 74px-100px); /* Full height minus header */
   margin: 0;
   /* background-color: #aaa; */
+  overflow: hidden;
   padding: 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
   z-index: 998; /* Below header but above content */
@@ -73,6 +74,24 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+}
+
+/* Add these new styles to your existing CSS file */
+
+/* Styles for the disabled filter group */
+.filter-group.disabled {
+  pointer-events: none; /* Disables all click events inside this group */
+  opacity: 0.5; /* Makes the entire section look faded and inactive */
+}
+
+/* Styles for the message shown when the pathology section is disabled */
+.disabled-message {
+  font-style: italic;
+  color: #888;
+  padding: 10px;
+  text-align: center;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
 }
 
 .filter-item:hover {

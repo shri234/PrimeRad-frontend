@@ -362,7 +362,7 @@ const HomePage = memo(() => {
 
       <div
         style={{
-          // background: "#FFF6D7",
+          background: "lavender",
           padding: "40px 30px",
           display: "flex",
           justifyContent: "center",
@@ -377,7 +377,7 @@ const HomePage = memo(() => {
             position: "relative",
             borderRadius: 24,
             boxShadow: "0 8px 32px 0 rgba(255, 193, 7, 0.18)",
-            background: "linear-gradient(120deg, #fffbe7 80%, #fffde4 100%)",
+            background: "linear-gradient(120deg, #fbf7e2 80%, #fef8df 100%)",
             padding: "10px",
             minWidth: 420,
             maxWidth: 920,

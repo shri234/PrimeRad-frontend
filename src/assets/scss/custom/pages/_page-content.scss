@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------*/
 .custom-header-relative {
   .main-content {
-    padding-top: var(--header-height);
+    // padding-top: var(--header-height);
   }
 }
 
@@ -582,7 +582,7 @@ Rtl Box & Color Customizer
 .user-login-card {
   padding: 3.125em;
   margin: 0 auto;
-  backdrop-filter: blur(1.5625em);
+  // backdrop-filter: blur(1.5625em);
 
   .navbar-brand {
     img {

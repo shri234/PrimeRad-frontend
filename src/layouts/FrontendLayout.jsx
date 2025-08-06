@@ -5,6 +5,7 @@ import HeaderMerchandise from "../components/merchandise/partials/HeaderDefault"
 import FooterDefault from "../components/partials/FooterDefault";
 import MerchandiseFooter from "../components/merchandise/partials/FooterDefault";
 import Loader from "../components/Loader";
+import "../app.css";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../store/auth/selectors";
 const FrontendLayout = memo((props) => {

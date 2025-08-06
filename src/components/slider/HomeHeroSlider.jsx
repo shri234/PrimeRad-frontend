@@ -102,7 +102,7 @@ const HomeHeroSlider = memo(() => {
     previewVideoUrl: apiObj.vimeoVideoId
       ? `https://player.vimeo.com/video/${apiObj.vimeoVideoId}`
       : null,
-    // Add these fields from the API object as they are needed for navigation state
+
     vimeoVideoId: apiObj.vimeoVideoId || null,
     faculty: apiObj.faculty || "Unknown Faculty", // Assuming 'faculty' might be directly on the API object
     module: apiObj.moduleName || "General",
