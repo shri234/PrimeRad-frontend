@@ -409,7 +409,7 @@ const MySpacePage = memo(() => {
     const fetchPoints = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/assessments/getUserPoints?userId=${localStorage.getItem(
+          `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
@@ -454,7 +454,7 @@ const MySpacePage = memo(() => {
         setError(null);
 
         const response = await fetch(
-          `http://localhost:5000/api/sessions/getWatchedSessions?userId=${userId}`
+          `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${userId}`
         );
 
         if (!response.ok) {
