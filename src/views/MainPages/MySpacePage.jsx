@@ -485,7 +485,7 @@ const MySpacePage = memo(() => {
         setError(null);
 
         const response = await fetch(
-          `http://localhost:5000/api/sessions/getCompletedSessions?userId=${userId}`
+          `https://primerad-backend.onrender.com/api/sessions/getCompletedSessions?userId=${userId}`
         );
 
         if (!response.ok) {
@@ -518,7 +518,7 @@ const MySpacePage = memo(() => {
         setError(null);
 
         const response = await fetch(
-          `http://localhost:5000/api/modules/getModulesSessionCount`
+          `https://primerad-backend.onrender.com/api/modules/getModulesSessionCount`
         );
 
         if (!response.ok) {
@@ -572,7 +572,7 @@ const MySpacePage = memo(() => {
           session.difficulty?.slice(1) || "Beginner",
       status: session.isFree ? "Free" : "Locked",
       thumbnail: session.imageUrl_1920x1080
-        ? `http://localhost:5000${session.imageUrl_1920x1080}`
+        ? `https://primerad-backend.onrender.com${session.imageUrl_1920x1080}`
         : "/assets/images/continue-watch/01.jpg", // fallback image
       minutesLeft: remainingMinutes,
       progress: progressPercentage,
