@@ -12,7 +12,7 @@ const NavCategories = (props) => {
   // This useEffect will now only fetch the areas (modules) on mount.
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/modules/get")
+      .get("https://primerad-subscription.netlify.app/api/modules/get")
       .then((res) => setAreas(res.data.data || res.data))
       .catch((err) => console.error("Error fetching modules:", err));
   }, []);
@@ -38,7 +38,7 @@ const NavCategories = (props) => {
     if (selectedAreaId) {
       axios
         .get(
-          `http://localhost:5000/api/pathologies/getByModule?moduleId=${selectedAreaId}`
+          `https://primerad-subscription.netlify.app/api/pathologies/getByModule?moduleId=${selectedAreaId}`
         )
         .then((res) => setPathologies(res.data.data || res.data))
         .catch((err) => console.error("Error fetching pathologies:", err));

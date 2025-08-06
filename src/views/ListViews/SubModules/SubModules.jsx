@@ -743,7 +743,7 @@ const SubModuleView = () => {
       setLevelSessionsError(null);
 
       const response = await axios.get(
-        `http://localhost:5000/api/sessions/getSessionByDifficulty?difficulty=${level.toLowerCase()}&pathologyId=${pathologyId}`
+        `https://primerad-backend.onrender.com/api/sessions/getSessionByDifficulty?difficulty=${level.toLowerCase()}&pathologyId=${pathologyId}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -770,7 +770,7 @@ const SubModuleView = () => {
         setLoadingModules(true);
         setModulesError(null);
         const response = await axios.get(
-          "http://localhost:5000/api/modules/modules-with-pathology-count"
+          "https://primerad-backend.onrender.com/api/modules/modules-with-pathology-count"
         );
 
         if (response.data && Array.isArray(response.data.data)) {
@@ -808,7 +808,7 @@ const SubModuleView = () => {
       setAssessmentError(null);
 
       const response = await axios.get(
-        `http://localhost:5000/api/assessments/getByModule?moduleId=${activeModuleId}&difficulty=${selectedDifficulty.toLowerCase()}`
+        `https://primerad-backend.onrender.com/api/assessments/getByModule?moduleId=${activeModuleId}&difficulty=${selectedDifficulty.toLowerCase()}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -861,7 +861,7 @@ const SubModuleView = () => {
 
       for (const q of assessmentQuestions) {
         const res = await axios.post(
-          "http://localhost:5000/api/assessments/answer",
+          "https://primerad-backend.onrender.com/api/assessments/answer",
           {
             userId: getUserId,
             assessmentId: q._id,
@@ -1336,7 +1336,7 @@ const SubModuleView = () => {
         setLoadingPathologies(true);
         setPathologiesError(null);
         const response = await axios.get(
-          `http://localhost:5000/api/pathologies/getByModule?moduleId=${activeModuleId}`
+          `https://primerad-backend.onrender.com/api/pathologies/getByModule?moduleId=${activeModuleId}`
         );
         if (response.data && Array.isArray(response.data.data)) {
           setModulePathologiesData(response.data.data);
@@ -1379,7 +1379,7 @@ const SubModuleView = () => {
       setDifficultySessionsError(null);
 
       const response = await axios.get(
-        `http://localhost:5000/api/sessions/getSessionsByDifficulty?difficulty=${difficulty.toLowerCase()}&pathologyId=${pathologyId}`
+        `https://primerad-backend.onrender.com/api/sessions/getSessionsByDifficulty?difficulty=${difficulty.toLowerCase()}&pathologyId=${pathologyId}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1772,7 +1772,7 @@ const SubModuleView = () => {
                       {difficultySessions.map((session) => (
                         <div key={session._id} className="session-card">
                           <img
-                            src={`http://localhost:5000${
+                            src={`https://primerad-backend.onrender.com${
                               session.imageUrl_522x760 ||
                               session.imageUrl_1920x1080
                             }`}
@@ -1902,8 +1902,8 @@ const SubModuleView = () => {
                         >
                           <img
                             src={
-                              `http://localhost:5000${pathologyItem.imageUrl}` ||
-                              `http://localhost:5000${staticSubModuleDataForPathology?.thumbnail}` ||
+                              `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
+                              `https://primerad-backend.onrender.com${staticSubModuleDataForPathology?.thumbnail}` ||
                               "/assets/images/default-thumbnail.jpg" // Fallback thumbnail
                             }
                             alt={pathologyItem.pathologyName}
@@ -2184,7 +2184,7 @@ const SubModuleView = () => {
                                                 >
                                                   <img
                                                     src={
-                                                      `http://localhost:5000${
+                                                      `https://primerad-backend.onrender.com${
                                                         session.imageUrl_522x760 ||
                                                         session.imageUrl_1920x1080
                                                       }` ||
@@ -2500,7 +2500,7 @@ const SubModuleView = () => {
                                                   >
                                                     <img
                                                       src={
-                                                        `http://localhost:5000${
+                                                        `https://primerad-backend.onrender.com${
                                                           session.imageUrl_522x760 ||
                                                           session.imageUrl_1920x1080
                                                         }` ||
