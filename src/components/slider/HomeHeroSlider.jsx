@@ -255,7 +255,6 @@ const HomeHeroSlider = memo(() => {
             />
           </div>
 
-          {/* Content overlaying the image */}
           <div
             className="container-fluid position-absolute h-100"
             style={{
@@ -270,7 +269,7 @@ const HomeHeroSlider = memo(() => {
             }}
           >
             <div className="slider-inner h-100" style={{ width: "100%" }}>
-              <div className="row align-items-center iq-ltr-direction h-100">
+              <div className="row align-items-center mr-7 iq-ltr-direction h-100">
                 <div className="col-lg-7 col-md-12">
                   <h1
                     className="texture-text big-font-5 letter-spacing-1 line-count-1 text-uppercase mb-0"
@@ -285,34 +284,56 @@ const HomeHeroSlider = memo(() => {
                   </h1>
                   <div
                     className="d-flex flex-wrap align-items-center r-mb-23"
-                    style={{ marginTop: 16 }}
+                    style={{ marginTop: 16, gap: "0.5rem" }}
                   >
+                    {/* CME / Assessment */}
                     {currentSlideContent.cmeCredits && (
                       <span
-                        className="badge rounded-0 text-white text-uppercase p-2 mx-2"
+                        className="badge rounded-0 text-white text-uppercase px-3 py-2"
                         style={{
                           background: "#0d47a1",
                           fontWeight: 600,
                           letterSpacing: 0.5,
-                          fontSize: "0.95rem",
+                          fontSize: "0.85rem",
                         }}
                       >
                         {currentSlideContent.cmeCredits}
                       </span>
                     )}
+
+                    {/* Duration */}
                     {currentSlideContent.movieTime && (
-                      <span className="font-size-14 fw-500 time text-white mx-2">
-                        <i className="fa-regular fa-clock me-1"></i>{" "}
+                      <span
+                        className="badge  text-white text-uppercase px-3 py-2"
+                        style={{
+                          background: "#6a1b9a", // Purple
+                          fontWeight: 500,
+                          borderRadius: "10px",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <i className="fa-regular fa-clock me-1"></i>
                         {currentSlideContent.movieTime}
                       </span>
                     )}
+
+                    {/* Difficulty Level */}
                     {currentSlideContent.level && (
-                      <span className="font-size-14 fw-500 time text-white mx-2">
-                        <i className="fa-solid fa-layer-group me-1"></i>{" "}
+                      <span
+                        className="badge text-black text-uppercase px-3 py-2"
+                        style={{
+                          background: "lightblue", // Orange
+                          fontWeight: 500,
+                          fontSize: "0.8rem",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <i className="fa-solid fa-layer-group me-1"></i>
                         {t(currentSlideContent.level)}
                       </span>
                     )}
                   </div>
+
                   {currentSlideContent.description && (
                     <p
                       className="line-count-3"
@@ -328,16 +349,22 @@ const HomeHeroSlider = memo(() => {
                   )}
                   <div className="trending-list" style={{ marginBottom: 18 }}>
                     {currentSlideContent.category && (
-                      <div
-                        className="text-primary genres fw-500"
-                        style={{ color: "darkslategreen" }}
+                      <span
+                        className="badge  text-white text-uppercase p-2 mx-2"
+                        style={{
+                          background: "#4caf50", // Green background for specialty
+                          fontWeight: 600,
+                          letterSpacing: 0.5,
+                          color: "black",
+                          borderRadius: "10px",
+                          fontSize: "0.85rem",
+                        }}
                       >
                         {t("content.specialty")}:{" "}
-                        <span style={{ color: "#fff", fontWeight: 500 }}>
-                          {t(currentSlideContent.category)}{" "}
-                        </span>
-                      </div>
+                        {t(currentSlideContent.category)}
+                      </span>
                     )}
+
                     {currentSlideContent.tags &&
                       currentSlideContent.tags.length > 0 && (
                         <div
@@ -380,15 +407,15 @@ const HomeHeroSlider = memo(() => {
                         onClick={() =>
                           handleViewContentClick(currentSlideContent)
                         }
-                        className="btn text-uppercase position-relative"
+                        // className="btn text-uppercase position-relative"
                         style={{
                           color: "black",
                           fontWeight: 700,
-                          borderRadius: 8,
-                          padding: "12px 32px",
+                          borderRadius: "8px",
+                          padding: "10px 12px",
                           fontSize: "1.1rem",
                           boxShadow: "0 2px 12px rgba(25,118,210,0.18)",
-                          background: "white", // Ensure button background is visible
+                          background: "lightblue", // Ensure button background is visible
                           border: "none", // Remove default button border
                           cursor: "pointer", // Indicate it's clickable
                         }}

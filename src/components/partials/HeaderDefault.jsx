@@ -100,13 +100,8 @@ const HeaderDefault = memo(() => {
     },
     {
       path: "/main-page",
-      icon: <RiNewspaperFill style={{ fontSize: 18 }} />,
-      label: "Newspaper",
-    },
-    {
-      path: "/atlas",
       icon: <GiAtlas style={{ fontSize: 18 }} />,
-      label: "Atlas",
+      label: "Content",
     },
     {
       path: "/myspace",
@@ -237,8 +232,8 @@ const HeaderDefault = memo(() => {
                           "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                         color: "white",
                         fontWeight: "700",
-                        borderRadius: "20px",
-                        padding: windowWidth < 1200 ? "8px 16px" : "10px 25px",
+                        borderRadius: "10px",
+                        padding: windowWidth < 1200 ? "8px 16px" : "8px 20px",
                         fontSize: windowWidth < 1200 ? "0.85rem" : "1rem",
                         border: "none",
                         boxShadow: "0 4px 15px rgba(25, 118, 210, 0.4)",
@@ -246,6 +241,7 @@ const HeaderDefault = memo(() => {
                         minWidth: windowWidth < 1200 ? "100px" : "130px",
                         justifyContent: "center",
                         alignItems: "center",
+                        marginRight: "10px",
                         gap: windowWidth < 1200 ? "4px" : "8px",
                         cursor: "pointer",
                         whiteSpace: "nowrap",

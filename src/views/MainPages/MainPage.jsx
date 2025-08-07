@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../context/FilterContext";
 import { FaExclamationCircle } from "react-icons/fa";
 import isFirstRender from "./hooks/useIsFirstRender";
+import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
+import FloatingActionButton from "../ExtraPages/FloatingActionButton";
 import { FaPlay } from "react-icons/fa"; // Not used but kept from original
 import {
   FaFolderOpen,
@@ -688,7 +690,7 @@ const MainPage = memo(() => {
           {isMobileNavOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
       )}
-
+      <FloatingActionButton setView={"Atlas"} />
       <div className={!isMobile ? "main-page-desktop-layout" : ""}>
         <div
           className={!isMobile ? "desktop-sidebar" : ""}
@@ -727,7 +729,6 @@ const MainPage = memo(() => {
             paddingTop: isMobile ? "120px" : undefined,
             paddingRight: isMobile ? "12px" : undefined,
             paddingLeft: isMobile ? "12px" : undefined,
-            // Ensure this div is scrollable for desktop
             overflowY: !isMobile ? "auto" : undefined,
           }}
         >
@@ -746,15 +747,13 @@ const MainPage = memo(() => {
                 alignItems: "center",
                 gap: isMobile ? "16px" : "24px",
                 flexWrap: "wrap",
-                // This part should not be scrollable if its parent handles scroll
-                // maxWidth: 1400, // This might restrict width and not align with the grid
-                margin: "0 auto", // Center it
+                margin: "0 auto",
               }}
             >
               {isAuthenticated && (
                 <div
                   style={{
-                    background: "#e5eaf0",
+                    background: "antiquewhite",
                     borderRadius: isMobile ? 12 : 16,
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     padding: isMobile ? "12px 16px" : "18px 28px",
@@ -863,7 +862,7 @@ const MainPage = memo(() => {
                 </button>
               </div>
             </div>
-            {initialLoading && filteredCards.length === 0 ? ( // Only show initial loading for first fetch
+            {initialLoading && filteredCards.length === 0 ? (
               <div style={{ textAlign: "center", padding: 40 }}>Loading...</div>
             ) : filteredCards.length === 0 ? (
               <div
@@ -904,7 +903,7 @@ const MainPage = memo(() => {
                           display: "flex",
                           flexDirection: "column",
                           gap: "12px",
-                          // Removed fixed height and overflowY here as the parent .desktop-main-content will scroll
+
                           width: "100%",
                         }
                       : undefined
@@ -918,7 +917,6 @@ const MainPage = memo(() => {
                       isMobile={isMobile}
                       handleCardClick={handleCardClick}
                     >
-                      {/* Title and badges, etc. */}
                       {view === "list" ? (
                         <>
                           <div

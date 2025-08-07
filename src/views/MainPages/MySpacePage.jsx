@@ -11,6 +11,8 @@ import {
   FaArrowRight,
   FaArrowLeft,
   FaFilter,
+  FaList,
+  FaTh,
 } from "react-icons/fa";
 import { FaSliders } from "react-icons/fa6";
 import NavCategories from "./NavCategories";
@@ -103,7 +105,7 @@ const videoCardStyles = `
     width: 100%;
     padding-top: 56.25%; /* 16:9 aspect ratio */
     border-radius: 18px;
-    overflow: hidden;
+    overflow: auto;
     background: #000;
     margin-bottom: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -260,6 +262,216 @@ const videoCardStyles = `
     text-align: center;
     font-size: 18px;
   }
+
+  /* New List View Styles */
+  .list-view-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .module-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .module-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  }
+
+  .module-header {
+    padding: 28px 24px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .module-header:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  }
+
+  .module-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1976d2;
+    margin: 0;
+  }
+
+  .module-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .pathology-section {
+    padding: 10px 24px;
+    background: #fafbfc;
+  }
+
+  .pathology-card {
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+
+  .pathology-card:last-child {
+    border-bottom: none;
+  }
+
+  .pathology-header {
+    padding: 16px 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .pathology-header:hover {
+    background: rgba(25, 118, 210, 0.05);
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .pathology-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+
+  .pathology-stats {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .session-list {
+    padding: 16px 0 16px 24px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .session-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 16px;
+    margin-bottom: 8px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .session-item:hover {
+    border-color: #1976d2;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .session-thumbnail {
+    width: 60px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 16px;
+    background: #000;
+  }
+
+  .session-info {
+    flex: 1;
+  }
+
+  .session-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+  }
+
+  .session-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: flex-end;
+  }
+
+  .progress-bar-small {
+    width: 60px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill-small {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .chevron-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .chevron-icon.expanded {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 768px) {
+    .module-header {
+      padding: 16px 16px;
+    }
+    
+    .module-stats {
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    
+    .pathology-section {
+      padding: 0 16px;
+    }
+    
+    .pathology-stats {
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+    }
+    
+    .session-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .progress-indicator {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
 `;
 
 const THEME = {
@@ -327,9 +539,283 @@ const ModuleStatusCard = memo(({ module }) => {
   return null;
 });
 
+// New ListView Component
+const ListView = memo(
+  ({ filteredCards, handleCardClick, formatTimeAgo, isMobile }) => {
+    const [expandedModules, setExpandedModules] = useState(new Set());
+    const [expandedPathologies, setExpandedPathologies] = useState(new Set());
+
+    // Group sessions by module and pathology
+    const groupedData = filteredCards.reduce((acc, card) => {
+      const moduleName = card.category || "Uncategorized";
+      const pathologyName = card.type || "General";
+
+      if (!acc[moduleName]) {
+        acc[moduleName] = {};
+      }
+      if (!acc[moduleName][pathologyName]) {
+        acc[moduleName][pathologyName] = [];
+      }
+      acc[moduleName][pathologyName].push(card);
+      return acc;
+    }, {});
+
+    const toggleModule = (moduleName) => {
+      const newExpanded = new Set(expandedModules);
+      if (newExpanded.has(moduleName)) {
+        newExpanded.delete(moduleName);
+      } else {
+        newExpanded.add(moduleName);
+      }
+      setExpandedModules(newExpanded);
+    };
+
+    const togglePathology = (pathologyKey) => {
+      const newExpanded = new Set(expandedPathologies);
+      if (newExpanded.has(pathologyKey)) {
+        newExpanded.delete(pathologyKey);
+      } else {
+        newExpanded.add(pathologyKey);
+      }
+      setExpandedPathologies(newExpanded);
+    };
+
+    const calculateModuleStats = (moduleData) => {
+      const allSessions = Object.values(moduleData).flat();
+      const totalSessions = allSessions.length;
+      const completedSessions = allSessions.filter(
+        (session) => session.progress >= 1
+      ).length;
+      const totalMinutes = allSessions.reduce((acc, session) => {
+        const duration = parseInt(
+          session.sessionDuration?.split(" ")[0] || "0"
+        );
+        return acc + duration;
+      }, 0);
+      const completedMinutes = allSessions.reduce((acc, session) => {
+        const duration = parseInt(
+          session.sessionDuration?.split(" ")[0] || "0"
+        );
+        return acc + duration * session.progress;
+      }, 0);
+
+      return {
+        totalSessions,
+        completedSessions,
+        totalMinutes,
+        completedMinutes: Math.round(completedMinutes),
+        progressPercentage:
+          totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
+      };
+    };
+
+    const calculatePathologyStats = (sessions) => {
+      const totalSessions = sessions.length;
+      const completedSessions = sessions.filter(
+        (session) => session.progress >= 1
+      ).length;
+      const totalMinutes = sessions.reduce((acc, session) => {
+        const duration = parseInt(
+          session.sessionDuration?.split(" ")[0] || "0"
+        );
+        return acc + duration;
+      }, 0);
+      const completedMinutes = sessions.reduce((acc, session) => {
+        const duration = parseInt(
+          session.sessionDuration?.split(" ")[0] || "0"
+        );
+        return acc + duration * session.progress;
+      }, 0);
+
+      return {
+        totalSessions,
+        completedSessions,
+        totalMinutes,
+        completedMinutes: Math.round(completedMinutes),
+        progressPercentage:
+          totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
+      };
+    };
+
+    const formatDuration = (minutes) => {
+      if (minutes < 60) return `${minutes}m`;
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return remainingMinutes > 0
+        ? `${hours}h ${remainingMinutes}m`
+        : `${hours}h`;
+    };
+
+    if (Object.keys(groupedData).length === 0) {
+      return (
+        <div className="no-data-container">
+          <div style={{ fontSize: 24, marginBottom: 16 }}>📋</div>
+          <div style={{ marginBottom: 8 }}>No sessions found</div>
+          <div style={{ fontSize: 14, color: "#999" }}>
+            Try adjusting your filters or start watching some content
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="list-view-container">
+        {Object.entries(groupedData).map(([moduleName, moduleData]) => {
+          const moduleStats = calculateModuleStats(moduleData);
+          const isModuleExpanded = expandedModules.has(moduleName);
+
+          return (
+            <div key={moduleName} className="module-card">
+              <div
+                className="module-header"
+                onClick={() => toggleModule(moduleName)}
+              >
+                <div>
+                  <h3 className="module-title">{moduleName}</h3>
+                </div>
+                <div className="module-stats">
+                  <span>
+                    {moduleStats.completedSessions}/{moduleStats.totalSessions}{" "}
+                    sessions
+                  </span>
+                  <span>
+                    {formatDuration(moduleStats.completedMinutes)}/
+                    {formatDuration(moduleStats.totalMinutes)}
+                  </span>
+                  <span>
+                    {Math.round(moduleStats.progressPercentage)}% complete
+                  </span>
+                  <ChevronDown
+                    size={20}
+                    className={`chevron-icon ${
+                      isModuleExpanded ? "expanded" : ""
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {isModuleExpanded && (
+                <div className="pathology-section">
+                  {Object.entries(moduleData).map(
+                    ([pathologyName, sessions]) => {
+                      const pathologyKey = `${moduleName}-${pathologyName}`;
+                      const pathologyStats = calculatePathologyStats(sessions);
+                      const isPathologyExpanded =
+                        expandedPathologies.has(pathologyKey);
+
+                      return (
+                        <div key={pathologyKey} className="pathology-card">
+                          <div
+                            className="pathology-header"
+                            onClick={() => togglePathology(pathologyKey)}
+                          >
+                            <div>
+                              <h4 className="pathology-title">
+                                {pathologyName}
+                              </h4>
+                            </div>
+                            <div className="pathology-stats">
+                              <span>
+                                {pathologyStats.completedSessions}/
+                                {pathologyStats.totalSessions} sessions
+                              </span>
+                              <span>
+                                {formatDuration(
+                                  pathologyStats.completedMinutes
+                                )}
+                                /{formatDuration(pathologyStats.totalMinutes)}
+                              </span>
+                              <ChevronDown
+                                size={18}
+                                className={`chevron-icon ${
+                                  isPathologyExpanded ? "expanded" : ""
+                                }`}
+                              />
+                            </div>
+                          </div>
+
+                          {isPathologyExpanded && (
+                            <div className="session-list">
+                              {sessions.map((session) => (
+                                <div
+                                  key={session.id}
+                                  className="session-item"
+                                  onClick={() => handleCardClick(session)}
+                                >
+                                  <img
+                                    src={session.thumbnail}
+                                    alt={session.type}
+                                    className="session-thumbnail"
+                                    onError={(e) => {
+                                      e.target.src =
+                                        "/assets/images/continue-watch/01.jpg";
+                                    }}
+                                  />
+                                  <div className="session-info">
+                                    <h5 className="session-title">
+                                      {session.type}
+                                    </h5>
+                                    <div className="session-meta">
+                                      <span
+                                        className={`label-badge status-${session.status.toLowerCase()}`}
+                                      >
+                                        {session.status}
+                                      </span>
+                                      <span>{session.level}</span>
+                                      <span>{session.sessionDuration}</span>
+                                      {session.lastWatchedAt && (
+                                        <span>
+                                          {formatTimeAgo(session.lastWatchedAt)}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="progress-indicator">
+                                    <div className="progress-bar-small">
+                                      <div
+                                        className="progress-fill-small"
+                                        style={{
+                                          width: `${Math.round(
+                                            session.progress * 100
+                                          )}%`,
+                                          background:
+                                            session.progress >= 1
+                                              ? "#4caf50"
+                                              : "#1976d2",
+                                        }}
+                                      />
+                                    </div>
+                                    <span
+                                      style={{
+                                        fontSize: "12px",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      {Math.round(session.progress * 100)}%
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+);
+
 const MySpacePage = memo(() => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [view, setView] = useState("watching");
+  const [viewMode, setViewMode] = useState("grid");
   const navigate = useNavigate();
   const { activeFilters } = useFilter();
   const buttonRef = useRef(null);
@@ -566,6 +1052,7 @@ const MySpacePage = memo(() => {
       id: session._id,
       type: session.title,
       vimeoVideoId: session.vimeoVideoId,
+      isFree: session.isFree,
       category: session.moduleName,
       level:
         session.difficulty?.charAt(0).toUpperCase() +
@@ -573,7 +1060,7 @@ const MySpacePage = memo(() => {
       status: session.isFree ? "Free" : "Locked",
       thumbnail: session.imageUrl_1920x1080
         ? `https://primerad-backend.onrender.com${session.imageUrl_1920x1080}`
-        : "/assets/images/continue-watch/01.jpg", // fallback image
+        : "/assets/images/continue-watch/01.jpg",
       minutesLeft: remainingMinutes,
       progress: progressPercentage,
       timeLeft:
@@ -594,7 +1081,11 @@ const MySpacePage = memo(() => {
   // Apply filters
   const savedCards = savedSessions.map(transformSessionData);
   const filteredCards = (
-    view === "watching" ? watchingCards : completedCards
+    view === "watching"
+      ? watchingCards
+      : view === "completed"
+      ? completedCards
+      : savedCards
   ).filter((card) => {
     const areaMatch =
       activeFilters.area.length === 0 ||
@@ -847,6 +1338,7 @@ const MySpacePage = memo(() => {
                   display: "flex",
                   alignItems: "center",
                   gap: isMobile ? 16 : 24,
+                  marginTop: "20px",
                   maxWidth: 900,
                   width: "100%",
                   minWidth: isMobile ? 280 : 320,
@@ -905,7 +1397,6 @@ const MySpacePage = memo(() => {
                     />
                   </div>
 
-                  {/* Text Content */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
                       style={{
@@ -937,7 +1428,6 @@ const MySpacePage = memo(() => {
                     </div>
                   </div>
 
-                  {/* Premium Badge (if subscribed) */}
                   {subscription.isSubscribed && (
                     <div
                       style={{
@@ -959,7 +1449,6 @@ const MySpacePage = memo(() => {
                     </div>
                   )}
 
-                  {/* Subtle Animation Overlay */}
                   <div
                     style={{
                       position: "absolute",
@@ -1084,40 +1573,97 @@ const MySpacePage = memo(() => {
               </div>
             </div>
 
-            {/* NEW: Module Progress Section */}
-            {moduleProgress.length > 0 && view !== "saved" && (
-              <div
+            {/* NEW: View Mode Toggle - Grid/List */}
+            <div
+              style={{
+                marginBottom: isMobile ? "16px" : "20px",
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <button
                 style={{
-                  marginBottom: isMobile ? "24px" : "32px",
-                  padding: isMobile ? "12px" : "18px",
-                  background: "#e5eaf0",
-                  borderRadius: isMobile ? "12px" : "16px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  padding: "8px 12px",
+                  backgroundColor:
+                    viewMode === "grid" ? "darkslategrey" : "#f0f0f0",
+                  color: viewMode === "grid" ? "white" : "#333",
+                  border: "none",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  transition: "all 0.3s ease",
                 }}
+                onClick={() => setViewMode("grid")}
               >
-                <h3
-                  style={{
-                    fontSize: isMobile ? "20px" : "24px",
-                    marginBottom: "16px",
-                    fontWeight: 700,
-                    color: THEME.text,
-                  }}
-                >
-                  Module Progress
-                </h3>
+                <FaTh size={14} />
+                Grid
+              </button>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  backgroundColor:
+                    viewMode === "list" ? "darkslategrey" : "#f0f0f0",
+                  color: viewMode === "list" ? "white" : "#333",
+                  border: "none",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  transition: "all 0.3s ease",
+                }}
+                onClick={() => setViewMode("list")}
+              >
+                <FaList size={14} />
+                List
+              </button>
+            </div>
+
+            {/* NEW: Module Progress Section */}
+            {moduleProgress.length > 0 &&
+              view !== "saved" &&
+              viewMode === "grid" && (
                 <div
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: isMobile ? "12px" : "20px",
+                    marginBottom: isMobile ? "24px" : "32px",
+                    padding: isMobile ? "12px" : "18px",
+                    background: "#e5eaf0",
+                    borderRadius: isMobile ? "12px" : "16px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                   }}
                 >
-                  {moduleSessions.map((mod) => (
-                    <ModuleStatusCard key={mod.moduleName} module={mod} />
-                  ))}
+                  <h3
+                    style={{
+                      fontSize: isMobile ? "20px" : "24px",
+                      marginBottom: "16px",
+                      fontWeight: 700,
+                      color: THEME.text,
+                    }}
+                  >
+                    Module Progress
+                  </h3>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(200px, 1fr))",
+                      gap: isMobile ? "12px" : "20px",
+                    }}
+                  >
+                    {moduleSessions.map((mod) => (
+                      <ModuleStatusCard key={mod.moduleName} module={mod} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Content Area */}
             <div className="video-cards-outer-card">
@@ -1150,19 +1696,34 @@ const MySpacePage = memo(() => {
               ) : filteredCards.length === 0 ? (
                 <div className="no-data-container">
                   <div style={{ fontSize: 24, marginBottom: 16 }}>
-                    {view === "watching" ? "📺" : "✅"}
+                    {view === "watching"
+                      ? "📺"
+                      : view === "completed"
+                      ? "✅"
+                      : "💾"}
                   </div>
                   <div style={{ marginBottom: 8 }}>
                     {view === "watching"
                       ? "No sessions in progress"
-                      : "No completed sessions"}
+                      : view === "completed"
+                      ? "No completed sessions"
+                      : "No saved sessions"}
                   </div>
                   <div style={{ fontSize: 14, color: "#999" }}>
                     {view === "watching"
                       ? "Start watching some content to see your progress here"
-                      : "Complete some sessions to see them here"}
+                      : view === "completed"
+                      ? "Complete some sessions to see them here"
+                      : "Save some sessions to see them here"}
                   </div>
                 </div>
+              ) : viewMode === "list" ? (
+                <ListView
+                  filteredCards={filteredCards}
+                  handleCardClick={handleCardClick}
+                  formatTimeAgo={formatTimeAgo}
+                  isMobile={isMobile}
+                />
               ) : (
                 <div className="video-cards-grid">
                   {filteredCards.map((card) => (

@@ -113,8 +113,6 @@ const ContinueWatching = memo(() => {
       },
     });
   };
-
-  // Adjust cardsPerPage on resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1400) setCardsPerPage(6);
