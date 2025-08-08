@@ -1114,7 +1114,7 @@ const MySpacePage = memo(() => {
 
   const handleCardClick = (card) => {
     if (card.status === "Locked") {
-      navigate("/movies-detail", {
+      navigate("/lecture-detail", {
         state: {
           id: card.id,
           vimeoVideoId: card.vimeoVideoId,
@@ -1130,7 +1130,7 @@ const MySpacePage = memo(() => {
         },
       });
     } else {
-      navigate("/movies-detail", {
+      navigate("/lecture-detail", {
         state: {
           id: card.id,
           vimeoVideoId: card.vimeoVideoId,

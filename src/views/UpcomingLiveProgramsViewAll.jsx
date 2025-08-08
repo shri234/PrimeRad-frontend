@@ -8,7 +8,6 @@ const UpcomingLiveProgramsViewAll = memo(() => {
   const viewAll = latestMovie;
   return (
     <Fragment>
-      <BreadCrumbWidget title="Upcoming Live Programs" />
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">
@@ -20,7 +19,7 @@ const UpcomingLiveProgramsViewAll = memo(() => {
                     title={item.title}
                     movieTime={item.movieTime}
                     watchlistLink="/playlist"
-                    link="/movies-detail"
+                    link="/lecture-detail"
                   />
                 </Col>
               ))}

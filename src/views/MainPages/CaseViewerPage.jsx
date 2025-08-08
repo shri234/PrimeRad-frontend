@@ -389,13 +389,12 @@ const CaseViewerPage = () => {
           flexDirection: "row", // Default for larger screens
         }}
       >
-        {/* Left: Observations Form */}
+        {/* Left: DICOM Viewer */}
         <div
-          className="observations-form-panel" // Add a class for global styles
+          className="dicom-viewer-panel" // Add a class for global styles
           style={{
-            flex: 1,
-            borderRight: `1px solid ${THEME.border}`,
-            padding: 0,
+            flex: 2,
+            padding: 32,
             display: "flex",
             flexDirection: "column",
             alignItems: "stretch",
@@ -404,6 +403,65 @@ const CaseViewerPage = () => {
             borderRadius: "16px 0 0 16px",
             margin: 24,
             marginRight: 0,
+            minWidth: 0,
+          }}
+        >
+          <h2
+            style={{
+              marginBottom: 24,
+              color: THEME.primary,
+              fontWeight: 700,
+              letterSpacing: 1,
+            }}
+          >
+            DICOM Viewer
+          </h2>
+          {loading && <p>Loading DICOM viewer...</p>}
+          {error && <p style={{ color: "red" }}>Error: {error}</p>}
+          {!loading && !error && token && (
+            <div
+              style={{
+                marginTop: 16,
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {studyId ? (
+                <iframe
+                  ref={iframeRef}
+                  className="dicomview sessioniframe"
+                  id={dicom_caseId ? "dicomcaseviewer" : "dicomviewer"}
+                  src={`https://app.medicai.io/public-study/${studyId}`}
+                  width="100%"
+                  height="100%" // Use 100% height within its flex container
+                  style={{ width: "100%", border: "none" }}
+                  title="DICOM Viewer"
+                />
+              ) : (
+                <div style={{ color: THEME.primary, fontWeight: 600 }}>
+                  Study ID: Not found
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right: Observations Form */}
+        <div
+          className="observations-form-panel" // Add a class for global styles
+          style={{
+            flex: 1,
+            borderLeft: `1px solid ${THEME.border}`,
+            padding: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            background: THEME.card,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            borderRadius: "0 16px 16px 0",
+            margin: 24,
+            marginLeft: 0,
             minWidth: 320,
             maxWidth: 420,
             overflow: "hidden",
@@ -663,7 +721,7 @@ const CaseViewerPage = () => {
                   zIndex: 2,
                   animation: "fadeIn 0.7s",
                   background: "#f8f9fa",
-                  borderRadius: "0 0 16px 0",
+                  borderRadius: "0 16px 16px 0",
                 }}
               >
                 <div
@@ -782,80 +840,19 @@ const CaseViewerPage = () => {
             )}
           </div>
         </div>
-
-        {/* Right: DICOM Viewer */}
-        <div
-          className="dicom-viewer-panel" // Add a class for global styles
-          style={{
-            flex: 2,
-            padding: 32,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "stretch",
-            background: THEME.card,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            borderRadius: "0 16px 16px 0",
-            margin: 24,
-            marginLeft: 0,
-            minWidth: 0,
-          }}
-        >
-          <h2
-            style={{
-              marginBottom: 24,
-              color: THEME.primary,
-              fontWeight: 700,
-              letterSpacing: 1,
-            }}
-          >
-            DICOM Viewer
-          </h2>
-          {loading && <p>Loading DICOM viewer...</p>}
-          {error && <p style={{ color: "red" }}>Error: {error}</p>}
-          {!loading && !error && token && (
-            <div
-              style={{
-                marginTop: 16,
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {studyId ? (
-                <iframe
-                  ref={iframeRef}
-                  className="dicomview sessioniframe"
-                  id={dicom_caseId ? "dicomcaseviewer" : "dicomviewer"}
-                  src={`https://app.medicai.io/public-study/${studyId}`}
-                  width="100%"
-                  height="100%" // Use 100% height within its flex container
-                  style={{ width: "100%", border: "none" }}
-                  title="DICOM Viewer"
-                />
-              ) : (
-                <div style={{ color: THEME.primary, fontWeight: 600 }}>
-                  Study ID: Not found
-                </div>
-              )}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* More DICOM Cases Section - now below the main flex row */}
       <div
-        ref={moreCasesRef}
+        data-aos="zoom-in"
+        data-aos-duration="1000"
         style={{
-          width: "100%",
-          background: THEME.background,
-          padding: "48px 0 32px 0",
-          marginTop: 0,
+          // background: sectionBg[1],
+          padding: "48px 0",
+          // height: "30%",
         }}
       >
-        <LatestMovies
-          title="Recommended Dicom Cases"
-          dicomCases={casesToDisplay} // Pass filtered cases
-        />
+        <LatestMovies title="Recommended Cases" />
       </div>
 
       {/* Confirmation Modal */}
@@ -1375,19 +1372,21 @@ const CaseViewerPage = () => {
               padding: 24px; /* Uniform padding */
             }
 
-            .observations-form-panel {
+            .dicom-viewer-panel {
               margin: 0 0 24px 0; /* Remove right margin, add bottom margin */
               border-radius: 16px; /* Full border-radius when stacked */
               max-width: 100%; /* Take full width */
               min-width: unset; /* Remove min-width constraint */
             }
 
-            .dicom-viewer-panel {
+            .observations-form-panel {
               margin: 0; /* Remove left margin when stacked */
               border-radius: 16px; /* Full border-radius when stacked */
-              padding: 24px; /* Adjust padding */
+              padding-left: 0; /* Reset padding */
+              border-left: none; /* Remove left border when stacked */
               flex: unset; /* Remove flex sizing */
               width: 100%; /* Take full width */
+              max-width: 100%; /* Override max-width constraint */
             }
 
             .dicom-viewer-panel h2 {
@@ -1409,7 +1408,7 @@ const CaseViewerPage = () => {
               padding: 16px; /* Smaller padding */
             }
 
-            .observations-form-panel, .dicom-viewer-panel {
+            .dicom-viewer-panel, .observations-form-panel {
                 margin: 0 0 16px 0; /* Even smaller margins */
                 border-radius: 12px; /* Slightly smaller radius */
             }

@@ -38,7 +38,16 @@ const RecentItemsViewAll = memo(() => {
 
   return (
     <Fragment>
-      <BreadCrumbWidget title="Recent Items" />
+      {/* <h3
+        style={{
+          marginTop: "40px",
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        Recent Items
+      </h3> */}
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">
@@ -78,7 +87,7 @@ const RecentItemsViewAll = memo(() => {
                         title={item.title}
                         movieTime={caseInfo}
                         watchlistLink={`/playlist?caseId=${item._id}`}
-                        link={`/movies-detail/${item._id}`} // Also make link dynamic
+                        link={`/lecture-detail/${item._id}`} // Also make link dynamic
                       />
                     </Col>
                   ); // <--- REMOVE SEMICOLON HERE

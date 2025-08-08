@@ -38,7 +38,6 @@ const RecommendedCasesViewAll = memo(() => {
 
   return (
     <Fragment>
-      <BreadCrumbWidget title="Recommended Cases" />
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">

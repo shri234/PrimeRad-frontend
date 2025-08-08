@@ -77,7 +77,7 @@ const CardStyle = memo(
             overflow: "hidden",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
             transition: "all 0.3s ease",
-            minHeight: "360px",
+            minHeight: "350px",
             background: "#fff",
             position: "relative",
             display: "flex",
@@ -199,7 +199,7 @@ const CardStyle = memo(
               <h5
                 className="case-title"
                 style={{
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: "450",
                   lineHeight: "1",
                   color: "#2c3e50",

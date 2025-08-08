@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { GiAtlas } from "react-icons/gi";
+import { FaTh } from "react-icons/fa";
 import axios from "axios";
 import "./SubModules.css";
-
-// --- (Keep all your existing data: modules, subModulesData, getAssessmentForModule, utility functions) ---
-// For brevity, I'm omitting the exact data and utility function definitions here,
-// assuming they are correctly imported/defined as in your provided code.
 
 const modules = [
   { name: "Knee", pathologies: 5 },
@@ -22,14 +20,14 @@ const subModulesData = {
     {
       name: "ACL",
       pathologies: 5,
-      thumbnail: "/assets/images/knee1.jpg",
+      thumbnail: "/assets/images/rotator-cuff.jpg",
       levels: {
         beginner: [
           {
             title: "ACL Basics",
             type: "lecture",
             description: "Introduction to ACL anatomy and function.",
-            thumbnail: "/assets/images/knee1.jpg",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
             id: "60d0fe4f5b5b2e001c8d0d51",
             vimeoVideoId: "1097623899",
             duration: "10:30",
@@ -41,7 +39,7 @@ const subModulesData = {
             title: "ACL Case 1",
             type: "case",
             description: "Case study: ACL tear in a young athlete.",
-            thumbnail: "/assets/images/knee2.jpg",
+            thumbnail: "/assets/images/dislocation.png",
             id: "60d0fe4f5b5b2e001c8d0d52",
             contentType: "Case",
           },
@@ -49,7 +47,7 @@ const subModulesData = {
             title: "ACL Live Q&A",
             type: "live",
             description: "Live Q&A session on ACL reconstruction.",
-            thumbnail: "/assets/images/knee3.jpg",
+            thumbnail: "/assets/images/tear-rasions.jpg",
             id: "60d0fe4f5b5b2e001c8d0d53",
             contentType: "Live",
           },
@@ -182,7 +180,7 @@ const subModulesData = {
     {
       name: "Rotator Cuff",
       pathologies: 2,
-      thumbnail: "/assets/images/rotator-cuff.jpg",
+      thumbnail: "/assets/images/rotator-cuff(1).jpg",
       levels: {
         beginner: [
           {
@@ -404,7 +402,7 @@ const subModulesData = {
       },
     },
   ],
-  Spine: [], // Ensure you populate these with data similar to Knee/Shoulder if they are to be functional
+  Spine: [],
   Ankle: [],
   Elbow: [],
   Hip: [
@@ -459,53 +457,9 @@ const subModulesData = {
         ],
       },
     },
-    {
-      name: "Osteoarthritis",
-      pathologies: 3,
-      thumbnail: "/assets/images/hip.jpg",
-      levels: {
-        beginner: [
-          {
-            title: "Hip OA Basics",
-            type: "lecture",
-            description: "Understanding osteoarthritis of the hip.",
-            thumbnail: "/assets/images/hip5.jpg",
-            id: "hip_oa_vid1",
-            vimeoVideoId: "1097623899",
-            duration: "18:00",
-            startDate: "2024-08-10T10:00:00Z",
-            contentType: "Lecture",
-            faculty: "Dr. N. White",
-          },
-        ],
-        advanced: [
-          {
-            title: "Hip Replacement Surgery",
-            type: "live",
-            description: "Live demonstration of a total hip replacement.",
-            thumbnail: "/assets/images/hip6.jpg",
-            id: "hip_oa_live1",
-            contentType: "Live",
-          },
-          {
-            title: "Hip OA Rehabilitation",
-            type: "lecture",
-            description: "Post-surgery rehabilitation protocols for hip OA.",
-            thumbnail: "/assets/images/hip7.jpg",
-            id: "hip_oa_vid2",
-            vimeoVideoId: "1102457741",
-            duration: "20:00",
-            startDate: "2024-08-15T10:00:00Z",
-            contentType: "Lecture",
-            faculty: "Dr. O. Black",
-          },
-        ],
-      },
-    },
   ],
 };
 
-// Mock assessment data per module (only one assessment per module)
 const getAssessmentForModule = (moduleName) => {
   return {
     moduleName: moduleName,
@@ -520,8 +474,10 @@ const getAssessmentForModule = (moduleName) => {
 function getSessionTypeBadge(type) {
   switch (type?.toLowerCase()) {
     case "dicom":
-      return { className: "dicom-badge", label: "Dicom", icon: "🩻" };
+    case "case":
+      return { className: "dicom-badge", label: "Case", icon: "🩻" };
     case "lecture":
+    case "vimeo":
       return { className: "vimeo-badge", label: "Lecture", icon: "🎥" };
     case "live":
       return { className: "live-badge", label: "Live", icon: "🔴" };
@@ -530,7 +486,6 @@ function getSessionTypeBadge(type) {
   }
 }
 
-// Utility to format date
 function formatDate(dateStr, type) {
   if (!dateStr) return null;
   const date = new Date(dateStr);
@@ -547,35 +502,46 @@ function formatDate(dateStr, type) {
 const countTypes = (items = []) => {
   return items.reduce(
     (acc, item) => {
-      acc[item.type] = (acc[item.type] || 0) + 1;
+      const type = item.sessionType?.toLowerCase() || item.type?.toLowerCase();
+      if (type === "dicom" || type === "case") {
+        acc.case = (acc.case || 0) + 1;
+      } else if (type === "vimeo" || type === "lecture") {
+        acc.lecture = (acc.lecture || 0) + 1;
+      } else if (type === "live") {
+        acc.live = (acc.live || 0) + 1;
+      }
       return acc;
     },
     { lecture: 0, case: 0, live: 0 }
   );
 };
 
-const countSubmoduleTypes = (sub) => {
-  if (!sub || !sub.levels) {
-    return { lecture: 0, case: 0, live: 0 };
+const countSubmoduleTypes = (sub, apiSessions) => {
+  let combinedSessions = [];
+
+  if (sub?.levels?.beginner) {
+    combinedSessions.push(...sub.levels.beginner);
   }
-  const beginner = countTypes(sub.levels.beginner);
-  const advanced = countTypes(sub.levels.advanced);
-  return {
-    lecture: beginner.lecture + advanced.lecture,
-    case: beginner.case + advanced.case,
-    live: beginner.live + advanced.live,
-  };
+  if (sub?.levels?.advanced) {
+    combinedSessions.push(...sub.levels.advanced);
+  }
+
+  if (apiSessions) {
+    combinedSessions.push(...apiSessions);
+  }
+
+  return countTypes(combinedSessions);
 };
 
 const countLevelTypes = (levelItems) => countTypes(levelItems);
 
 const moduleIcons = {
-  Knee: "🦵",
-  Shoulder: "💪",
-  Spine: "🦴",
-  Ankle: "🦶",
-  Elbow: "💪",
-  Hip: "🦵",
+  Knee: "",
+  Shoulder: "",
+  Spine: "",
+  Ankle: "",
+  Elbow: "",
+  Hip: "",
 };
 
 const submoduleIcons = {
@@ -594,11 +560,23 @@ const submoduleIcons = {
   Osteoarthritis: "🦴",
 };
 
-// Helper to get icon and label for type
 const typeIcons = {
   lecture: { icon: "▶️", label: "Lecture", className: "badge-lecture" },
   case: { icon: "🩺", label: "Dicom", className: "badge-case" },
   live: { icon: "📺", label: "Live", className: "badge-live" },
+};
+
+const staticThumbnails = [
+  "/assets/images/rotator-cuff.jpg",
+  "/assets/images/sprain.jpg",
+  "/assets/images/tear-rasions.jpg",
+  "/assets/images/dislocation.png",
+  "/assets/images/01.jpg",
+];
+
+const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * staticThumbnails.length);
+  return staticThumbnails[randomIndex];
 };
 
 const SubModuleView = () => {
@@ -606,7 +584,6 @@ const SubModuleView = () => {
   const { moduleName: urlModuleName } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
 
   const [activeModuleId, setActiveModuleId] = useState(
     location.state?.moduleId || null
@@ -614,41 +591,37 @@ const SubModuleView = () => {
   const [activeModuleName, setActiveModuleName] = useState(
     location.state?.moduleName || urlModuleName
   );
+
+  const [viewMode, setViewMode] = useState("list");
+  const [selectedSubModuleId, setSelectedSubModuleId] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const [allModules, setAllModules] = useState([]);
+  const [loadingModules, setLoadingModules] = useState(true);
+  const [modulesError, setModulesError] = useState(null);
+
   const [modulePathologiesData, setModulePathologiesData] = useState([]);
   const [loadingPathologies, setLoadingPathologies] = useState(true);
   const [pathologiesError, setPathologiesError] = useState(null);
 
-  const [viewMode, setViewMode] = useState("list");
-  const [selectedSubModuleId, setSelectedSubModuleId] = useState(null); // Changed to store ID
-  const [selectedLevel, setSelectedLevel] = useState(null);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const [levelSessions, setLevelSessions] = useState([]);
   const [loadingLevelSessions, setLoadingLevelSessions] = useState(false);
   const [levelSessionsError, setLevelSessionsError] = useState(null);
+
   const [currentView, setCurrentView] = useState("submodules");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+
   const [assessmentQuestions, setAssessmentQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentBatch, setCurrentBatch] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [assessmentLoading, setAssessmentLoading] = useState(false);
   const [assessmentError, setAssessmentError] = useState(null);
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [submittingAnswer, setSubmittingAnswer] = useState(false);
   const [userProgress, setUserProgress] = useState(null);
-  const [currentBatch, setCurrentBatch] = useState(0);
-  const [advancedSessions, setAdvancedSessions] = useState([]);
-  const [loadingSessions, setLoadingSessions] = useState(false);
-  const [sessionsError, setSessionsError] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [allModules, setAllModules] = useState([]);
-  const [loadingModules, setLoadingModules] = useState(true);
-  const [modulesError, setModulesError] = useState(null);
-  const [difficultySessions, setDifficultySessions] = useState([]);
-  const [loadingDifficultySessions, setLoadingDifficultySessions] =
-    useState(false);
-  const [difficultySessionsError, setDifficultySessionsError] = useState(null);
 
-  const questionsPerBatch = 5; // Adjust as needed
+  const questionsPerBatch = 5;
   const totalBatches = Math.ceil(
     assessmentQuestions.length / questionsPerBatch
   );
@@ -667,60 +640,68 @@ const SubModuleView = () => {
     live: true,
   });
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   useEffect(() => {
-    // When sidebarOpen changes, apply or remove the overflow style
     if (sidebarOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-
-    // The return function is the cleanup function. It runs when the component
-    // unmounts or before the effect runs again.
     return () => {
-      // Ensure overflow is always reset to its default value on unmount.
       document.body.style.overflow = "";
     };
-  }, []);
+  }, [sidebarOpen]);
 
   const handleScroll = () => {
-    sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
-  // Find the currently selected submodule object from subModulesData
-  const selectedSubModule =
-    modulePathologiesData.find((item) => item._id === selectedSubModuleId) ||
-    null;
+  const selectedSubModule = modulePathologiesData.find(
+    (item) => item._id === selectedSubModuleId
+  );
+
+  const staticSubModuleDataForPathology = selectedSubModule
+    ? subModulesData[activeModuleName]?.find(
+        (sub) => sub.name === selectedSubModule.pathologyName
+      )
+    : null;
 
   const handleSessionClick = (session) => {
     setSelectedVideo(session);
 
-    // Navigate based on session type
-    if (session.sessionType === "Dicom") {
-      navigate(`/case/${session._id}`);
-    } else if (session.sessionType === "Vimeo") {
-      navigate("/movies-detail", {
+    const sessionType =
+      session.sessionType?.toLowerCase() || session.type?.toLowerCase();
+
+    if (sessionType === "dicom" || sessionType === "case") {
+      navigate(`/case/${session._id || session.id}`);
+    } else if (sessionType === "vimeo" || sessionType === "lecture") {
+      navigate("/lecture-detail", {
         state: {
-          id: session._id,
+          id: session._id || session.id,
           vimeoVideoId: session.vimeoVideoId,
           title: session.title,
           isFree: session.isFree,
           description: session.description,
-          faculty: session.faculty?.[0]?.name || "Expert Faculty",
+          faculty:
+            session.faculty?.[0]?.name || session.faculty || "Expert Faculty",
           module: activeModuleName,
           submodule: selectedSubModule?.pathologyName,
-          duration: session.sessionDuration,
+          duration: session.sessionDuration || session.duration,
           startDate: session.startDate,
           contentType: "lecture",
         },
       });
-    } else if (session.sessionType === "Live") {
+    } else if (sessionType === "live") {
       navigate("/livepage", {
         state: {
-          id: session._id,
+          id: session._id || session.id,
           title: session.title,
           description: session.description,
-          faculty: session.faculty?.[0]?.name || "Expert Faculty",
+          faculty:
+            session.faculty?.[0]?.name || session.faculty || "Expert Faculty",
           module: activeModuleName,
           submodule: selectedSubModule?.pathologyName,
           startDate: session.startDate,
@@ -731,11 +712,6 @@ const SubModuleView = () => {
       });
     }
   };
-  const staticSelectedSubModuleData = selectedSubModule
-    ? subModulesData[activeModuleName]?.find(
-        (sub) => sub.name === selectedSubModule.pathologyName
-      )
-    : null;
 
   const fetchSessionsByPathologyAndLevel = async (pathologyId, level) => {
     try {
@@ -746,9 +722,20 @@ const SubModuleView = () => {
         `https://primerad-backend.onrender.com/api/sessions/getSessionByDifficulty?difficulty=${level.toLowerCase()}&pathologyId=${pathologyId}`
       );
 
+      let combinedSessions = [];
+
+      if (staticSubModuleDataForPathology?.levels?.[level.toLowerCase()]) {
+        combinedSessions = [
+          ...staticSubModuleDataForPathology.levels[level.toLowerCase()],
+        ];
+      }
+
       if (response.data && Array.isArray(response.data.data)) {
-        console.log(response.data.data);
-        setLevelSessions(response.data.data);
+        combinedSessions = [...combinedSessions, ...response.data.data];
+      }
+
+      if (combinedSessions.length > 0) {
+        setLevelSessions(combinedSessions);
       } else {
         setLevelSessions([]);
         setLevelSessionsError(`No ${level} sessions found for this pathology.`);
@@ -773,13 +760,27 @@ const SubModuleView = () => {
           "https://primerad-backend.onrender.com/api/modules/modules-with-pathology-count"
         );
 
-        if (response.data && Array.isArray(response.data.data)) {
-          setAllModules(response.data.data);
-          // Set the initial active module based on URL or default
-          if (!activeModuleId && response.data.data.length > 0) {
-            const firstModule = response.data.data[0];
-            setActiveModuleId(firstModule._id);
-            setActiveModuleName(firstModule.moduleName);
+        let combinedModules = [...(response.data.data || response.data)];
+        modules.forEach((staticMod) => {
+          if (
+            !combinedModules.find(
+              (apiMod) => apiMod.moduleName === staticMod.name
+            )
+          ) {
+            combinedModules.push({
+              _id: `static-${staticMod.name.toLowerCase()}`,
+              moduleName: staticMod.name,
+              totalPathologiesCount: staticMod.pathologies,
+              isPlaceholder: true,
+            });
+          }
+        });
+
+        if (combinedModules.length > 0) {
+          setAllModules(combinedModules);
+          if (!activeModuleId) {
+            setActiveModuleId(null);
+            setActiveModuleName(null);
           }
         } else {
           setModulesError("Failed to load modules");
@@ -794,7 +795,7 @@ const SubModuleView = () => {
       }
     };
     fetchModules();
-  }, [activeModuleId]); // Added activeModuleId as a dependency here to re-fetch if needed
+  }, [activeModuleId]);
 
   useEffect(() => {
     if (currentView === "assessment" && selectedDifficulty && activeModuleId) {
@@ -813,10 +814,10 @@ const SubModuleView = () => {
 
       if (response.data && Array.isArray(response.data.data)) {
         setAssessmentQuestions(response.data.data);
-        setCurrentBatch(0); // Reset to first batch
+        setCurrentBatch(0);
         setSelectedAnswers({});
         setAssessmentResults(null);
-        setUserProgress({ totalPoints: 0 }); // Reset progress
+        setUserProgress({ totalPoints: 0 });
       } else {
         setAssessmentError("No questions found for this assessment.");
         setAssessmentQuestions([]);
@@ -932,7 +933,6 @@ const SubModuleView = () => {
   };
 
   const renderAssessmentContent = () => {
-    // ... (Your existing renderAssessmentContent function, no changes needed here)
     if (assessmentLoading) {
       return (
         <div style={{ textAlign: "center", padding: "50px", color: "#666" }}>
@@ -971,6 +971,31 @@ const SubModuleView = () => {
       );
     }
 
+    if (assessmentQuestions.length === 0) {
+      return (
+        <div style={{ textAlign: "center", padding: "50px", color: "#666" }}>
+          <div style={{ fontSize: "18px", marginBottom: "16px" }}>
+            No questions available for this assessment.
+          </div>
+          <button
+            onClick={() => setCurrentView("difficulty")}
+            style={{
+              background: "#1976d2",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              padding: "12px 24px",
+              cursor: "pointer",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}
+          >
+            Choose Different Difficulty
+          </button>
+        </div>
+      );
+    }
+
     if (assessmentResults && assessmentResults.completed) {
       return (
         <div style={{ textAlign: "center", padding: "40px" }}>
@@ -980,7 +1005,6 @@ const SubModuleView = () => {
           >
             {assessmentResults.finalMessage}
           </h3>
-
           <div
             style={{
               background: "#f8f9fa",
@@ -1083,7 +1107,6 @@ const SubModuleView = () => {
               </div>
             </div>
           </div>
-
           <div
             style={{ display: "flex", gap: "12px", justifyContent: "center" }}
           >
@@ -1122,32 +1145,6 @@ const SubModuleView = () => {
       );
     }
 
-    if (assessmentQuestions.length === 0) {
-      return (
-        <div style={{ textAlign: "center", padding: "50px", color: "#666" }}>
-          <div style={{ fontSize: "18px", marginBottom: "16px" }}>
-            No questions available for this assessment.
-          </div>
-          <button
-            onClick={() => setCurrentView("difficulty")}
-            style={{
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              padding: "12px 24px",
-              cursor: "pointer",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-          >
-            Choose Different Difficulty
-          </button>
-        </div>
-      );
-    }
-
-    // Render questions
     return (
       <>
         {currentQuestions.map((question, index) => (
@@ -1209,7 +1206,6 @@ const SubModuleView = () => {
           </div>
         ))}
 
-        {/* Navigation buttons */}
         <div
           style={{
             display: "flex",
@@ -1278,7 +1274,6 @@ const SubModuleView = () => {
   };
 
   const renderAssessmentHeader = () => {
-    // ... (Your existing renderAssessmentHeader function, no changes needed here)
     return (
       <div
         style={{
@@ -1324,7 +1319,6 @@ const SubModuleView = () => {
   useEffect(() => {
     const fetchPathologies = async () => {
       if (!activeModuleId) {
-        console.warn("Module ID not found. Cannot fetch pathologies.");
         setPathologiesError(
           "Module ID missing. Please navigate from Atlas View."
         );
@@ -1338,14 +1332,26 @@ const SubModuleView = () => {
         const response = await axios.get(
           `https://primerad-backend.onrender.com/api/pathologies/getByModule?moduleId=${activeModuleId}`
         );
-        if (response.data && Array.isArray(response.data.data)) {
-          setModulePathologiesData(response.data.data);
-          // Auto-select the first pathology if available
-          if (response.data.data.length > 0) {
-            setSelectedSubModuleId(response.data.data[0]._id);
-          } else {
-            setSelectedSubModuleId(null);
+
+        let combinedPathologies = response.data.data || [];
+        const staticPathologies = subModulesData[activeModuleName] || [];
+        staticPathologies.forEach((staticPath) => {
+          if (
+            !combinedPathologies.find(
+              (apiPath) => apiPath.pathologyName === staticPath.name
+            )
+          ) {
+            combinedPathologies.push({
+              ...staticPath,
+              _id: `static-${staticPath.name.toLowerCase()}`,
+              pathologyName: staticPath.name,
+              isPlaceholder: true,
+            });
           }
+        });
+
+        if (combinedPathologies.length > 0) {
+          setModulePathologiesData(combinedPathologies);
         } else {
           setModulePathologiesData([]);
           console.warn(
@@ -1357,163 +1363,64 @@ const SubModuleView = () => {
         console.error("Error fetching pathologies by module:", err);
         setPathologiesError("Failed to load pathologies. Please try again.");
         setModulePathologiesData([]);
+        const staticPathologies = subModulesData[activeModuleName] || [];
+        if (staticPathologies.length > 0) {
+          const staticCombined = staticPathologies.map((sp) => ({
+            ...sp,
+            _id: `static-${sp.name.toLowerCase()}`,
+            pathologyName: sp.name,
+            isPlaceholder: false,
+            imageUrl: getRandomImage(),
+          }));
+          setModulePathologiesData(staticCombined);
+          setPathologiesError(null);
+        }
       } finally {
         setLoadingPathologies(false);
       }
     };
-    fetchPathologies();
-  }, [activeModuleId]); // THIS IS THE KEY DEPENDENCY
+    if (activeModuleId) {
+      fetchPathologies();
+    }
+  }, [activeModuleId, activeModuleName]);
 
   const handleModuleClick = (module) => {
     setActiveModuleId(module._id);
     setActiveModuleName(module.moduleName);
-    // Optional: Reset other relevant states
     setSelectedSubModuleId(null);
     setSelectedLevel(null);
     setSelectedVideo(null);
     setCurrentView("submodules");
   };
-  const fetchSessionsByDifficulty = async (difficulty, pathologyId) => {
-    try {
-      setLoadingDifficultySessions(true);
-      setDifficultySessionsError(null);
 
-      const response = await axios.get(
-        `https://primerad-backend.onrender.com/api/sessions/getSessionsByDifficulty?difficulty=${difficulty.toLowerCase()}&pathologyId=${pathologyId}`
-      );
-
-      if (response.data && Array.isArray(response.data.data)) {
-        setDifficultySessions(response.data.data);
-      } else {
-        setDifficultySessions([]);
-        setDifficultySessionsError(
-          "No sessions found for this difficulty level."
-        );
-      }
-    } catch (err) {
-      console.error("Error fetching sessions by difficulty:", err);
-      setDifficultySessionsError("Failed to load sessions. Please try again.");
-      setDifficultySessions([]);
-    } finally {
-      setLoadingDifficultySessions(false);
-    }
-  };
-
-  // 4. Update handleDifficultyCardClick function
-
-  // useEffect(() => {
-  //   const fetchAdvancedSessions = async () => {
-  //     try {
-  //       setLoadingSessions(true);
-  //       setSessionsError(null);
-  //       console.log(selectedSubModuleId);
-  //       const response = await axios.get(
-  //         `http://localhost:5000/api/sessions/getSessionByDifficulty?difficulty=advanced&pathologyId=${selectedSubModuleId}`
-  //       );
-  //       console.log(response.data.data, "data");
-  //       if (response.data && Array.isArray(response.data.data)) {
-  //         setAdvancedSessions(response.data.data);
-  //       } else {
-  //         console.warn("Unexpected API format:", response.data);
-  //         setAdvancedSessions([]);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching advanced sessions:", err);
-  //       setSessionsError("Failed to load advanced sessions. Please try again.");
-  //       setAdvancedSessions([]);
-  //     } finally {
-  //       setLoadingSessions(false);
-  //     }
-  //   };
-
-  //   fetchAdvancedSessions();
-  // }, [selectedSubModuleId]); // empty array → run once on mount
-
-  if (loadingSessions) return <p>Loading sessions...</p>;
-  if (sessionsError) return <p style={{ color: "red" }}>{sessionsError}</p>;
-
-  const handleFilterChange = (type) => {
-    setFilters((prev) => ({ ...prev, [type]: !prev[type] }));
-  };
-
-  // Modified handleSubModuleClick to toggle selection by ID
   const handleSubModuleClick = (pathologyItem) => {
     if (selectedSubModuleId === pathologyItem._id) {
-      console.log("inside if");
-      setSelectedSubModuleId(null); // Deselect if already selected
+      setSelectedSubModuleId(null);
       setSelectedLevel(null);
       setSelectedVideo(null);
     } else {
-      console.log("inside else");
-      setSelectedSubModuleId(pathologyItem._id); // Select new
-      setSelectedLevel(null); // Reset level
-      setSelectedVideo(null); // Reset video
+      setSelectedSubModuleId(pathologyItem._id);
+      setSelectedLevel(null);
+      setSelectedVideo(null);
     }
   };
 
-  // Modified handleLevelClick to toggle selection
   const handleLevelClick = async (level) => {
     if (selectedLevel === level) {
       setSelectedLevel(null);
       setLevelSessions([]);
     } else {
-      setSelectedLevel(level); // Select new level
+      setSelectedLevel(level);
       if (selectedSubModuleId) {
         await fetchSessionsByPathologyAndLevel(selectedSubModuleId, level);
       }
     }
-    setSelectedVideo(null); // Reset video
-  };
-
-  const handleVideoClick = (vid) => {
-    setSelectedVideo(vid);
-    if (vid.type === "case") {
-      navigate(`/case/${vid.id}`);
-    } else if (vid.type === "lecture") {
-      navigate("/movies-detail", {
-        state: {
-          id: vid.id,
-          vimeoVideoId: vid.vimeoVideoId,
-          title: vid.title,
-          description: vid.description,
-          faculty: vid.faculty || "Expert Faculty",
-          module: activeModuleName,
-          submodule: selectedSubModule?.name,
-          duration: vid.duration,
-          startDate: vid.startDate,
-          contentType: vid.type,
-        },
-      });
-    } else if (vid.type === "live") {
-      navigate("/livepage", {
-        state: {
-          id: vid.id,
-          vimeoVideoId: vid.vimeoVideoId,
-          title: vid.title,
-          description: vid.description,
-          faculty: vid.faculty || "Expert Faculty",
-          module: activeModuleName,
-          submodule: selectedSubModule?.name,
-          duration: vid.duration,
-          startDate: vid.startDate,
-          contentType: vid.type,
-        },
-      });
-    }
-  };
-
-  const resetToLevels = () => {
-    setSelectedLevel(null);
-    setSelectedVideo(null);
-  };
-
-  const resetToVideos = () => {
     setSelectedVideo(null);
   };
 
   const handleAssessmentClick = () => {
     setCurrentView("difficulty");
-    setSelectedSubModuleId(null); // Use ID here
+    setSelectedSubModuleId(null);
     setSelectedLevel(null);
     setSelectedVideo(null);
   };
@@ -1521,26 +1428,25 @@ const SubModuleView = () => {
   const handleDifficultyCardClick = (difficulty) => {
     setSelectedDifficulty(difficulty);
     setCurrentView("assessment");
-
-    if (selectedSubModuleId) {
-      fetchSessionsByDifficulty(difficulty, selectedSubModuleId);
-    }
   };
 
   const resetToSubModules = () => {
-    setSelectedSubModuleId(null); // Use ID here
+    setSelectedSubModuleId(null);
     setSelectedLevel(null);
     setSelectedVideo(null);
     setCurrentView("submodules");
   };
 
-  console.log(levelSessions[0]?.sessionType, typeof levelSessions, "levels");
+  const initialView =
+    selectedSubModuleId === null &&
+    activeModuleId === null &&
+    currentView === "submodules";
 
   return (
     <>
       <div
         className="submodule-wrapper"
-        style={{ boxSizing: "border-box", overflowX: "hidden" }}
+        style={{ boxSizing: "border-box", overflowX: "hidden", marginTop: 0 }}
       >
         {currentView !== "assessment" && (
           <>
@@ -1551,8 +1457,72 @@ const SubModuleView = () => {
               {sidebarOpen ? <FaArrowLeft /> : <FaArrowRight />}
             </button>
             <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
-              <h3>Modules</h3>
-
+              <div
+                style={{
+                  padding: "16px",
+                  borderBottom: "1px solid #e0e0e0",
+                  // marginTop: "70px",
+                  background: "#fff",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    background: "#f5f5f5",
+                    borderRadius: "12px",
+                    padding: "4px",
+                    gap: "2px",
+                  }}
+                >
+                  <button
+                    style={{
+                      flex: 1,
+                      padding: "8px 8px",
+                      backgroundColor:
+                        viewMode === "list" ? "#1976d2" : "transparent",
+                      color: viewMode === "list" ? "white" : "#666",
+                      border: "none",
+                      borderRadius: "8px",
+                      gap: "6px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => setViewMode("list")}
+                  >
+                    <FaTh size={14} />
+                    List
+                  </button>
+                  <button
+                    style={{
+                      flex: 1,
+                      padding: "8px 8px",
+                      backgroundColor:
+                        viewMode === "atlas" ? "darkslategrey" : "transparent",
+                      color: viewMode === "atlas" ? "white" : "#666",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                    }}
+                    onClick={() => setViewMode("atlas")}
+                  >
+                    <GiAtlas style={{ fontSize: 18 }} />
+                    Atlas
+                  </button>
+                </div>
+              </div>
+              <h3 style={{ marginTop: "20px" }}>Modules</h3>
               {loadingModules ? (
                 <div className="sidebar-loading">Loading modules...</div>
               ) : modulesError ? (
@@ -1566,16 +1536,17 @@ const SubModuleView = () => {
                       className={`sidebar-item ${
                         mod.moduleName === activeModuleName ? "active" : ""
                       }`}
-                      onClick={() => handleModuleClick(mod)} // Use the new handler
+                      onClick={() => handleModuleClick(mod)}
                     >
                       <span className="sidebar-number">{modIdx + 1}.</span>
                       <span className="sidebar-icon">
                         {moduleIcons[mod.moduleName]}
                       </span>
                       <span>{mod.moduleName}</span>
-                      <span className="count">{mod.totalPathologiesCount}</span>
+                      <span className="count">
+                        {mod.totalPathologiesCount || 0}
+                      </span>
                     </div>
-
                     {mod.moduleName === activeModuleName && (
                       <div className="submodule-list">
                         {loadingPathologies ? (
@@ -1586,10 +1557,6 @@ const SubModuleView = () => {
                           <div className="sidebar-error">
                             Error: {pathologiesError}
                           </div>
-                        ) : modulePathologiesData.length === 0 ? (
-                          <div className="sidebar-empty">
-                            No pathologies found.
-                          </div>
                         ) : (
                           modulePathologiesData.map((pathology) => (
                             <div key={pathology._id}>
@@ -1599,12 +1566,7 @@ const SubModuleView = () => {
                                     ? "open"
                                     : ""
                                 }`}
-                                onClick={() => {
-                                  setSelectedSubModuleId(pathology._id);
-                                  // This function is missing in your code, you'll need to define it to fetch levels
-                                  // if you want to load them dynamically
-                                  // fetchDifficultyLevelsForPathology(pathology._id);
-                                }}
+                                onClick={() => handleSubModuleClick(pathology)}
                               >
                                 <span
                                   className={`chevron ${
@@ -1618,13 +1580,50 @@ const SubModuleView = () => {
                                 {pathology.pathologyName}
                               </div>
                               {selectedSubModuleId === pathology._id && (
-                                <div className="sidebar-video-dropdown">
-                                  {/* ... (Difficulty levels and sessions JSX) ... */}
+                                <div className="sidebar-level-dropdown">
+                                  <div
+                                    className={`sidebar-level-item ${
+                                      selectedLevel === "beginner"
+                                        ? "active"
+                                        : ""
+                                    }`}
+                                    onClick={() => handleLevelClick("beginner")}
+                                    style={{
+                                      marginLeft: "30px",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    {" "}
+                                    Beginner
+                                  </div>
+                                  <div
+                                    className={`sidebar-level-item ${
+                                      selectedLevel === "advanced"
+                                        ? "active"
+                                        : ""
+                                    }`}
+                                    onClick={() => handleLevelClick("advanced")}
+                                    style={{
+                                      marginLeft: "30px",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    {" "}
+                                    Advanced
+                                  </div>
                                 </div>
                               )}
                             </div>
                           ))
                         )}
+                        <div
+                          className={`sidebar-subitem assessment-item ${
+                            currentView === "difficulty" ? "open" : ""
+                          }`}
+                          onClick={handleAssessmentClick}
+                        >
+                          <span className="chevron">▶</span> Assessment
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1639,30 +1638,26 @@ const SubModuleView = () => {
             )}
           </>
         )}
-
-        <div className="main-content">
+        <div className="main-content" ref={sectionRef}>
           {currentView === "assessment" ? (
             <div>
               <button
-                onClick={() => navigate("/atlas")}
+                onClick={() => navigate("/main-page")}
                 className="back-link"
-                style={{}}
               >
                 ← Back to Modules
               </button>
-
               <div
                 style={{
                   display: "flex",
                   height: "calc(100vh - 64px)",
                   background: "#f4f8fb",
                   borderRadius: 16,
-                  overflowY: "hidden", // Corrected 'overflowy'
+                  overflowY: "hidden",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                   position: "relative",
                 }}
               >
-                {/* Left: Assessment Form */}
                 <div
                   style={{
                     flex: 1,
@@ -1677,7 +1672,7 @@ const SubModuleView = () => {
                     marginRight: 0,
                     minWidth: 320,
                     maxWidth: 420,
-                    overflowY: "hidden", // Corrected 'overflow'
+                    overflowY: "hidden",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                   }}
                 >
@@ -1686,8 +1681,6 @@ const SubModuleView = () => {
                     {renderAssessmentContent()}
                   </div>
                 </div>
-
-                {/* Right: DICOM Viewer */}
                 <div
                   style={{
                     flex: 2,
@@ -1728,80 +1721,17 @@ const SubModuleView = () => {
                 </div>
               </div>
             </div>
-          ) : currentView === "difficulty" ? (
-            <>
-              {/* Difficulty Selection for Assessment */}
-              <div className="difficulty-cards-main">
-                <div
-                  className="difficulty-card-main"
-                  onClick={() => handleDifficultyCardClick("Beginner")}
-                >
-                  <div className="level-icon">🎓</div>
-                  <h4 className="level-title">Beginner Assessment</h4>
-                  <p className="level-description">
-                    Basic concepts and fundamental knowledge.
-                  </p>
-                </div>
-                <div
-                  className="difficulty-card-main"
-                  onClick={() => handleDifficultyCardClick("Advanced")}
-                >
-                  <div className="level-icon">⚡</div>
-                  <h4 className="level-title">Advanced Assessment</h4>
-                  <p className="level-description">
-                    Advanced techniques and complex cases.
-                  </p>
-                </div>
-              </div>
-
-              {selectedDifficulty && (
-                <div style={{ marginTop: "30px" }}>
-                  <h3>Available {selectedDifficulty} Sessions</h3>
-                  {loadingDifficultySessions ? (
-                    <div className="loading-message">Loading sessions...</div>
-                  ) : difficultySessionsError ? (
-                    <div className="error-message">
-                      {difficultySessionsError}
-                    </div>
-                  ) : difficultySessions.length === 0 ? (
-                    <div className="no-data-message">
-                      No sessions found for {selectedDifficulty} difficulty.
-                    </div>
-                  ) : (
-                    <div className="sessions-grid">
-                      {difficultySessions.map((session) => (
-                        <div key={session._id} className="session-card">
-                          <img
-                            src={`https://primerad-backend.onrender.com${
-                              session.imageUrl_522x760 ||
-                              session.imageUrl_1920x1080
-                            }`}
-                            alt={session.title}
-                            className="session-thumbnail"
-                          />
-                          <div className="session-info">
-                            <h4>{session.title}</h4>
-                            <p>{session.description}</p>
-                            <span
-                              className={`session-type-badge ${session.sessionType.toLowerCase()}`}
-                            >
-                              {session.sessionType}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
           ) : (
-            // Main content area for submodules, levels, and videos
             <>
-              {/* Header with Back button and Module Title */}
               <div className="header">
                 <button
-                  onClick={() => navigate("/atlas")}
+                  onClick={() => {
+                    setActiveModuleId(null);
+                    setActiveModuleName(null);
+                    setSelectedSubModuleId(null);
+                    setSelectedLevel(null);
+                    navigate("/main-page");
+                  }}
                   className="back-link"
                 >
                   <svg
@@ -1819,674 +1749,435 @@ const SubModuleView = () => {
                   Back
                 </button>
                 <h2 style={{ color: "darkslategray", fontWeight: "bold" }}>
-                  {activeModuleName} Pathologies{" "}
+                  {activeModuleName
+                    ? `${activeModuleName} Pathologies`
+                    : "Select a Module"}
                 </h2>
-
-                {/* View Mode Toggles */}
-                {/* Always show toggles in this main content area, but ensure correct `viewMode` state is used */}
               </div>
 
-              {/* Breadcrumb Navigation */}
-              {selectedSubModuleId && ( // Use selectedSubModuleId here
-                <div className="breadcrumb">
-                  <span onClick={resetToSubModules} className="breadcrumb-link">
-                    {activeModuleName}
-                  </span>
-                  <span className="breadcrumb-separator">/</span>
-                  <span onClick={resetToSubModules} className="breadcrumb-link">
-                    {selectedSubModule?.pathologyName}{" "}
-                    {/* Use optional chaining */}
-                  </span>
-                  {selectedLevel && (
-                    <>
-                      <span className="breadcrumb-separator">/</span>
-                      <span onClick={resetToLevels} className="breadcrumb-link">
-                        {selectedLevel.charAt(0).toUpperCase() +
-                          selectedLevel.slice(1)}
-                      </span>
-                    </>
+              {initialView ? (
+                <div
+                  className={
+                    viewMode === "list"
+                      ? "submodule-list-right"
+                      : "submodule-grid-right"
+                  }
+                >
+                  {loadingModules ? (
+                    <div className="loading-message">Loading modules...</div>
+                  ) : modulesError ? (
+                    <div className="error-message">Error: {modulesError}</div>
+                  ) : (
+                    allModules.map((mod) => (
+                      <div
+                        key={mod._id}
+                        className={`module-card ${viewMode}`}
+                        onClick={() => handleModuleClick(mod)}
+                      >
+                        <img
+                          src={mod.imageUrl || getRandomImage()}
+                          alt={mod.moduleName}
+                          className="module-thumbnail"
+                        />
+                        <div className="module-info">
+                          <h4 className="module-title">{mod.moduleName}</h4>
+                          <p className="module-description">
+                            {mod.description ||
+                              `Explore pathologies of the ${mod.moduleName} joint.`}
+                          </p>
+                          <span className="module-pathologies-count">
+                            {mod.totalPathologiesCount || 0} pathologies
+                          </span>
+                        </div>
+                      </div>
+                    ))
                   )}
                 </div>
-              )}
-
-              {/* Displaying SubModules (Pathologies) with nested levels/videos */}
-              <div
-                className={
-                  viewMode === "list"
-                    ? "submodule-list-right"
-                    : "submodule-grid-right"
-                }
-              >
-                {loadingPathologies ? (
-                  <div className="loading-message">Loading pathologies...</div>
-                ) : pathologiesError ? (
-                  <div className="error-message">Error: {pathologiesError}</div>
-                ) : modulePathologiesData.length === 0 ? (
-                  <div className="no-data-message">
-                    No pathologies found for this module.
-                  </div>
-                ) : (
-                  modulePathologiesData.map((pathologyItem) => {
-                    const staticSubModuleDataForPathology = subModulesData[
-                      activeModuleName
-                    ]?.find((sub) => sub.name === pathologyItem.pathologyName);
-                    console.log(pathologyItem, "pathology");
-                    const counts = countSubmoduleTypes(
-                      staticSubModuleDataForPathology
-                    );
-
-                    // Check if this pathologyItem is the currently selected submodule
-                    const isSelected =
-                      selectedSubModuleId === pathologyItem._id;
-
-                    const isSelectedSubModule =
-                      selectedSubModuleId === pathologyItem._id;
-
-                    return (
-                      <div
-                        key={pathologyItem._id}
-                        className="submodule-container"
-                      >
-                        {" "}
-                        {/* Wrapper for each submodule and its nested content */}
-                        <div
-                          className={`submodule-item ${viewMode}-view ${
-                            isSelected ? "selected" : ""
-                          }`}
+              ) : (
+                <>
+                  <div className="breadcrumb">
+                    <span
+                      onClick={() => {
+                        setActiveModuleId(null);
+                        setActiveModuleName(null);
+                        setSelectedSubModuleId(null);
+                        setSelectedLevel(null);
+                      }}
+                      className="breadcrumb-link"
+                    >
+                      {activeModuleName}
+                    </span>
+                    {selectedSubModuleId && (
+                      <>
+                        <span className="breadcrumb-separator">/</span>
+                        <span
                           onClick={() => {
-                            handleSubModuleClick(pathologyItem);
-                            setTimeout(() => {
-                              handleScroll();
-                            }, 0);
+                            setSelectedSubModuleId(null);
+                            setSelectedLevel(null);
+                          }}
+                          className="breadcrumb-link"
+                        >
+                          {selectedSubModule?.pathologyName}{" "}
+                        </span>
+                      </>
+                    )}
+                    {selectedSubModuleId && selectedLevel && (
+                      <>
+                        <span className="breadcrumb-separator">/</span>
+                        <span
+                          onClick={() => setSelectedLevel(null)}
+                          className="breadcrumb-link"
+                        >
+                          {selectedLevel.charAt(0).toUpperCase() +
+                            selectedLevel.slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div
+                    className={
+                      viewMode === "list"
+                        ? "submodule-list-right"
+                        : "submodule-grid-right"
+                    }
+                  >
+                    <div className="submodule-container">
+                      {/* <div
+                        className={`submodule-item ${viewMode}-view`}
+                        onClick={handleAssessmentClick}
+                      >
+                        <img
+                          src={"/assets/images/assessment-thumbnail.jpg"}
+                          alt="Assessment"
+                          className="submodule-thumbnail"
+                        />
+                        <div
+                          className="submodule-title"
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            fontWeight: "600",
+                            fontSize: "18px",
                           }}
                         >
-                          <img
-                            src={
-                              `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
-                              `https://primerad-backend.onrender.com${staticSubModuleDataForPathology?.thumbnail}` ||
-                              "/assets/images/default-thumbnail.jpg" // Fallback thumbnail
-                            }
-                            alt={pathologyItem.pathologyName}
-                            className="submodule-thumbnail"
-                          />
-                          <div
-                            className="submodule-title"
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              fontWeight: "600",
-                              fontSize: "18px",
-                            }}
-                          >
-                            <i
-                              className={`fas fa-angle-right icon-indicator ${
-                                isSelectedSubModule ? "rotated-down" : "" // Or "rotated-left" if you prefer
-                              }`}
-                              style={{ marginRight: "10px" }} // Pushes to the right
-                            ></i>{" "}
-                            {pathologyItem.pathologyName}{" "}
-                          </div>{" "}
-                          <div
-                            className="submodule-type-badges"
-                            style={{
-                              marginLeft: "10px",
-                            }}
-                          >
-                            <span className="type-badge badge-lecture">
-                              Lectures: {counts.lecture}
-                            </span>
-                            <span className="type-badge badge-case">
-                              Cases: {counts.case}
-                            </span>
-                            <span className="type-badge badge-live">
-                              Live Programs: {counts.live}
-                            </span>
-                          </div>
+                          <i
+                            className="fas fa-angle-right icon-indicator"
+                            style={{ marginRight: "10px" }}
+                          ></i>
+                          Module Assessment
                         </div>
-                        {/* Conditional rendering for Levels (Beginner/Advanced) */}
-                        {isSelected &&
-                          !staticSubModuleDataForPathology?.isPlaceholder && (
+                        <div className="submodule-type-badges">
+                          <span className="type-badge badge-assessment">
+                            Assessment
+                          </span>
+                          <span className="type-badge badge-quiz">
+                            Questions:{" "}
+                            {getAssessmentForModule(activeModuleName)
+                              ?.totalQuestions || "N/A"}
+                          </span>
+                        </div>
+                      </div> */}
+                    </div>
+                    {loadingPathologies ? (
+                      <div className="loading-message">
+                        Loading pathologies...
+                      </div>
+                    ) : pathologiesError ? (
+                      <div className="error-message">
+                        Error: {pathologiesError}
+                      </div>
+                    ) : modulePathologiesData.length === 0 ? (
+                      <div className="no-data-message">
+                        No pathologies found for this module.
+                      </div>
+                    ) : (
+                      modulePathologiesData.map((pathologyItem) => {
+                        const staticSubModuleDataForPathology = subModulesData[
+                          activeModuleName
+                        ]?.find(
+                          (sub) => sub.name === pathologyItem.pathologyName
+                        );
+                        const isSelected =
+                          selectedSubModuleId === pathologyItem._id;
+                        const apiSessionsForPathology =
+                          pathologyItem.sessions || [];
+                        const staticSessionsForPathology = [
+                          ...(staticSubModuleDataForPathology?.levels
+                            ?.beginner || []),
+                          ...(staticSubModuleDataForPathology?.levels
+                            ?.advanced || []),
+                        ];
+                        const combinedSessionsForCounts = [
+                          ...apiSessionsForPathology,
+                          ...staticSessionsForPathology,
+                        ];
+                        const counts = countTypes(combinedSessionsForCounts);
+
+                        return (
+                          <div
+                            key={pathologyItem._id}
+                            className="submodule-container"
+                          >
                             <div
-                              className={
-                                viewMode === "list"
-                                  ? "level-list-view"
-                                  : "level-grid-view lecture-grid-view"
-                              }
+                              className={`submodule-item ${viewMode}-view ${
+                                isSelected ? "selected" : ""
+                              }`}
+                              onClick={() => {
+                                handleSubModuleClick(pathologyItem);
+                                setTimeout(() => {
+                                  handleScroll();
+                                }, 0);
+                              }}
                             >
+                              <img
+                                src={
+                                  `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
+                                  staticSubModuleDataForPathology?.thumbnail ||
+                                  getRandomImage()
+                                }
+                                alt={pathologyItem.pathologyName}
+                                className="submodule-thumbnail"
+                              />
                               <div
-                                ref={sectionRef}
-                                className={`level-card ${viewMode} ${
-                                  selectedLevel === "beginner" ? "selected" : ""
-                                }`}
-                                onClick={() => {
-                                  handleLevelClick("beginner");
-                                  setTimeout(() => {
-                                    handleScroll();
-                                  }, 0);
+                                className="submodule-title"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  fontWeight: "600",
+                                  fontSize: "18px",
                                 }}
                               >
-                                <div className="level-thumbnail">
-                                  <div className="level-icon">🎓</div>
-                                </div>
                                 <i
                                   className={`fas fa-angle-right icon-indicator ${
-                                    selectedLevel === "beginner"
-                                      ? "rotated-down"
-                                      : "" // Or "rotated-left"
+                                    isSelected ? "rotated-down" : ""
                                   }`}
                                   style={{ marginRight: "10px" }}
-                                ></i>
-                                <div className="level-info">
-                                  {/* Only show title/description/badges/count if this level is NOT currently selected */}
-                                  {selectedLevel !== "beginner" && (
-                                    <>
-                                      <h4 className="level-title">Beginner</h4>
-                                      <p className="level-description">
-                                        Basic concepts and fundamental knowledge
-                                        for{" "}
-                                        {staticSubModuleDataForPathology?.name}
-                                      </p>
-                                      <div className="level-full-badges">
-                                        {(() => {
-                                          const levelCounts = countLevelTypes(
-                                            staticSubModuleDataForPathology
-                                              ?.levels?.beginner
-                                          );
-                                          return (
-                                            <>
-                                              <span className="type-badge badge-lecture">
-                                                Lectures: {levelCounts.lecture}
-                                              </span>
-                                              <span className="type-badge badge-case">
-                                                Cases: {levelCounts.case}
-                                              </span>
-                                              <span className="type-badge badge-live">
-                                                Live Programs:{" "}
-                                                {levelCounts.live}
-                                              </span>
-                                            </>
-                                          );
-                                        })()}
-                                      </div>
-                                    </>
-                                  )}
-                                  {/* If this level IS selected, you might want a simplified display, e.g., just the title */}
-                                  {selectedLevel === "beginner" && (
-                                    <h4 className="level-title">Beginner</h4>
-                                  )}
-                                </div>
+                                ></i>{" "}
+                                {pathologyItem.pathologyName}{" "}
                               </div>
-                              {console.log(
-                                selectedLevel,
-                                staticSubModuleDataForPathology,
-                                staticSubModuleDataForPathology?.levels
-                                  ?.beginner
-                              )}
-                              {/* Conditional rendering for Videos within Beginner level */}
-                              {selectedLevel === "beginner" && (
-                                <div
-                                  className={
-                                    viewMode === "list"
-                                      ? "lecture-list-view"
-                                      : "lecture-grid-view"
-                                  }
-                                  style={{
-                                    marginLeft: "20px",
-                                  }}
-                                >
-                                  <div className="polished-filter-bar">
-                                    <label className="polished-filter-checkbox">
-                                      <input
-                                        type="checkbox"
-                                        checked={filters.dicom}
-                                        onChange={() =>
-                                          handleFilterChange("dicom")
-                                        }
-                                      />
-                                      <span className="polished-custom-checkbox" />
-                                      DICOM
-                                    </label>
-                                    <label className="polished-filter-checkbox">
-                                      <input
-                                        type="checkbox"
-                                        checked={filters.lecture}
-                                        onChange={() =>
-                                          handleFilterChange("lecture")
-                                        }
-                                      />
-                                      <span className="polished-custom-checkbox" />
-                                      Lectures
-                                    </label>
-                                    <label className="polished-filter-checkbox live">
-                                      <input
-                                        type="checkbox"
-                                        checked={filters.live}
-                                        onChange={() =>
-                                          handleFilterChange("live")
-                                        }
-                                      />
-                                      <span className="polished-custom-checkbox" />
-                                      Live Programs
-                                    </label>
-                                  </div>
-
-                                  <div
-                                    ref={sectionRef}
-                                    className={
-                                      viewMode === "list"
-                                        ? "polished-list-outer-card"
-                                        : "polished-grid-container"
-                                    }
-                                  >
-                                    {console.log(
-                                      levelSessions.length,
-                                      levelSessions,
-                                      levelSessions[0]
-                                    )}
-                                    {loadingLevelSessions ? (
-                                      <div
-                                        className="loading-message"
-                                        style={{
-                                          textAlign: "center",
-                                          padding: "20px",
-                                        }}
-                                      >
-                                        Loading {selectedLevel} sessions...
-                                      </div>
-                                    ) : levelSessionsError ? (
-                                      <div
-                                        className="error-message"
-                                        style={{
-                                          textAlign: "center",
-                                          padding: "20px",
-                                          color: "#d32f2f",
-                                        }}
-                                      >
-                                        {levelSessionsError}
-                                      </div>
-                                    ) : levelSessions.length === 0 ? (
-                                      <div
-                                        className="no-data-message"
-                                        style={{
-                                          textAlign: "center",
-                                          padding: "20px",
-                                          color: "#666",
-                                        }}
-                                      >
-                                        No {selectedLevel} sessions found for
-                                        this pathology.
-                                      </div>
-                                    ) : (
-                                      (() => {
-                                        // Debug: log all available session types before filtering
-                                        console.log(
-                                          "All session types:",
-                                          levelSessions.map(
-                                            (s) => s.sessionType
-                                          )
-                                        );
-
-                                        const filteredSessions =
-                                          levelSessions.filter((session) => {
-                                            const sessionType =
-                                              session.sessionType?.toLowerCase(); // normalize case
-                                            const match =
-                                              (sessionType === "dicom" &&
-                                                filters.dicom) ||
-                                              (sessionType === "vimeo" &&
-                                                filters.lecture) ||
-                                              (sessionType === "live" &&
-                                                filters.live);
-
-                                            console.log(
-                                              `Checking session: ${session.title} (${sessionType}) → match:`,
-                                              match
-                                            );
-
-                                            return match;
-                                          });
-
-                                        if (filteredSessions.length === 0) {
-                                          console.warn(
-                                            "⚠ No sessions matched the current filter."
-                                          );
-                                        }
-
-                                        return filteredSessions.map(
-                                          (session) => {
-                                            console.log(
-                                              "Mapped session:",
-                                              session
-                                            );
-
-                                            return (
-                                              <div
-                                                key={session._id}
-                                                className={
-                                                  viewMode === "list"
-                                                    ? "lecture-card polished-list-view"
-                                                    : "polished-grid-view"
-                                                }
-                                                style={{
-                                                  alignItems: "center",
-                                                  cursor: "pointer",
-                                                }}
-                                                onClick={() =>
-                                                  handleSessionClick(session)
-                                                }
-                                              >
-                                                <div
-                                                  className={
-                                                    viewMode === "list"
-                                                      ? "polished-list-thumbicon"
-                                                      : "polished-grid-thumbnail"
-                                                  }
-                                                >
-                                                  <img
-                                                    src={
-                                                      `https://primerad-backend.onrender.com${
-                                                        session.imageUrl_522x760 ||
-                                                        session.imageUrl_1920x1080
-                                                      }` ||
-                                                      "/assets/images/default-thumbnail.jpg"
-                                                    }
-                                                    alt={session.title}
-                                                  />
-                                                </div>
-
-                                                <div
-                                                  className={
-                                                    viewMode === "list"
-                                                      ? "polished-list-center"
-                                                      : "polished-grid-content"
-                                                  }
-                                                >
-                                                  <div className="title-row">
-                                                    <div
-                                                      className={
-                                                        viewMode === "list"
-                                                          ? "polished-list-title"
-                                                          : "polished-grid-title"
-                                                      }
-                                                    >
-                                                      {session.title}
-                                                    </div>
-                                                    {viewMode === "list" && (
-                                                      <div className="polished-list-desc">
-                                                        {session.description}
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                </div>
-
-                                                {viewMode === "list" && (
-                                                  <div className="polished-list-right">
-                                                    <div
-                                                      className={`type-badge ${
-                                                        getSessionTypeBadge(
-                                                          session.sessionType
-                                                        )?.className || ""
-                                                      }`}
-                                                    >
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ===
-                                                            "Vimeo"
-                                                            ? "lecture"
-                                                            : ""
-                                                        )?.icon
-                                                      }{" "}
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ===
-                                                            "Vimeo"
-                                                            ? "lecture"
-                                                            : ""
-                                                        )?.label
-                                                      }
-                                                    </div>
-                                                    <div className="polished-list-date">
-                                                      {session.startDate &&
-                                                        (session.sessionType ===
-                                                        "Live"
-                                                          ? `Live: ${formatDate(
-                                                              session.startDate,
-                                                              "live"
-                                                            )}`
-                                                          : `Uploaded: ${formatDate(
-                                                              session.startDate,
-                                                              session.sessionType
-                                                            )}`)}
-                                                    </div>
-                                                  </div>
-                                                )}
-
-                                                {viewMode === "grid" && (
-                                                  <div
-                                                    className={`type-badge ${
-                                                      getSessionTypeBadge(
-                                                        session.sessionType
-                                                      )?.className || ""
-                                                    } polished-grid-badge`}
-                                                  >
-                                                    {
-                                                      getSessionTypeBadge(
-                                                        session.sessionType
-                                                      )?.icon
-                                                    }{" "}
-                                                    {
-                                                      getSessionTypeBadge(
-                                                        session.sessionType
-                                                      )?.label
-                                                    }
-                                                  </div>
-                                                )}
-                                              </div>
-                                            );
-                                          }
-                                        );
-                                      })()
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
                               <div
-                                className={`level-card ${viewMode} ${
-                                  selectedLevel === "advanced" ? "selected" : ""
-                                }`}
-                                onClick={() => handleLevelClick("advanced")}
+                                className="submodule-type-badges"
+                                style={{
+                                  marginLeft: "10px",
+                                }}
                               >
-                                <div className="level-thumbnail">
-                                  <div className="level-icon">⚡</div>
-                                </div>
-                                <i
-                                  className={`fas fa-angle-right icon-indicator ${
-                                    selectedLevel === "advanced"
-                                      ? "rotated-down"
-                                      : "" // Or "rotated-left"
-                                  }`}
-                                  style={{ marginRight: "10px" }}
-                                ></i>
-                                <div className="level-info">
-                                  <h4 className="level-title">Advanced</h4>
-                                  <p className="level-description">
-                                    Advanced techniques and complex cases for{" "}
-                                    {staticSubModuleDataForPathology?.name}
-                                  </p>
-                                  <div className="level-full-badges">
-                                    {(() => {
-                                      const levelCounts = countLevelTypes(
-                                        staticSubModuleDataForPathology?.levels
-                                          ?.advanced
-                                      );
-                                      return (
-                                        <>
-                                          <span className="type-badge badge-lecture">
-                                            Lectures: {levelCounts.lecture}
-                                          </span>
-                                          <span className="type-badge badge-case">
-                                            Cases: {levelCounts.case}
-                                          </span>
-                                          <span className="type-badge badge-live">
-                                            Live Programs: {levelCounts.live}
-                                          </span>
-                                        </>
-                                      );
-                                    })()}
-                                  </div>
-                                </div>
+                                <span className="type-badge badge-lecture">
+                                  Lectures: {counts.lecture}
+                                </span>
+                                <span className="type-badge badge-case">
+                                  Cases: {counts.case}
+                                </span>
+                                <span className="type-badge badge-live">
+                                  Live Programs: {counts.live}
+                                </span>
                               </div>
-
-                              {selectedLevel === "advanced" &&
-                                staticSubModuleDataForPathology?.levels
-                                  ?.advanced && (
+                            </div>
+                            {isSelected && (
+                              <>
+                                {pathologyItem.isPlaceholder ? (
                                   <div
-                                    className={
-                                      viewMode === "list"
-                                        ? "lecture-list-view"
-                                        : "lecture-grid-view"
-                                    }
                                     style={{
-                                      marginLeft: "20px",
+                                      textAlign: "center",
+                                      padding: "50px",
+                                      fontSize: "1.2rem",
+                                      color: "#666",
+                                      width: "100%",
                                     }}
                                   >
-                                    <div className="polished-filter-bar">
-                                      <label className="polished-filter-checkbox">
-                                        <input
-                                          type="checkbox"
-                                          checked={filters.dicom}
-                                          onChange={() =>
-                                            handleFilterChange("dicom")
-                                          }
-                                        />
-                                        <span className="polished-custom-checkbox" />
-                                        DICOM
-                                      </label>
-                                      <label className="polished-filter-checkbox">
-                                        <input
-                                          type="checkbox"
-                                          checked={filters.lecture}
-                                          onChange={() =>
-                                            handleFilterChange("lecture")
-                                          }
-                                        />
-                                        <span className="polished-custom-checkbox" />
-                                        Lectures
-                                      </label>
-                                      <label className="polished-filter-checkbox live">
-                                        <input
-                                          type="checkbox"
-                                          checked={filters.live}
-                                          onChange={() =>
-                                            handleFilterChange("live")
-                                          }
-                                        />
-                                        <span className="polished-custom-checkbox" />
-                                        Live Programs
-                                      </label>
-                                    </div>
+                                    No video content defined for "
+                                    {pathologyItem.pathologyName}" yet.
+                                  </div>
+                                ) : (
+                                  <div
+                                    className={
+                                      viewMode === "list"
+                                        ? "level-list-view"
+                                        : "level-grid-view lecture-grid-view"
+                                    }
+                                  >
                                     <div
-                                      ref={sectionRef}
-                                      className={
-                                        viewMode === "list"
-                                          ? "polished-list-outer-card"
-                                          : "polished-grid-container"
+                                      ref={
+                                        selectedLevel === "beginner"
+                                          ? sectionRef
+                                          : null
+                                      }
+                                      className={`level-card ${viewMode} ${
+                                        selectedLevel === "beginner"
+                                          ? "selected"
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        handleLevelClick("beginner")
                                       }
                                     >
-                                      {console.log(
-                                        levelSessions.length,
-                                        levelSessions,
-                                        levelSessions[0]
-                                      )}
-                                      {loadingLevelSessions ? (
-                                        <div
-                                          className="loading-message"
-                                          style={{
-                                            textAlign: "center",
-                                            padding: "20px",
-                                          }}
-                                        >
-                                          Loading {selectedLevel} sessions...
-                                        </div>
-                                      ) : levelSessionsError ? (
-                                        <div
-                                          className="error-message"
-                                          style={{
-                                            textAlign: "center",
-                                            padding: "20px",
-                                            color: "#d32f2f",
-                                          }}
-                                        >
-                                          {levelSessionsError}
-                                        </div>
-                                      ) : levelSessions.length === 0 ? (
-                                        <div
-                                          className="no-data-message"
-                                          style={{
-                                            textAlign: "center",
-                                            padding: "20px",
-                                            color: "#666",
-                                          }}
-                                        >
-                                          No {selectedLevel} sessions found for
-                                          this pathology.
-                                        </div>
-                                      ) : (
-                                        (() => {
-                                          // Debug: log all available session types before filtering
-                                          console.log(
-                                            "All session types:",
-                                            levelSessions.map(
-                                              (s) => s.sessionType
-                                            )
-                                          );
-
-                                          const filteredSessions =
-                                            levelSessions.filter((session) => {
-                                              const sessionType =
-                                                session.sessionType?.toLowerCase(); // normalize case
-                                              const match =
-                                                (sessionType === "dicom" &&
-                                                  filters.dicom) ||
-                                                (sessionType === "vimeo" &&
-                                                  filters.lecture) ||
-                                                (sessionType === "live" &&
-                                                  filters.live);
-
-                                              console.log(
-                                                `Checking session: ${session.title} (${sessionType}) → match:`,
-                                                match
-                                              );
-
-                                              return match;
-                                            });
-
-                                          if (filteredSessions.length === 0) {
-                                            console.warn(
-                                              "⚠ No sessions matched the current filter."
+                                      <div className="level-thumbnail">
+                                        <div className="level-icon">🎓</div>
+                                      </div>
+                                      <i
+                                        className={`fas fa-angle-right icon-indicator ${
+                                          selectedLevel === "beginner"
+                                            ? "rotated-down"
+                                            : ""
+                                        }`}
+                                        style={{ marginRight: "10px" }}
+                                      ></i>
+                                      <div className="level-info">
+                                        <h4 className="level-title">
+                                          Beginner
+                                        </h4>
+                                        <p className="level-description">
+                                          Basic concepts and fundamental
+                                          knowledge for{" "}
+                                          {pathologyItem?.pathologyName}
+                                        </p>
+                                        <div className="level-full-badges">
+                                          {(() => {
+                                            const staticBeginnerSessions =
+                                              staticSubModuleDataForPathology
+                                                ?.levels?.beginner || [];
+                                            const apiBeginnerSessions =
+                                              pathologyItem.sessions?.filter(
+                                                (s) =>
+                                                  s.difficulty === "Beginner"
+                                              ) || [];
+                                            const combinedBeginner = [
+                                              ...staticBeginnerSessions,
+                                              ...apiBeginnerSessions,
+                                            ];
+                                            const levelCounts =
+                                              countTypes(combinedBeginner);
+                                            return (
+                                              <>
+                                                <span className="type-badge badge-lecture">
+                                                  Lectures:{" "}
+                                                  {levelCounts.lecture}
+                                                </span>
+                                                <span className="type-badge badge-case">
+                                                  Cases: {levelCounts.case}
+                                                </span>
+                                                <span className="type-badge badge-live">
+                                                  Live Programs:{" "}
+                                                  {levelCounts.live}
+                                                </span>
+                                              </>
                                             );
+                                          })()}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {selectedLevel === "beginner" && (
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "lecture-list-view"
+                                            : "lecture-grid-view"
+                                        }
+                                        style={{ marginLeft: "20px" }}
+                                      >
+                                        <div className="polished-filter-bar">
+                                          <label className="polished-filter-checkbox">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.dicom}
+                                              onChange={() =>
+                                                handleFilterChange("dicom")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />{" "}
+                                            DICOM
+                                          </label>
+                                          <label className="polished-filter-checkbox">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.lecture}
+                                              onChange={() =>
+                                                handleFilterChange("lecture")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />{" "}
+                                            Lectures
+                                          </label>
+                                          <label className="polished-filter-checkbox live">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.live}
+                                              onChange={() =>
+                                                handleFilterChange("live")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />{" "}
+                                            Live Programs
+                                          </label>
+                                        </div>
+                                        <div
+                                          className={
+                                            viewMode === "list"
+                                              ? "polished-list-outer-card"
+                                              : "polished-grid-container"
                                           }
-
-                                          return filteredSessions.map(
-                                            (session) => {
-                                              console.log(
-                                                "Mapped session:",
-                                                session
-                                              );
-
-                                              return (
+                                        >
+                                          {loadingLevelSessions ? (
+                                            <div
+                                              className="loading-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                              }}
+                                            >
+                                              Loading {selectedLevel}{" "}
+                                              sessions...
+                                            </div>
+                                          ) : levelSessionsError ? (
+                                            <div
+                                              className="error-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                                color: "#d32f2f",
+                                              }}
+                                            >
+                                              {levelSessionsError}
+                                            </div>
+                                          ) : levelSessions.length === 0 ? (
+                                            <div
+                                              className="no-data-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                                color: "#666",
+                                              }}
+                                            >
+                                              No {selectedLevel} sessions found
+                                              for this pathology.
+                                            </div>
+                                          ) : (
+                                            levelSessions
+                                              .filter((session) => {
+                                                const sessionType =
+                                                  session.sessionType?.toLowerCase() ||
+                                                  session.type?.toLowerCase();
+                                                return (
+                                                  ((sessionType === "dicom" ||
+                                                    sessionType === "case") &&
+                                                    filters.dicom) ||
+                                                  ((sessionType === "vimeo" ||
+                                                    sessionType ===
+                                                      "lecture") &&
+                                                    filters.lecture) ||
+                                                  (sessionType === "live" &&
+                                                    filters.live)
+                                                );
+                                              })
+                                              .map((session) => (
                                                 <div
-                                                  key={session._id}
-                                                  className={
-                                                    viewMode === "list"
-                                                      ? "lecture-card polished-list-view"
-                                                      : "polished-grid-view"
+                                                  key={
+                                                    session._id || session.id
                                                   }
-                                                  style={{
-                                                    alignItems: "center",
-                                                    cursor: "pointer",
-                                                  }}
+                                                  className={`lecture-card ${
+                                                    viewMode === "list"
+                                                      ? "polished-list-view"
+                                                      : "polished-grid-view"
+                                                  }`}
                                                   onClick={() =>
                                                     handleSessionClick(session)
                                                   }
@@ -2499,17 +2190,14 @@ const SubModuleView = () => {
                                                     }
                                                   >
                                                     <img
-                                                      src={
-                                                        `https://primerad-backend.onrender.com${
-                                                          session.imageUrl_522x760 ||
-                                                          session.imageUrl_1920x1080
-                                                        }` ||
-                                                        "/assets/images/default-thumbnail.jpg"
-                                                      }
+                                                      src={`https://primerad-backend.onrender.com${
+                                                        session.imageUrl_522x760 ||
+                                                        session.imageUrl_1920x1080 ||
+                                                        session.thumbnail
+                                                      }`}
                                                       alt={session.title}
                                                     />
                                                   </div>
-
                                                   <div
                                                     className={
                                                       viewMode === "list"
@@ -2534,101 +2222,382 @@ const SubModuleView = () => {
                                                       )}
                                                     </div>
                                                   </div>
-
                                                   {viewMode === "list" && (
                                                     <div className="polished-list-right">
                                                       <div
                                                         className={`type-badge ${
                                                           getSessionTypeBadge(
-                                                            session.sessionType
+                                                            session.sessionType ||
+                                                              session.type
                                                           )?.className || ""
                                                         }`}
                                                       >
                                                         {
                                                           getSessionTypeBadge(
-                                                            session.sessionType ===
-                                                              "Vimeo"
-                                                              ? "lecture"
-                                                              : ""
+                                                            session.sessionType ||
+                                                              session.type
                                                           )?.icon
                                                         }{" "}
                                                         {
                                                           getSessionTypeBadge(
-                                                            session.sessionType ===
-                                                              "Vimeo"
-                                                              ? "lecture"
-                                                              : ""
+                                                            session.sessionType ||
+                                                              session.type
                                                           )?.label
                                                         }
                                                       </div>
                                                       <div className="polished-list-date">
                                                         {session.startDate &&
-                                                          (session.sessionType ===
-                                                          "Live"
+                                                          ((session.sessionType ||
+                                                            session.type) ===
+                                                          "live"
                                                             ? `Live: ${formatDate(
                                                                 session.startDate,
                                                                 "live"
                                                               )}`
                                                             : `Uploaded: ${formatDate(
-                                                                session.startDate,
-                                                                session.sessionType
+                                                                session.startDate
                                                               )}`)}
                                                       </div>
                                                     </div>
                                                   )}
-
                                                   {viewMode === "grid" && (
                                                     <div
                                                       className={`type-badge ${
                                                         getSessionTypeBadge(
-                                                          session.sessionType
+                                                          session.sessionType ||
+                                                            session.type
                                                         )?.className || ""
                                                       } polished-grid-badge`}
                                                     >
                                                       {
                                                         getSessionTypeBadge(
-                                                          session.sessionType
+                                                          session.sessionType ||
+                                                            session.type
                                                         )?.icon
                                                       }{" "}
                                                       {
                                                         getSessionTypeBadge(
-                                                          session.sessionType
+                                                          session.sessionType ||
+                                                            session.type
                                                         )?.label
                                                       }
                                                     </div>
                                                   )}
                                                 </div>
-                                              );
-                                            }
-                                          );
-                                        })()
-                                      )}
+                                              ))
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    <div
+                                      ref={
+                                        selectedLevel === "advanced"
+                                          ? sectionRef
+                                          : null
+                                      }
+                                      className={`level-card ${viewMode} ${
+                                        selectedLevel === "advanced"
+                                          ? "selected"
+                                          : ""
+                                      }`}
+                                      onClick={() => {
+                                        handleLevelClick("advanced");
+                                        setTimeout(() => {
+                                          handleScroll();
+                                        }, 0);
+                                      }}
+                                    >
+                                      <div className="level-thumbnail">
+                                        <div className="level-icon">⚡</div>
+                                      </div>
+                                      <i
+                                        className={`fas fa-angle-right icon-indicator ${
+                                          selectedLevel === "advanced"
+                                            ? "rotated-down"
+                                            : ""
+                                        }`}
+                                        style={{ marginRight: "10px" }}
+                                      ></i>
+                                      <div className="level-info">
+                                        <h4 className="level-title">
+                                          Advanced
+                                        </h4>
+                                        <p className="level-description">
+                                          Advanced techniques and complex cases
+                                          for {selectedSubModule?.pathologyName}
+                                        </p>
+                                        <div className="level-full-badges">
+                                          {(() => {
+                                            const staticAdvancedSessions =
+                                              staticSubModuleDataForPathology
+                                                ?.levels?.advanced || [];
+                                            const apiAdvancedSessions =
+                                              selectedSubModule.sessions?.filter(
+                                                (s) =>
+                                                  s.difficulty === "Advanced"
+                                              ) || [];
+                                            const combinedAdvanced = [
+                                              ...staticAdvancedSessions,
+                                              ...apiAdvancedSessions,
+                                            ];
+                                            const levelCounts =
+                                              countTypes(combinedAdvanced);
+                                            return (
+                                              <>
+                                                <span className="type-badge badge-lecture">
+                                                  Lectures:{" "}
+                                                  {levelCounts.lecture}
+                                                </span>
+                                                <span className="type-badge badge-case">
+                                                  Cases: {levelCounts.case}
+                                                </span>
+                                                <span className="type-badge badge-live">
+                                                  Live Programs:{" "}
+                                                  {levelCounts.live}
+                                                </span>
+                                              </>
+                                            );
+                                          })()}
+                                        </div>
+                                      </div>
                                     </div>
+
+                                    {selectedLevel === "advanced" && (
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "lecture-list-view"
+                                            : "lecture-grid-view"
+                                        }
+                                        style={{ marginLeft: "20px" }}
+                                      >
+                                        <div className="polished-filter-bar">
+                                          <label className="polished-filter-checkbox">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.dicom}
+                                              onChange={() =>
+                                                handleFilterChange("dicom")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />
+                                            DICOM
+                                          </label>
+                                          <label className="polished-filter-checkbox">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.lecture}
+                                              onChange={() =>
+                                                handleFilterChange("lecture")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />
+                                            Lectures
+                                          </label>
+                                          <label className="polished-filter-checkbox live">
+                                            <input
+                                              type="checkbox"
+                                              checked={filters.live}
+                                              onChange={() =>
+                                                handleFilterChange("live")
+                                              }
+                                            />
+                                            <span className="polished-custom-checkbox" />
+                                            Live Programs
+                                          </label>
+                                        </div>
+                                        <div
+                                          className={
+                                            viewMode === "list"
+                                              ? "polished-list-outer-card"
+                                              : "polished-grid-container"
+                                          }
+                                        >
+                                          {loadingLevelSessions ? (
+                                            <div
+                                              className="loading-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                              }}
+                                            >
+                                              Loading {selectedLevel}{" "}
+                                              sessions...
+                                            </div>
+                                          ) : levelSessionsError ? (
+                                            <div
+                                              className="error-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                                color: "#d32f2f",
+                                              }}
+                                            >
+                                              {levelSessionsError}
+                                            </div>
+                                          ) : levelSessions.length === 0 ? (
+                                            <div
+                                              className="no-data-message"
+                                              style={{
+                                                textAlign: "center",
+                                                padding: "20px",
+                                                color: "#666",
+                                              }}
+                                            >
+                                              No {selectedLevel} sessions found
+                                              for this pathology.
+                                            </div>
+                                          ) : (
+                                            levelSessions
+                                              .filter((session) => {
+                                                const sessionType =
+                                                  session.sessionType?.toLowerCase() ||
+                                                  session.type?.toLowerCase();
+                                                return (
+                                                  ((sessionType === "dicom" ||
+                                                    sessionType === "case") &&
+                                                    filters.dicom) ||
+                                                  ((sessionType === "vimeo" ||
+                                                    sessionType ===
+                                                      "lecture") &&
+                                                    filters.lecture) ||
+                                                  (sessionType === "live" &&
+                                                    filters.live)
+                                                );
+                                              })
+                                              .map((session) => (
+                                                <div
+                                                  key={
+                                                    session._id || session.id
+                                                  }
+                                                  className={`lecture-card ${
+                                                    viewMode === "list"
+                                                      ? "polished-list-view"
+                                                      : "polished-grid-view"
+                                                  }`}
+                                                  onClick={() =>
+                                                    handleSessionClick(session)
+                                                  }
+                                                >
+                                                  <div
+                                                    className={
+                                                      viewMode === "list"
+                                                        ? "polished-list-thumbicon"
+                                                        : "polished-grid-thumbnail"
+                                                    }
+                                                  >
+                                                    <img
+                                                      src={`https://primerad-backend.onrender.com${
+                                                        session.imageUrl_522x760 ||
+                                                        session.imageUrl_1920x1080 ||
+                                                        session.thumbnail
+                                                      }`}
+                                                      alt={session.title}
+                                                    />
+                                                  </div>
+                                                  <div
+                                                    className={
+                                                      viewMode === "list"
+                                                        ? "polished-list-center"
+                                                        : "polished-grid-content"
+                                                    }
+                                                  >
+                                                    <div className="title-row">
+                                                      <div
+                                                        className={
+                                                          viewMode === "list"
+                                                            ? "polished-list-title"
+                                                            : "polished-grid-title"
+                                                        }
+                                                      >
+                                                        {session.title}
+                                                      </div>
+                                                      {viewMode === "list" && (
+                                                        <div className="polished-list-desc">
+                                                          {session.description}
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                  {viewMode === "list" && (
+                                                    <div className="polished-list-right">
+                                                      <div
+                                                        className={`type-badge ${
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.className || ""
+                                                        }`}
+                                                      >
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.icon
+                                                        }{" "}
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.label
+                                                        }
+                                                      </div>
+                                                      <div className="polished-list-date">
+                                                        {session.startDate &&
+                                                          ((session.sessionType ||
+                                                            session.type) ===
+                                                          "live"
+                                                            ? `Live: ${formatDate(
+                                                                session.startDate,
+                                                                "live"
+                                                              )}`
+                                                            : `Uploaded: ${formatDate(
+                                                                session.startDate
+                                                              )}`)}
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                  {viewMode === "grid" && (
+                                                    <div
+                                                      className={`type-badge ${
+                                                        getSessionTypeBadge(
+                                                          session.sessionType ||
+                                                            session.type
+                                                        )?.className || ""
+                                                      } polished-grid-badge`}
+                                                    >
+                                                      {
+                                                        getSessionTypeBadge(
+                                                          session.sessionType ||
+                                                            session.type
+                                                        )?.icon
+                                                      }{" "}
+                                                      {
+                                                        getSessionTypeBadge(
+                                                          session.sessionType ||
+                                                            session.type
+                                                        )?.label
+                                                      }
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              ))
+                                          )}{" "}
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                 )}
-                            </div>
-                          )}
-                        {/* Message for placeholder submodules if selected */}
-                        {isSelected &&
-                          staticSubModuleDataForPathology?.isPlaceholder && (
-                            <div
-                              style={{
-                                textAlign: "center",
-                                padding: "50px",
-                                fontSize: "1.2rem",
-                                color: "#666",
-                                width: "100%",
-                              }}
-                            >
-                              No video content defined for "
-                              {pathologyItem.pathologyName}" yet.
-                            </div>
-                          )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

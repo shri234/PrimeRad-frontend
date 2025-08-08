@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Logo from "../logo";
 import "./FooterDefault.css";
@@ -13,9 +13,17 @@ const FooterMinimal = memo(() => {
   ];
 
   return (
-    <footer className="footer-default">
+    <footer className="footer-default-minimal">
       <Container>
-        <div className="footer-minimal-layout">
+        <div
+          className="footer-minimal-layout"
+          style={{
+            padding: "10px 0",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           {/* Left Section: Logo */}
           <div className="footer-col-left">
             <div className="footer-logo">
@@ -23,21 +31,40 @@ const FooterMinimal = memo(() => {
             </div>
           </div>
 
-          {/* Right Section: Legal */}
           <div className="footer-col-right-minimal">
-            <ul className="legal-links">
+            <ul
+              className="legal-links"
+              style={{
+                display: "flex",
+                gap: "20px",
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+              }}
+            >
               {legalLinks.map((link, index) => (
                 <li key={index}>
-                  <Link to={link.path}>{link.label}</Link>
+                  <Link
+                    to={link.path}
+                    style={{
+                      color: "white", // You can adjust the color
+                      textDecoration: "none",
+                      fontSize: "14px", // Adjust font size as needed
+                    }}
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Bottom Section: Separator and Copyright */}
-        <hr className="footer-divider" />
-        <div className="footer-bottom-section footer-bottom-minimal">
+        <hr className="footer-divider-minimal" />
+        <div
+          className="footer-bottom-section footer-bottom-minimal"
+          style={{ paddingBottom: "20px" }}
+        >
           <span>© {new Date().getFullYear()} Powered by VIDOCTO</span>
         </div>
       </Container>

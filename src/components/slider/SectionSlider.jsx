@@ -66,7 +66,11 @@ const SectionSlider = memo(
     return (
       <div className={className}>
         <Container fluid>
-          <div className="overflow-hidden card-style-slider" ref={slider}>
+          <div
+            className="overflow-hidden card-style-slider"
+            style={{ width: "100%" }}
+            ref={slider}
+          >
             <div className="d-flex align-items-center justify-content-between px-3 my-4 flex-wrap">
               <h5
                 className="main-title text-capitalize mb-0 section-slider-title"
@@ -74,9 +78,9 @@ const SectionSlider = memo(
                   color: "#003366",
                   fontWeight: "bold",
                   fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
-                  cursor: titleLink ? "pointer" : undefined,
+                  // cursor: titleLink ? "pointer" : undefined,
                 }}
-                onClick={() => titleLink && navigate(titleLink)}
+                // onClick={() => titleLink && navigate(titleLink)}
               >
                 {title}
               </h5>
@@ -95,6 +99,10 @@ const SectionSlider = memo(
               </Link>
             </div>
             <Swiper
+              // style={{
+              //   paddingLeft: "20px",
+              //   paddingRight: "20px",
+              // }}
               key={themeSchemeDirection}
               dir={themeSchemeDirection}
               className="position-relative swiper swiper-card"
@@ -149,37 +157,11 @@ const SectionSlider = memo(
                   {children(data)}
                 </SwiperSlide>
               ))}
-              <div
-                className="swiper-button swiper-button-next"
-                style={{
-                  backgroundColor: "rgba(128, 128, 128, 0.8)",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontSize: "1.2rem",
-                }}
-              >
-                <i className="fas fa-chevron-right"></i>
+              <div className="swiper-button swiper-button-next">
+                {/* <i className="fas fa-chevron-right"></i> */}
               </div>
-              <div
-                className="swiper-button swiper-button-prev"
-                style={{
-                  backgroundColor: "rgba(128, 128, 128, 0.8)",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontSize: "1.2rem",
-                }}
-              >
-                <i className="fas fa-chevron-left"></i>
+              <div className="swiper-button swiper-button-prev">
+                {/* <i className="fas fa-chevron-left"></i> */}
               </div>
             </Swiper>
           </div>

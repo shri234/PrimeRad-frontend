@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper";
 import "swiper/css";
+import "./IndexPage.css";
 import "swiper/css/navigation";
 import TestimonialsSection from "../../components/sections/TestimonialsSection";
 
@@ -517,10 +518,10 @@ const HomePage = memo(() => {
 
       <div
         data-aos="fade-up"
-        data-aos-duration="1000"
+        data-aos-duration="2000"
         style={{
           background: sectionBg[0],
-          padding: "48px 0",
+          padding: "48px 0px",
         }}
       >
         <LatestMovies title="Recent Items" />

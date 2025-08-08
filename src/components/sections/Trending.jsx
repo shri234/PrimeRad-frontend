@@ -242,7 +242,7 @@ const Trending = memo(() => {
                                           <div className="p-btns">
                                             <div className="iq-button">
                                               <Link
-                                                to="/movies-detail"
+                                                to="/lecture-detail"
                                                 className="btn text-uppercase position-relative"
                                               >
                                                 <span className="button-text">

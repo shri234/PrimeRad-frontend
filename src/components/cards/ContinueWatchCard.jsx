@@ -10,7 +10,7 @@ const ContinueWatchCard = memo(
     imagePath = `https://primerad-backend.onrender.com${imagePath}`;
 
     const handleClick = () => {
-      navigate("/movies-detail", {
+      navigate("/lecture-detail", {
         state: {
           id: sessionData.sessionId,
           vimeoVideoId: sessionData.vimeoVideoId,

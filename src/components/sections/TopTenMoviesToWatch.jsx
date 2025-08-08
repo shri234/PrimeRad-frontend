@@ -56,10 +56,12 @@ const TopTenMoviesToWatch = memo(() => {
   ]);
 
   return (
-    <div style={{
-    backgroundImage: "linear-gradient(to top, lightgray, white)", 
-    padding: "10px", 
-  }}>
+    <div
+      style={{
+        backgroundImage: "linear-gradient(to top, lightgray, white)",
+        padding: "10px",
+      }}
+    >
       <SectionSlider
         title={t("ott_home.top_ten_movies")}
         list={topTen}
@@ -69,7 +71,7 @@ const TopTenMoviesToWatch = memo(() => {
           <TopTenCard
             imagePath={data.image}
             countValue={data.count}
-            link="/movies-detail"
+            link="/lecture-detail"
           />
         )}
       </SectionSlider>

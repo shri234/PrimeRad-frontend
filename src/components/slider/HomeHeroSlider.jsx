@@ -130,7 +130,7 @@ const HomeHeroSlider = memo(() => {
         card.contentType &&
         card.contentType.toLowerCase() === "lecture"
       ) {
-        navigate("/movies-detail", {
+        navigate("/lecture-detail", {
           state: {
             id: card.id,
             vimeoVideoId: card.vimeoVideoId,
@@ -289,11 +289,12 @@ const HomeHeroSlider = memo(() => {
                     {/* CME / Assessment */}
                     {currentSlideContent.cmeCredits && (
                       <span
-                        className="badge rounded-0 text-white text-uppercase px-3 py-2"
+                        className="badge  text-white text-uppercase px-3 py-2"
                         style={{
                           background: "#0d47a1",
                           fontWeight: 600,
                           letterSpacing: 0.5,
+                          borderRadius: "10px",
                           fontSize: "0.85rem",
                         }}
                       >
@@ -383,7 +384,7 @@ const HomeHeroSlider = memo(() => {
                   <div>
                     <div className="iq-button">
                       {/* <Link // REMOVED the static Link
-                        to={"/movies-detail"}
+                        to={"/lecture-detail"}
                         className="btn text-uppercase position-relative"
                         style={{
                           color: "black",

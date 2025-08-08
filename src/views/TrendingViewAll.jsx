@@ -38,7 +38,6 @@ const TrendingViewAll = memo(() => {
 
   return (
     <Fragment>
-      <BreadCrumbWidget title="Trending" />
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">
@@ -78,7 +77,7 @@ const TrendingViewAll = memo(() => {
                         title={item.title}
                         movieTime={caseInfo}
                         watchlistLink={`/playlist?caseId=${item._id}`}
-                        link={`/movies-detail`} // Also make link dynamic
+                        link={`/lecture-detail`} // Also make link dynamic
                       />
                     </Col>
                   ); // <--- REMOVE SEMICOLON HERE

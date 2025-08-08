@@ -97,7 +97,7 @@ const ContinueWatching = memo(() => {
   }, [isAuthenticated]);
 
   const handleClick = (session) => {
-    navigate("/movies-detail", {
+    navigate("/lecture-detail", {
       state: {
         id: session.sessionId,
         vimeoVideoId: session.vimeoVideoId,

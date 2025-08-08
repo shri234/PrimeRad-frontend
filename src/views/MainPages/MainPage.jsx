@@ -1,7 +1,8 @@
 import { memo, useState, useEffect, useRef, useCallback } from "react"; // Import useRef and useCallback
 import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../context/FilterContext";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle, FaTh } from "react-icons/fa";
+import { GiAtlas } from "react-icons/gi";
 import isFirstRender from "./hooks/useIsFirstRender";
 import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
 import FloatingActionButton from "../ExtraPages/FloatingActionButton";
@@ -128,6 +129,25 @@ const videoCardStyles = `
     z-index: 2;
     letter-spacing: 0.5px;
   }
+  .live-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    background: #ff1744;
+    color: #fff;
+    border-radius: 8px;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 2;
+    letter-spacing: 0.5px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
   .category-badge {
     position: absolute;
     top: 12px;
@@ -215,7 +235,7 @@ const videoCardStyles = `
     padding: 18px 18px 18px 18px;
     gap:20px;
     max-width: 1400px;
-    margin: 28px auto 0 auto;
+    margin: isAuthenticated ? -10px auto 0 auto : 28px auto 0 auto;
     width: 100%;
     /* height: calc(100vh - 170px); */
     /* min-height: 0; */
@@ -381,7 +401,11 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgLoaded(true)}
             />
-            <span className="duration-badge">{card.duration}</span>
+            {card.isLive ? (
+              <span className="live-badge">LIVE</span>
+            ) : (
+              <span className="duration-badge">{card.duration}</span>
+            )}
             <span className="category-badge">{card.category}</span>
           </div>
           <div
@@ -411,7 +435,11 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgLoaded(true)}
             />
-            <span className="duration-badge">{card.duration}</span>
+            {card.isLive ? (
+              <span className="live-badge">LIVE</span>
+            ) : (
+              <span className="duration-badge">{card.duration}</span>
+            )}
             <span className="category-badge">{card.category}</span>
           </div>
           {children}
@@ -422,7 +450,7 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
 };
 
 const MainPage = memo(() => {
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("atlas");
   const [sessions, setSessions] = useState([]);
   const navigate = useNavigate();
   const { activeFilters } = useFilter();
@@ -439,6 +467,72 @@ const MainPage = memo(() => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const LIMIT = 12;
+
+  // Static live video cards
+  const staticLiveCards = [
+    {
+      id: "live-1",
+      type: "Live Cardiac Surgery Demonstration",
+      contentType: "Live",
+      level: "Advanced",
+      status: "Free",
+      thumbnail:
+        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      duration: "",
+      isLive: true,
+      isFree: true,
+      category: "Cardiology",
+      timeAgo: "Live now",
+      vimeoVideoId: null,
+      description: "Live cardiac surgery demonstration with expert commentary.",
+      faculty: "Dr. Sarah Johnson",
+      module: "Cardiology",
+      submodule: "Surgery",
+      startDate: new Date().toISOString(),
+      liveDate: "Dec 15, 2024",
+    },
+    {
+      id: "live-2",
+      type: "Emergency Radiology Workshop",
+      contentType: "Live",
+      level: "Beginner",
+      status: "Free",
+      thumbnail: "/assets/images/emergency.jpg",
+      duration: "",
+      isLive: true,
+      isFree: true,
+      category: "Emergency",
+      timeAgo: "Live now",
+      vimeoVideoId: null,
+      description: "Interactive emergency radiology workshop for beginners.",
+      faculty: "Dr. Michael Chen",
+      module: "Radiology",
+      submodule: "Emergency",
+      startDate: new Date().toISOString(),
+      liveDate: "Dec 16, 2024",
+    },
+    {
+      id: "live-3",
+      type: "Neurology Case Discussion",
+      contentType: "Live",
+      level: "Advanced",
+      status: "Locked",
+      thumbnail:
+        "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      duration: "",
+      isLive: true,
+      isFree: false,
+      category: "Neurology",
+      timeAgo: "Live now",
+      vimeoVideoId: null,
+      description: "Advanced neurology case discussion with Q&A session.",
+      faculty: "Dr. Emily Rodriguez",
+      module: "Neurology",
+      submodule: "Cases",
+      startDate: new Date().toISOString(),
+      liveDate: "Dec 17, 2024",
+    },
+  ];
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -497,6 +591,20 @@ const MainPage = memo(() => {
         }
       };
 
+      // Function to reduce duration for lecture videos
+      const reduceDuration = (duration, contentType) => {
+        if (contentType === "Lecture" && duration) {
+          // Extract minutes from duration string (assuming format like "45 min" or "1h 30min")
+          const match = duration.match(/(\d+)/);
+          if (match) {
+            const minutes = parseInt(match[1]);
+            const reducedMinutes = Math.max(5, Math.floor(minutes * 0.7)); // Reduce by 30%, minimum 5 minutes
+            return `${reducedMinutes} min`;
+          }
+        }
+        return duration;
+      };
+
       const cards = (newSessionData || []).map((session) => ({
         id: session._id,
         type: session.title,
@@ -513,7 +621,15 @@ const MainPage = memo(() => {
           : session.imageUrl
           ? `https://primerad-backend.onrender.com${session.imageUrl}`
           : "/default-thumbnail.jpg",
-        duration: session.sessionDuration || "",
+        duration: reduceDuration(
+          session.sessionDuration || "",
+          session.sessionType === "Dicom"
+            ? "Case"
+            : session.sessionType === "Vimeo"
+            ? "Lecture"
+            : session.sessionType || "Other"
+        ),
+        isLive: false,
         isFree: session.isFree,
         category: session.moduleName || session.subCategoryId || "",
         timeAgo: calculateTimeAgo(session.startDate),
@@ -596,7 +712,10 @@ const MainPage = memo(() => {
     }
   }, [page, fetchSessions]); // Add fetchSessions to dependencies
 
-  const filteredCards = sessions.filter((card) => {
+  // Combine static live cards with sessions
+  const allCards = [...staticLiveCards, ...sessions];
+
+  const filteredCards = allCards.filter((card) => {
     const areaMatch =
       activeFilters.area.length === 0 ||
       activeFilters.area.includes(card.category);
@@ -626,7 +745,7 @@ const MainPage = memo(() => {
       card.contentType &&
       card.contentType.toLowerCase() === "lecture"
     ) {
-      navigate("/movies-detail", {
+      navigate("/lecture-detail", {
         state: {
           id: card.id,
           vimeoVideoId: card.vimeoVideoId,
@@ -690,7 +809,7 @@ const MainPage = memo(() => {
           {isMobileNavOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
       )}
-      <FloatingActionButton setView={"Atlas"} />
+      {/* <FloatingActionButton setView={"Atlas"} /> */}
       <div className={!isMobile ? "main-page-desktop-layout" : ""}>
         <div
           className={!isMobile ? "desktop-sidebar" : ""}
@@ -705,6 +824,68 @@ const MainPage = memo(() => {
             transition: isMobile ? "width 0.3s ease" : undefined,
           }}
         >
+          {/* Toggle Button Above NavCategories */}
+          <div
+            style={{
+              padding: "16px",
+              borderBottom: "1px solid #e0e0e0",
+              marginTop: isAuthenticated ? "50px" : "40px",
+              background: "#fff",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                background: "#f5f5f5",
+                borderRadius: "12px",
+                padding: "4px",
+                // marginTop: 90,
+                gap: "2px",
+              }}
+            >
+              <button
+                style={{
+                  flex: 1,
+                  padding: "8px 8px",
+                  backgroundColor:
+                    view === "atlas" ? "darkslategrey" : "transparent",
+                  color: view === "atlas" ? "white" : "#666",
+                  border: "none",
+                  borderRadius: "8px",
+                  gap: "6px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  display: "flex", // Add this
+                  alignItems: "center", // Add this
+                  justifyContent: "center", // Optional: to center content horizontally
+                }}
+                onClick={() => setView("atlas")}
+              >
+                <FaTh size={14} />
+                List
+              </button>
+              <button
+                style={{
+                  flex: 1,
+                  padding: "8px 8px",
+                  backgroundColor: view === "atlas" ? "transparent" : "#1976d2",
+                  color: view === "atlas" ? "black" : "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+                onClick={() => navigate("/atlas")}
+              >
+                <GiAtlas style={{ fontSize: 18 }} />
+                Atlas
+              </button>
+            </div>
+          </div>
           <NavCategories />
         </div>
 
@@ -743,7 +924,7 @@ const MainPage = memo(() => {
               style={{
                 marginBottom: isMobile ? "16px" : "20px",
                 display: "flex",
-                justifyContent: isAuthenticated ? "space-between" : "flex-end",
+                justifyContent: isAuthenticated ? "space-between" : "center",
                 alignItems: "center",
                 gap: isMobile ? "16px" : "24px",
                 flexWrap: "wrap",
@@ -754,6 +935,9 @@ const MainPage = memo(() => {
                 <div
                   style={{
                     background: "antiquewhite",
+                    marginLeft: "18px",
+                    marginBottom: "20px",
+                    marginTop: "-20px",
                     borderRadius: isMobile ? 12 : 16,
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     padding: isMobile ? "12px 16px" : "18px 28px",
@@ -828,39 +1012,6 @@ const MainPage = memo(() => {
                   </div>
                 </div>
               )}
-
-              <div style={{ display: "flex", gap: isMobile ? "8px" : "10px" }}>
-                <button
-                  style={{
-                    padding: isMobile ? "6px 8px" : "8px 10px",
-                    backgroundColor:
-                      view === "grid" ? "darkslategray" : "lightgray",
-                    color: view === "grid" ? "white" : "black",
-                    border: "none",
-                    borderRadius: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "12px" : "14px",
-                    fontWeight: "600",
-                  }}
-                  onClick={() => setView("grid")}
-                >
-                  {isMobile ? "Grid" : "Grid"}
-                </button>
-                <button
-                  style={{
-                    padding: isMobile ? "6px 8px" : "8px 10px",
-                    backgroundColor:
-                      view === "list" ? "darkslategray" : "lightgray",
-                    color: view === "list" ? "white" : "black",
-                    border: "none",
-                    borderRadius: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "12px" : "14px",
-                    fontWeight: "600",
-                  }}
-                  onClick={() => setView("list")}
-                >
-                  {isMobile ? "List" : "List"}
-                </button>
-              </div>
             </div>
             {initialLoading && filteredCards.length === 0 ? (
               <div style={{ textAlign: "center", padding: 40 }}>Loading...</div>
@@ -896,14 +1047,13 @@ const MainPage = memo(() => {
             ) : (
               <div className="video-cards-outer-card">
                 <div
-                  className={view === "grid" ? "video-cards-grid" : undefined}
+                  className={view === "atlas" ? "video-cards-grid" : undefined}
                   style={
                     view === "list"
                       ? {
                           display: "flex",
                           flexDirection: "column",
                           gap: "12px",
-
                           width: "100%",
                         }
                       : undefined
@@ -1009,7 +1159,9 @@ const MainPage = memo(() => {
                             className="days-ago"
                             style={{ color: "#666", fontSize: 15 }}
                           >
-                            {card.timeAgo}
+                            {card.isLive
+                              ? `Live - ${card.liveDate || "Now"}`
+                              : card.timeAgo}
                           </div>
                         </>
                       ) : (
@@ -1087,7 +1239,11 @@ const MainPage = memo(() => {
                               </span>
                             )}
                           </div>
-                          <div className="days-ago">{card.timeAgo}</div>
+                          <div className="days-ago">
+                            {card.isLive
+                              ? `Live - ${card.liveDate || "Now"}`
+                              : card.timeAgo}
+                          </div>
                         </>
                       )}
                     </VideoCard>

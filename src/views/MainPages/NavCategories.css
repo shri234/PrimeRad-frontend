@@ -1,11 +1,12 @@
 .nav-categories-wrapper {
   position: relative;
-  top: 94px; /* Matches your header height */
+  top: 18px; 
   left: 0;
   width: 240px;
   height: calc(100vh - 74px-100px); /* Full height minus header */
   margin: 0;
   /* background-color: #aaa; */
+  
   overflow: hidden;
   padding: 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
@@ -21,7 +22,8 @@
 .nav-categories-container {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  /* background-color: #fff; */
+   background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
   display: flex;
   flex-direction: column;
 }
@@ -35,7 +37,7 @@
 }
 
 .filter-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .filter-group-title {
@@ -46,7 +48,8 @@
   align-items: center;
   position: sticky;
   top: 0;
-  background: white;
+  /* background: white; */
+  /* background: linear-gradient(135deg, #e8e3ff 0%, #d4c5ff 50%, #c4b5fd 100%); */
   padding: 8px 0;
   z-index: 1;
 }
@@ -87,11 +90,11 @@
 /* Styles for the message shown when the pathology section is disabled */
 .disabled-message {
   font-style: italic;
-  color: #888;
+  color: black;
   padding: 10px;
   text-align: center;
-  border: 1px dashed #ccc;
-  border-radius: 5px;
+  /* border: 1px dashed #ccc; */
+  /* border-radius: 5px; */
 }
 
 .filter-item:hover {

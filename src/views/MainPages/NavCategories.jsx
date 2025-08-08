@@ -7,7 +7,7 @@ const NavCategories = (props) => {
   const { activeFilters, setActiveFilters } = useFilter();
   const [areas, setAreas] = useState([]);
   const [pathologies, setPathologies] = useState([]);
-  const [selectedAreaId, setSelectedAreaId] = useState("");
+  const [selectedAreaIds, setSelectedAreaIds] = useState([]); // Changed to an array
 
   // This useEffect will now only fetch the areas (modules) on mount.
   useEffect(() => {
@@ -17,28 +17,40 @@ const NavCategories = (props) => {
       .catch((err) => console.error("Error fetching modules:", err));
   }, []);
 
-  // This NEW useEffect is the key fix. It will run whenever the activeFilters
-  // change and will reset the local state if no area is selected.
+  // This useEffect will run whenever activeFilters.area or areas change.
+  // It will update the selectedAreaIds array with the IDs of all selected areas.
   useEffect(() => {
     if (activeFilters.area.length > 0) {
-      // Find the area ID from the active filter and set the local state
-      const areaNameFromContext = activeFilters.area[0];
-      const areaObj = areas.find((a) => a.moduleName === areaNameFromContext);
-      if (areaObj && selectedAreaId !== areaObj._id) {
-        setSelectedAreaId(areaObj._id);
+      const areaIdsFromContext = activeFilters.area
+        .map((areaName) => {
+          const areaObj = areas.find((a) => a.moduleName === areaName);
+          return areaObj ? areaObj._id : null;
+        })
+        .filter(Boolean); // Filter out any null values
+
+      // Only update state if the array of IDs has changed to avoid unnecessary re-renders
+      if (
+        JSON.stringify(selectedAreaIds) !== JSON.stringify(areaIdsFromContext)
+      ) {
+        setSelectedAreaIds(areaIdsFromContext);
       }
     } else {
       // If the area filter is empty, clear the local state
-      setSelectedAreaId("");
+      setSelectedAreaIds([]);
     }
-  }, [activeFilters.area, areas]);
+  }, [activeFilters.area, areas, selectedAreaIds]);
 
-  // This useEffect will fetch pathologies whenever selectedAreaId changes.
+  // This useEffect will fetch pathologies whenever selectedAreaIds changes.
   useEffect(() => {
-    if (selectedAreaId) {
+    if (selectedAreaIds.length > 0) {
+      // Construct the query string with multiple moduleIds
+      const queryParams = selectedAreaIds
+        .map((id) => `moduleId=${id}`)
+        .join("&");
+
       axios
         .get(
-          `https://primerad-backend.onrender.com/api/pathologies/getByModule?moduleId=${selectedAreaId}`
+          `https://primerad-backend.onrender.com/api/pathologies/getByModule?${queryParams}`
         )
         .then((res) => setPathologies(res.data.data || res.data))
         .catch((err) => console.error("Error fetching pathologies:", err));
@@ -46,7 +58,7 @@ const NavCategories = (props) => {
       // Clear pathologies if no area is selected
       setPathologies([]);
     }
-  }, [selectedAreaId]);
+  }, [selectedAreaIds]);
 
   const handleFilterClick = (category, value) => {
     setActiveFilters((prev) => {
@@ -60,7 +72,13 @@ const NavCategories = (props) => {
       }
       newFilters[category] = Array.from(updatedCategory);
 
+      // This logic is crucial for handling multiple selections.
+      // We no longer clear pathologies for every area selection, as multiple can be active.
+      // Pathologies will now be filtered based on the combined selection.
+      // You might want to adjust this logic depending on desired behavior.
       if (category === "area") {
+        // If a new area is selected, we should re-evaluate which pathologies are relevant.
+        // It's generally best to clear the pathology filter to avoid showing stale selections.
         newFilters.pathology = [];
       }
 
@@ -73,11 +91,11 @@ const NavCategories = (props) => {
     pathology: pathologies.map((p) => p.pathologyName),
     level: ["Beginner", "Advanced"],
     status: ["Free", "Locked"],
-    type: ["Case", "Video"],
+    type: ["Case", "Lectures", "Live"],
   };
 
   const categoryColors = {
-    area: "#4CAF50",
+    area: "darkslategrey",
     pathology: "#FF5722",
     level: "#2196F3",
     status: "#9C27B0",
@@ -116,7 +134,7 @@ const NavCategories = (props) => {
               <div className="filter-items">
                 {category === "pathology" && activeFilters.area.length === 0 ? (
                   <div className="disabled-message">
-                    Select an Area to see pathologies.
+                    Select one or more Areas to see pathologies.
                   </div>
                 ) : (
                   items.map((item) => (

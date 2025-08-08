@@ -922,7 +922,7 @@ const MovieDetail = memo(() => {
                                   letterSpacing: "0.5px",
                                 }}
                               >
-                                {t("Clinical Focus")}
+                                {t("Pathology Focus")}
                               </div>
                               <div
                                 className="fw-bold"
@@ -1069,7 +1069,7 @@ const MovieDetail = memo(() => {
                             >
                               📋
                             </span>
-                            {t("Clinical Overview")}
+                            {t("Overview")}
                           </div>
                           <div
                             className="position-absolute top-0 start-0 w-100 h-100"
@@ -1141,7 +1141,7 @@ const MovieDetail = memo(() => {
                             >
                               ⭐
                             </span>
-                            {t("Clinical Reviews")}
+                            {t("Reviews")}
                           </div>
                           <div
                             className="position-absolute top-0 start-0 w-100 h-100"
@@ -1360,7 +1360,7 @@ const MovieDetail = memo(() => {
                                 className="fw-bold mb-1"
                                 style={{ color: "#1a202c", fontSize: "1.4rem" }}
                               >
-                                {t("Clinical Reviews & Feedback")}
+                                {t("Reviews & Feedback")}
                               </h4>
                               <p
                                 className="mb-0 small"

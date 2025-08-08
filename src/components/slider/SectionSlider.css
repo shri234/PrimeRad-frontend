@@ -5,3 +5,30 @@
   color: #1976d2;
   text-decoration: underline;
 } 
+
+
+
+.swiper-button-next{
+    width: 40px !important;
+    background-color: gray !important; 
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.2rem !important;
+  /* margin-left: -40px !important; */
+}
+.swiper-button-prev {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.2rem !important;
+  /* margin-right: -40px !important; */
+}
+
+/* Other shared styles for the buttons */
+

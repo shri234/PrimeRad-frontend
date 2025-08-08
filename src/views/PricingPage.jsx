@@ -324,7 +324,6 @@ const PricingPage = memo(() => {
 
   return (
     <Fragment>
-      <BreadcrumbWidget title="Subscription" />
       <div
         className="section-padding"
         style={{ backgroundColor: THEME.background }}

@@ -83,7 +83,7 @@ export const LandingpageRouter = [
         element: <MainPage />,
       },
       {
-        path: "/movies-detail",
+        path: "/lecture-detail",
         element: (
           // <PrivateRoute>
           <MovieDetail />
@@ -169,7 +169,7 @@ export const LandingpageRouter = [
 
       {
         path: "/atlas",
-        element: <AtlasView />,
+        element: <SubmoduleView />,
       },
       // {
       //   path: "/atlas/submodule-view",

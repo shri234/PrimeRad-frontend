@@ -5,7 +5,7 @@
 	text-align: center;
 	line-height: 1.875rem;
 	color: var(--bs-white);
-	background: transparent;
+	// background: transparent;
 	border-radius: 50%;
 	border: 0.0625em solid var(--bs-white);
 	z-index: 1;
@@ -22,11 +22,11 @@
 	}
 
 	&.swiper-button-prev {
-		left: 1em;
+		left: 0em;
 	}
 
 	&.swiper-button-next {
-		right: 1em;
+		right: -1em;
 	}
 
 	&:hover {

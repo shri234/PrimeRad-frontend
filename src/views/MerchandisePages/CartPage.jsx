@@ -134,7 +134,6 @@ const CartPage = memo(() => {
   return (
     <Fragment>
       <HeaderDefault />
-      <BreadCrumbWidget title="CME Subscription" />
       <div
         className="cart-page section-padding"
         style={{ background: THEME.background, minHeight: "100vh" }}

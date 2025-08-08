@@ -31,7 +31,7 @@ const ViewAll = memo(() => {
                     title={item.title}
                     movieTime={item.movieTime}
                     watchlistLink="/playlist"
-                    link="/movies-detail"
+                    link="/lecture-detail"
                   />
                 </Col>
               ))}

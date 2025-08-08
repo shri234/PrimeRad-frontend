@@ -134,7 +134,7 @@ const LatestMovies = (props) => {
         cardData.contentType &&
         cardData.contentType.toLowerCase() === "lecture"
       ) {
-        navigate("/movies-detail", {
+        navigate("/lecture-detail", {
           state: {
             id: cardData.id,
             vimeoVideoId: cardData.vimeoVideoId,
