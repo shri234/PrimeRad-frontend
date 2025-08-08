@@ -157,10 +157,10 @@ const SectionSlider = memo(
                   {children(data)}
                 </SwiperSlide>
               ))}
-              <div className="swiper-button swiper-button-next">
+              <div className="swiper-button-next">
                 {/* <i className="fas fa-chevron-right"></i> */}
               </div>
-              <div className="swiper-button swiper-button-prev">
+              <div className="swiper-button-prev">
                 {/* <i className="fas fa-chevron-left"></i> */}
               </div>
             </Swiper>

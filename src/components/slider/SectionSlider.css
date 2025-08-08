@@ -21,6 +21,7 @@
 }
 .swiper-button-prev {
   width: 40px !important;
+  background-color: gray !important; 
   height: 40px !important;
   border-radius: 50% !important;
   display: flex !important;
