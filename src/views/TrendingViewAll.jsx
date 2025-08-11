@@ -5,6 +5,7 @@ import BreadCrumbWidget from "../components/BreadcrumbWidget";
 import axios from "axios";
 import { latestMovie } from "../StaticData/data";
 import FooterMega from "../components/partials/FooterDefault";
+import { FixedBackButton } from "../utilities/BackButton";
 
 const TrendingViewAll = memo(() => {
   const [cases, setCases] = useState([]);
@@ -38,6 +39,7 @@ const TrendingViewAll = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/home"></FixedBackButton>
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">

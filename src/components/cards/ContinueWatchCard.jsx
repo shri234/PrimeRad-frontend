@@ -3,11 +3,22 @@ import { ProgressBar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const ContinueWatchCard = memo(
-  ({ imagePath, dataLeftTime, progressValue, title, sessionData }) => {
+  ({
+    imagePath,
+    dataLeftTime,
+    progressValue,
+    title,
+    sessionData,
+    category,
+    contentType,
+  }) => {
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
 
-    imagePath = `https://primerad-backend.onrender.com${imagePath}`;
+    // The image path needs to be correctly constructed if it's relative
+    const constructedImagePath = imagePath.startsWith("http")
+      ? imagePath
+      : `https://primerad-backend.onrender.com${imagePath}`;
 
     const handleClick = () => {
       navigate("/lecture-detail", {
@@ -39,7 +50,7 @@ const ContinueWatchCard = memo(
           }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={handleClick} // <-- navigate on click
+          onClick={handleClick}
         >
           <div className="block-images position-relative">
             <div
@@ -51,7 +62,7 @@ const ContinueWatchCard = memo(
               }}
             >
               <img
-                src={imagePath}
+                src={constructedImagePath}
                 alt="content-thumbnail"
                 style={{
                   width: "100%",
@@ -61,6 +72,53 @@ const ContinueWatchCard = memo(
                   opacity: "0.8",
                 }}
               />
+              {/* Labels for Category and ContentType */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 4,
+                  zIndex: 2,
+                }}
+              >
+                {category && (
+                  <span
+                    style={{
+                      background: "#1976d2",
+                      color: "#fff",
+                      fontWeight: 600,
+                      fontSize: "0.62rem",
+                      borderRadius: "8px",
+                      padding: "2px 10px",
+                      letterSpacing: "0.5px",
+                      marginBottom: 2,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    }}
+                  >
+                    {category}
+                  </span>
+                )}
+                {contentType && (
+                  <span
+                    style={{
+                      background: "#e0e7ef",
+                      color: "#003366",
+                      fontWeight: 600,
+                      fontSize: "0.62rem",
+                      borderRadius: "8px",
+                      padding: "2px 10px",
+                      letterSpacing: "0.5px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    }}
+                  >
+                    {contentType}
+                  </span>
+                )}
+              </div>
               {isHovered && (
                 <div
                   style={{
@@ -113,7 +171,6 @@ const ContinueWatchCard = memo(
                   height: "4px",
                   backgroundColor: "rgba(255,255,255,0.3)",
                   borderRadius: "5px",
-                  // color: "navy",
                 }}
                 variant="success"
               />

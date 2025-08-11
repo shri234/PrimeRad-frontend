@@ -3,11 +3,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import CardStyle from "../components/cards/CardStyle";
 import BreadCrumbWidget from "../components/BreadcrumbWidget";
 import { latestMovie } from "../StaticData/data";
+import { FixedBackButton } from "../utilities/BackButton";
 
 const RecommendedLecturesViewAll = memo(() => {
   const viewAll = latestMovie;
   return (
     <Fragment>
+      <FixedBackButton customPath="/home"></FixedBackButton>
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">

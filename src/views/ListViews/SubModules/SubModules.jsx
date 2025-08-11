@@ -1478,9 +1478,8 @@ const SubModuleView = () => {
                     style={{
                       flex: 1,
                       padding: "8px 8px",
-                      backgroundColor:
-                        viewMode === "list" ? "#1976d2" : "transparent",
-                      color: viewMode === "list" ? "white" : "#666",
+                      backgroundColor: "transparent",
+                      color: "#666",
                       border: "none",
                       borderRadius: "8px",
                       gap: "6px",
@@ -1492,7 +1491,7 @@ const SubModuleView = () => {
                       alignItems: "center",
                       justifyContent: "center",
                     }}
-                    onClick={() => setViewMode("list")}
+                    onClick={() => navigate("/main-page")}
                   >
                     <FaTh size={14} />
                     List
@@ -1502,8 +1501,8 @@ const SubModuleView = () => {
                       flex: 1,
                       padding: "8px 8px",
                       backgroundColor:
-                        viewMode === "atlas" ? "darkslategrey" : "transparent",
-                      color: viewMode === "atlas" ? "white" : "#666",
+                        viewMode === "list" ? "darkslategrey" : "transparent",
+                      color: viewMode === "list" ? "white" : "#666",
                       border: "none",
                       borderRadius: "8px",
                       fontSize: "14px",
@@ -1616,14 +1615,151 @@ const SubModuleView = () => {
                             </div>
                           ))
                         )}
+
                         <div
                           className={`sidebar-subitem assessment-item ${
                             currentView === "difficulty" ? "open" : ""
                           }`}
-                          onClick={handleAssessmentClick}
+                          style={{
+                            // Layout & Sizing
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "12px 16px",
+                            minHeight: "48px",
+                            width: "100%",
+
+                            // Background & Colors
+                            backgroundColor:
+                              currentView === "difficulty"
+                                ? "#e6e6fa"
+                                : "#f8f9fa",
+                            borderLeft:
+                              currentView === "difficulty"
+                                ? "4px solid #6366f1"
+                                : "4px solid transparent",
+
+                            // Typography
+                            fontSize: "14px",
+                            fontWeight:
+                              currentView === "difficulty" ? "600" : "500",
+                            color:
+                              currentView === "difficulty"
+                                ? "#4338ca"
+                                : "#374151",
+
+                            // Interactive States
+                            cursor: "pointer",
+                            transition: "all 0.2s ease-in-out",
+                            borderRadius: "8px",
+                            margin: "2px 8px",
+
+                            // Hover Effects
+                            "&:hover": {
+                              backgroundColor:
+                                currentView === "difficulty"
+                                  ? "#e6e6fa"
+                                  : "#f3f4f6",
+                              transform: "translateX(2px)",
+                              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            },
+
+                            // Focus States
+                            "&:focus": {
+                              outline: "2px solid #6366f1",
+                              outlineOffset: "2px",
+                            },
+
+                            // Active State
+                            "&:active": {
+                              transform: "translateX(1px)",
+                              backgroundColor:
+                                currentView === "difficulty"
+                                  ? "#ddd6fe"
+                                  : "#e5e7eb",
+                            },
+                          }}
+                          onClick={() => handleAssessmentClick()}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              handleAssessmentClick();
+                            }
+                          }}
+                          tabIndex={0}
+                          role="button"
+                          aria-pressed={currentView === "difficulty"}
+                          aria-label="Assessment menu item"
                         >
-                          <span className="chevron">▶</span> Assessment
+                          {/* Icon Container */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "24px",
+                              height: "24px",
+                              flexShrink: 0,
+                              borderRadius: "4px",
+                              backgroundColor:
+                                currentView === "difficulty"
+                                  ? "#6366f1"
+                                  : "#9ca3af",
+                              padding: "2px",
+                              transition: "all 0.2s ease-in-out",
+                            }}
+                          >
+                            <img
+                              src="/assets/images/assessment.jpeg"
+                              alt="Assessment icon"
+                              style={{
+                                width: "16px",
+                                height: "16px",
+                                objectFit: "contain",
+                                filter:
+                                  currentView === "difficulty"
+                                    ? "brightness(0) invert(1)"
+                                    : "brightness(0.8)",
+                              }}
+                            />
+                          </div>
+
+                          {/* Text Label */}
+                          <span
+                            style={{
+                              flex: 1,
+                              lineHeight: "1.4",
+                              letterSpacing: "0.025em",
+                            }}
+                          >
+                            Assessment
+                          </span>
+
+                          {/* Optional Active Indicator */}
+                          {currentView === "difficulty" && (
+                            <div
+                              style={{
+                                width: "6px",
+                                height: "6px",
+                                borderRadius: "50%",
+                                backgroundColor: "#6366f1",
+                                flexShrink: 0,
+                                animation: "pulse 2s infinite",
+                              }}
+                            />
+                          )}
                         </div>
+                        {/* Add this CSS for the pulse animation */}
+                        <style jsx>{`
+                          @keyframes pulse {
+                            0%,
+                            100% {
+                              opacity: 1;
+                            }
+                            50% {
+                              opacity: 0.5;
+                            }
+                          }
+                        `}</style>
                       </div>
                     )}
                   </div>
@@ -1638,11 +1774,24 @@ const SubModuleView = () => {
             )}
           </>
         )}
-        <div className="main-content" ref={sectionRef}>
+        <div
+          className="submodule-main-content"
+          style={{
+            padding: "32px 40px 32px 40px",
+            background: "#f8fafc",
+            minHeight: "100vh",
+            boxSizing: "border-box",
+            flex: 1,
+            overflowY: "auto",
+          }}
+          ref={sectionRef}
+        >
+          {/* Assessment Difficulty Cards - Only shown when currentView === "difficulty" */}
+
           {currentView === "assessment" ? (
             <div>
               <button
-                onClick={() => navigate("/main-page")}
+                onClick={() => setCurrentView("submodules")}
                 className="back-link"
               >
                 ← Back to Modules
@@ -1721,6 +1870,404 @@ const SubModuleView = () => {
                 </div>
               </div>
             </div>
+          ) : /* Difficulty Assessment Cards View */
+          currentView === "difficulty" ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                padding: "24px",
+                backgroundColor: "#f8fafc",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                animation: "slideIn 0.3s ease-out",
+                margin: "20px",
+              }}
+            >
+              {/* Back Button for Difficulty View */}
+              <button
+                onClick={() => setCurrentView("main")} // or whatever your default view should be
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  background: "none",
+                  border: "none",
+                  color: "#6366f1",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  transition: "all 0.2s ease",
+                  marginBottom: "16px",
+                }}
+              >
+                ← Back to Pathologies
+              </button>
+
+              {/* Assessment Difficulty Selection Title */}
+              <div style={{ marginBottom: "20px" }}>
+                <h2
+                  style={{
+                    fontSize: "28px",
+                    fontWeight: "700",
+                    color: "#1f2937",
+                    margin: 0,
+                    marginBottom: "8px",
+                  }}
+                >
+                  Choose Assessment Level
+                </h2>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    color: "#6b7280",
+                    margin: 0,
+                  }}
+                >
+                  Select the difficulty level that matches your expertise in{" "}
+                  {activeModuleName} pathologies.
+                </p>
+              </div>
+
+              {/* Beginner Assessment Card */}
+              <div
+                className="assessment-card beginner-card"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "20px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "12px",
+                  border: "2px solid #10b981",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                onClick={() => {
+                  handleDifficultySelect("beginner");
+                  setCurrentView("assessment"); // Switch to assessment view
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 25px rgba(16, 185, 129, 0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(16, 185, 129, 0.1)";
+                }}
+              >
+                {/* Background Pattern */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "80px",
+                    height: "80px",
+                    background: "linear-gradient(135deg, #10b981, #34d399)",
+                    borderRadius: "0 12px 0 100%",
+                    opacity: 0.1,
+                  }}
+                />
+
+                {/* Header */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: "#10b981",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                    }}
+                  >
+                    🌱
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: "18px",
+                        fontWeight: "700",
+                        color: "#065f46",
+                        lineHeight: "1.2",
+                      }}
+                    >
+                      Beginner Assessment
+                    </h3>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "12px",
+                        color: "#10b981",
+                        fontWeight: "600",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      Foundation Level
+                    </p>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "14px",
+                    color: "#374151",
+                    lineHeight: "1.6",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  Perfect for those starting their journey. Covers basic
+                  concepts, fundamental skills, and core knowledge areas with
+                  guided support.
+                </p>
+
+                {/* Features */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {[
+                    "20-30 mins",
+                    "Basic concepts",
+                    "Guided hints",
+                    "Multiple attempts",
+                  ].map((feature, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 8px",
+                        backgroundColor: "#d1fae5",
+                        color: "#065f46",
+                        borderRadius: "12px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Action Button */}
+                <button
+                  style={{
+                    padding: "12px 16px",
+                    backgroundColor: "#10b981",
+                    color: "white",
+                    width: "20%",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                  onClick={() => handleDifficultyCardClick("Beginner")}
+                >
+                  Start Beginner Assessment
+                </button>
+              </div>
+
+              {/* Advanced Assessment Card */}
+              <div
+                className="assessment-card advanced-card"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "20px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "12px",
+                  border: "2px solid #8b5cf6",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                onClick={() => {
+                  handleDifficultySelect("advanced");
+                  setCurrentView("assessment"); // Switch to assessment view
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 25px rgba(139, 92, 246, 0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(139, 92, 246, 0.1)";
+                }}
+              >
+                {/* Background Pattern */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "80px",
+                    height: "80px",
+                    background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
+                    borderRadius: "0 12px 0 100%",
+                    opacity: 0.1,
+                  }}
+                />
+
+                {/* Header */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: "#8b5cf6",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                    }}
+                  >
+                    🚀
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontSize: "18px",
+                        fontWeight: "700",
+                        color: "#581c87",
+                        lineHeight: "1.2",
+                      }}
+                    >
+                      Advanced Assessment
+                    </h3>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "12px",
+                        color: "#8b5cf6",
+                        fontWeight: "600",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      Expert Level
+                    </p>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "14px",
+                    color: "#374151",
+                    lineHeight: "1.6",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  Designed for experienced learners. Tests deep understanding,
+                  complex problem-solving, and advanced application of concepts.
+                </p>
+
+                {/* Features */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px",
+                    marginBottom: "16px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {[
+                    "45-60 mins",
+                    "Complex scenarios",
+                    "Detailed analysis",
+                    "Single attempt",
+                  ].map((feature, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 8px",
+                        backgroundColor: "#ede9fe",
+                        color: "#581c87",
+                        borderRadius: "12px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Action Button */}
+                <button
+                  style={{
+                    padding: "12px 16px",
+                    backgroundColor: "#8b5cf6",
+                    color: "white",
+                    width: "20%",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                  onClick={() => handleDifficultyCardClick("Advanced")}
+                >
+                  Start Advanced Assessment
+                </button>
+              </div>
+
+              {/* Quick Stats */}
+            </div>
           ) : (
             <>
               <div className="header">
@@ -1730,7 +2277,11 @@ const SubModuleView = () => {
                     setActiveModuleName(null);
                     setSelectedSubModuleId(null);
                     setSelectedLevel(null);
-                    navigate("/main-page");
+                    {
+                      activeModuleId === null
+                        ? navigate("/main-page")
+                        : navigate("/atlas");
+                    }
                   }}
                   className="back-link"
                 >
@@ -2069,10 +2620,10 @@ const SubModuleView = () => {
                                       <div
                                         className={
                                           viewMode === "list"
-                                            ? "lecture-list-view"
+                                            ? "lecture-grid-view"
                                             : "lecture-grid-view"
                                         }
-                                        style={{ marginLeft: "20px" }}
+                                        style={{}}
                                       >
                                         <div className="polished-filter-bar">
                                           <label className="polished-filter-checkbox">
@@ -2109,13 +2660,7 @@ const SubModuleView = () => {
                                             Live Programs
                                           </label>
                                         </div>
-                                        <div
-                                          className={
-                                            viewMode === "list"
-                                              ? "polished-list-outer-card"
-                                              : "polished-grid-container"
-                                          }
-                                        >
+                                        <div className="polished-grid-container">
                                           {loadingLevelSessions ? (
                                             <div
                                               className="loading-message"
@@ -2175,7 +2720,7 @@ const SubModuleView = () => {
                                                   }
                                                   className={`lecture-card ${
                                                     viewMode === "list"
-                                                      ? "polished-list-view"
+                                                      ? "polished-grid-view"
                                                       : "polished-grid-view"
                                                   }`}
                                                   onClick={() =>
@@ -2185,7 +2730,7 @@ const SubModuleView = () => {
                                                   <div
                                                     className={
                                                       viewMode === "list"
-                                                        ? "polished-list-thumbicon"
+                                                        ? "polished-grid-thumbnail"
                                                         : "polished-grid-thumbnail"
                                                     }
                                                   >
@@ -2201,7 +2746,7 @@ const SubModuleView = () => {
                                                   <div
                                                     className={
                                                       viewMode === "list"
-                                                        ? "polished-list-center"
+                                                        ? "polished-grid-content"
                                                         : "polished-grid-content"
                                                     }
                                                   >
@@ -2209,58 +2754,27 @@ const SubModuleView = () => {
                                                       <div
                                                         className={
                                                           viewMode === "list"
-                                                            ? "polished-list-title"
+                                                            ? "polished-grid-title"
                                                             : "polished-grid-title"
                                                         }
+                                                        style={{
+                                                          whiteSpace: "nowrap",
+                                                          overflow: "hidden",
+                                                          textOverflow:
+                                                            "ellipsis",
+                                                        }}
                                                       >
                                                         {session.title}
                                                       </div>
-                                                      {viewMode === "list" && (
+                                                      {viewMode === "grid" && (
                                                         <div className="polished-list-desc">
                                                           {session.description}
                                                         </div>
                                                       )}
                                                     </div>
                                                   </div>
+
                                                   {viewMode === "list" && (
-                                                    <div className="polished-list-right">
-                                                      <div
-                                                        className={`type-badge ${
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.className || ""
-                                                        }`}
-                                                      >
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.icon
-                                                        }{" "}
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.label
-                                                        }
-                                                      </div>
-                                                      <div className="polished-list-date">
-                                                        {session.startDate &&
-                                                          ((session.sessionType ||
-                                                            session.type) ===
-                                                          "live"
-                                                            ? `Live: ${formatDate(
-                                                                session.startDate,
-                                                                "live"
-                                                              )}`
-                                                            : `Uploaded: ${formatDate(
-                                                                session.startDate
-                                                              )}`)}
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                  {viewMode === "grid" && (
                                                     <div
                                                       className={`type-badge ${
                                                         getSessionTypeBadge(
@@ -2367,10 +2881,10 @@ const SubModuleView = () => {
                                       <div
                                         className={
                                           viewMode === "list"
-                                            ? "lecture-list-view"
+                                            ? "lecture-grid-view"
                                             : "lecture-grid-view"
                                         }
-                                        style={{ marginLeft: "20px" }}
+                                        style={{}}
                                       >
                                         <div className="polished-filter-bar">
                                           <label className="polished-filter-checkbox">
@@ -2410,7 +2924,7 @@ const SubModuleView = () => {
                                         <div
                                           className={
                                             viewMode === "list"
-                                              ? "polished-list-outer-card"
+                                              ? "polished-grid-container"
                                               : "polished-grid-container"
                                           }
                                         >
@@ -2473,7 +2987,7 @@ const SubModuleView = () => {
                                                   }
                                                   className={`lecture-card ${
                                                     viewMode === "list"
-                                                      ? "polished-list-view"
+                                                      ? "polished-grid-view"
                                                       : "polished-grid-view"
                                                   }`}
                                                   onClick={() =>
@@ -2483,7 +2997,7 @@ const SubModuleView = () => {
                                                   <div
                                                     className={
                                                       viewMode === "list"
-                                                        ? "polished-list-thumbicon"
+                                                        ? "polished-grid-thumbnail"
                                                         : "polished-grid-thumbnail"
                                                     }
                                                   >
@@ -2499,7 +3013,7 @@ const SubModuleView = () => {
                                                   <div
                                                     className={
                                                       viewMode === "list"
-                                                        ? "polished-list-center"
+                                                        ? "polished-grid-content"
                                                         : "polished-grid-content"
                                                     }
                                                   >
@@ -2507,58 +3021,27 @@ const SubModuleView = () => {
                                                       <div
                                                         className={
                                                           viewMode === "list"
-                                                            ? "polished-list-title"
+                                                            ? "polished-grid-title"
                                                             : "polished-grid-title"
                                                         }
+                                                        style={{
+                                                          whiteSpace: "nowrap",
+                                                          overflow: "hidden",
+                                                          textOverflow:
+                                                            "ellipsis",
+                                                        }}
                                                       >
                                                         {session.title}
                                                       </div>
-                                                      {viewMode === "list" && (
+                                                      {viewMode === "grid" && (
                                                         <div className="polished-list-desc">
                                                           {session.description}
                                                         </div>
                                                       )}
                                                     </div>
                                                   </div>
+
                                                   {viewMode === "list" && (
-                                                    <div className="polished-list-right">
-                                                      <div
-                                                        className={`type-badge ${
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.className || ""
-                                                        }`}
-                                                      >
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.icon
-                                                        }{" "}
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.label
-                                                        }
-                                                      </div>
-                                                      <div className="polished-list-date">
-                                                        {session.startDate &&
-                                                          ((session.sessionType ||
-                                                            session.type) ===
-                                                          "live"
-                                                            ? `Live: ${formatDate(
-                                                                session.startDate,
-                                                                "live"
-                                                              )}`
-                                                            : `Uploaded: ${formatDate(
-                                                                session.startDate
-                                                              )}`)}
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                  {viewMode === "grid" && (
                                                     <div
                                                       className={`type-badge ${
                                                         getSessionTypeBadge(

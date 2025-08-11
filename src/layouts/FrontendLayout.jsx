@@ -67,7 +67,7 @@ const FrontendLayout = memo((props) => {
       >
                {" "}
         <Link
-          className="p-0 btn bg-primary btn-sm position-fixed top border-0 rounded-circle"
+          className="p-0 btn bg-lightgray btn-sm position-fixed top border-0 rounded-circle"
           id="top"
           to="#top"
         >

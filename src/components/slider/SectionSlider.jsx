@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,6 +33,7 @@ const SectionSlider = memo(
   }) => {
     const { t } = useTranslation();
     const themeSchemeDirection = useSelector(theme_scheme_direction);
+    const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
     const navigate = useNavigate();
 
     const slider = useRef(null);
@@ -160,7 +161,19 @@ const SectionSlider = memo(
               <div className="swiper-button-next">
                 {/* <i className="fas fa-chevron-right"></i> */}
               </div>
-              <div className="swiper-button-prev">
+              <div
+                className="swiper-button-prev"
+                style={{
+                  width: "40px !important",
+                  backgroundColor: "gray !important",
+                  height: "40px !important",
+                  borderRadius: "50% !important",
+                  display: "flex !important",
+                  alignItems: "center !important",
+                  justifyContent: "center !important",
+                  fontsize: "1.2rem !important",
+                }}
+              >
                 {/* <i className="fas fa-chevron-left"></i> */}
               </div>
             </Swiper>

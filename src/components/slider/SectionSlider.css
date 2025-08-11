@@ -17,6 +17,7 @@
   align-items: center !important;
   justify-content: center !important;
   font-size: 1.2rem !important;
+  /* cursor: pointer; */
   /* margin-left: -40px !important; */
 }
 .swiper-button-prev {

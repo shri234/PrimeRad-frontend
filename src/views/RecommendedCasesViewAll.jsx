@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import CardStyle from "../components/cards/CardStyle";
 import BreadCrumbWidget from "../components/BreadcrumbWidget";
 import axios from "axios"; // Make sure axios is imported
-
+import { FixedBackButton } from "../utilities/BackButton";
 const RecommendedCasesViewAll = memo(() => {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +38,7 @@ const RecommendedCasesViewAll = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/home"></FixedBackButton>
       <div className="section-padding">
         <Container fluid>
           <div className="card-style-grid">

@@ -13,6 +13,7 @@ import {
   FaBroadcastTower,
   FaBars,
   FaTimes,
+  FaList,
 } from "react-icons/fa";
 import NavCategories from "./NavCategories";
 import axios from "axios";
@@ -54,7 +55,7 @@ const videoCardStyles = `
     background: #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     border-radius: 18px;
-    margin-bottom: 12px;
+    // margin-bottom: 12px;
     padding: 0;
   }
   .video-container {
@@ -64,13 +65,13 @@ const videoCardStyles = `
     border-radius: 18px;
     overflow: hidden;
     background: #000;
-    margin-bottom: 0;
+    // margin-bottom: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .video-card.list-view .video-container {
     width: 180px;
-    min-width: 180px;
-    height: 110px;
+    min-width: 100px;
+    height: 30px;
     padding-top: 0;
     border-radius: 14px 0 0 14px;
     margin: 0;
@@ -85,14 +86,14 @@ const videoCardStyles = `
   }
   .video-card.list-view .video-content {
     flex: 1;
-    padding: 16px 18px 16px 18px;
+    // padding: 16px 18px 16px 18px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
   }
   .video-card.list-view .video-title {
-    font-size: 18px;
+    font-size: 14px;
     margin-top: 0;
     margin-bottom: 6px;
     font-weight: 700;
@@ -102,8 +103,8 @@ const videoCardStyles = `
     text-overflow: ellipsis;
   }
   .video-card:hover {
-    background: #f5f5f5 !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    background:  !important;
+    // box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
   .video-container img {
     position: absolute;
@@ -166,8 +167,8 @@ const videoCardStyles = `
   .badges-row {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
-    margin-bottom: 6px;
+    margin-top: 8px;
+    // margin-bottom: 6px;
     flex-wrap: wrap;
     align-items: center;
   }
@@ -219,7 +220,7 @@ const videoCardStyles = `
   }
   .video-title {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
     color: #222;
     margin-top: 14px;
     margin-bottom: 0;
@@ -330,8 +331,8 @@ const ImageLoader = () => (
   >
     <div
       style={{
-        width: 32,
-        height: 32,
+        width: 22,
+        height: 22,
         border: "4px solid #ccc",
         borderTop: "4px solid #1976d2",
         borderRadius: "50%",
@@ -359,8 +360,8 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
         display: view === "list" ? "flex" : undefined,
         flexDirection: view === "list" ? "row" : undefined,
         alignItems: view === "list" ? "center" : undefined,
-        padding: view === "list" ? "0 24px 0 0" : undefined,
-        gap: view === "list" ? 10 : undefined,
+        padding: view === "list" ? "0 0px 0 0" : undefined,
+        gap: view === "list" ? 0 : undefined,
       }}
       onClick={() => handleCardClick(card)}
       onMouseEnter={(e) => {
@@ -376,10 +377,10 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
           <div
             className="video-container"
             style={{
-              width: 180,
-              minWidth: 180,
-              height: 110,
-              margin: "18px 24px 18px 0",
+              width: 90,
+              minWidth: 90,
+              height: 60,
+              margin: "0px 24px 18px 0",
               borderRadius: 14,
               overflow: "hidden",
               flexShrink: 0,
@@ -391,9 +392,10 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               src={card.thumbnail}
               alt={card.type + " thumbnail"}
               style={{
+                // CORRECTED: Set width and height to 100% to fill the container
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "cover", // Ensures the image covers the container without distortion
                 borderRadius: "14px",
                 opacity: imgLoaded ? 1 : 0,
                 transition: "opacity 0.3s",
@@ -401,12 +403,6 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgLoaded(true)}
             />
-            {card.isLive ? (
-              <span className="live-badge">LIVE</span>
-            ) : (
-              <span className="duration-badge">{card.duration}</span>
-            )}
-            <span className="category-badge">{card.category}</span>
           </div>
           <div
             className="video-content"
@@ -416,6 +412,8 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              // Add padding for the content area to the right of the image
+              paddingRight: "20px",
             }}
           >
             {children}
@@ -429,6 +427,10 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               src={card.thumbnail}
               alt={card.type + " thumbnail"}
               style={{
+                // CORRECTED: Apply object-fit to ensure proper scaling
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
                 opacity: imgLoaded ? 1 : 0,
                 transition: "opacity 0.3s",
               }}
@@ -848,8 +850,8 @@ const MainPage = memo(() => {
                   flex: 1,
                   padding: "8px 8px",
                   backgroundColor:
-                    view === "atlas" ? "darkslategrey" : "transparent",
-                  color: view === "atlas" ? "white" : "#666",
+                    view === "atlas" ? "darkslategrey" : "darkslategrey",
+                  color: view === "atlas" ? "white" : "white",
                   border: "none",
                   borderRadius: "8px",
                   gap: "6px",
@@ -870,8 +872,8 @@ const MainPage = memo(() => {
                 style={{
                   flex: 1,
                   padding: "8px 8px",
-                  backgroundColor: view === "atlas" ? "transparent" : "#1976d2",
-                  color: view === "atlas" ? "black" : "white",
+                  backgroundColor: "transparent",
+                  color: "black",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "14px",
@@ -922,13 +924,13 @@ const MainPage = memo(() => {
           >
             <div
               style={{
-                marginBottom: isMobile ? "16px" : "20px",
                 display: "flex",
-                justifyContent: isAuthenticated ? "space-between" : "center",
-                alignItems: "center",
-                gap: isMobile ? "16px" : "24px",
-                flexWrap: "wrap",
-                margin: "0 auto",
+                flexWrap: "wrap", // Allows items to wrap to a new line on small screens
+                justifyContent: "space-between", // Pushes items to opposite ends of the container
+                alignItems: "center", // Vertically centers items within the container
+                width: "100%", // Ensures the container takes up the full width
+                gap: "16px", // Adds space between the items
+                marginBottom: "2px",
               }}
             >
               {isAuthenticated && (
@@ -947,7 +949,7 @@ const MainPage = memo(() => {
                     maxWidth: 900,
                     width: "100%",
                     minWidth: isMobile ? 280 : 320,
-                    flex: 1,
+                    // flex: 1,
                     flexDirection: isMobile ? "column" : "row",
                   }}
                 >
@@ -1012,6 +1014,60 @@ const MainPage = memo(() => {
                   </div>
                 </div>
               )}
+
+              {/* NEW: View Mode Toggle - Grid/List */}
+              <div
+                style={{
+                  // marginBottom: isMobile ? "10px" : "16px",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <button
+                  style={{
+                    padding: "8px 12px",
+                    backgroundColor:
+                      view === "atlas" ? "darkslategrey" : "#f0f0f0",
+                    color: view === "atlas" ? "white" : "#333",
+                    border: "none",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    transition: "all 0.3s ease",
+                  }}
+                  onClick={() => setView("atlas")}
+                >
+                  <FaTh size={14} />
+                  Grid
+                </button>
+                <button
+                  style={{
+                    padding: "8px 12px",
+                    backgroundColor:
+                      view === "list" ? "darkslategrey" : "#f0f0f0",
+                    color: view === "list" ? "white" : "#333",
+                    border: "none",
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    transition: "all 0.3s ease",
+                  }}
+                  onClick={() => setView("list")}
+                >
+                  <FaList size={14} />
+                  List
+                </button>
+              </div>
             </div>
             {initialLoading && filteredCards.length === 0 ? (
               <div style={{ textAlign: "center", padding: 40 }}>Loading...</div>
@@ -1072,96 +1128,109 @@ const MainPage = memo(() => {
                           <div
                             className="video-title"
                             style={{
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: 700,
                               color: "#222",
-                              marginBottom: 6,
+                              // marginBottom: 6,
                             }}
                           >
                             {card.type}
                           </div>
                           <div
-                            className="badges-row"
-                            style={{ marginBottom: 6 }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                            }}
                           >
-                            <span className="content-type-badge">
-                              {card.contentType === "Case" && (
-                                <FaFolderOpen style={{ marginRight: 4 }} />
-                              )}
-                              {card.contentType === "Lecture" && (
-                                <FaChalkboardTeacher
-                                  style={{ marginRight: 4 }}
-                                />
-                              )}
-                              {card.contentType === "Live" && (
-                                <FaBroadcastTower style={{ marginRight: 4 }} />
-                              )}
-                              {card.contentType}
-                            </span>
-                            <span
-                              className={`label-badge level-${card.level.toLowerCase()}`}
+                            <div
+                              className="badges-row"
+                              style={{ marginTop: 3 }}
                             >
-                              {card.level}
-                            </span>
-                            {card.status === "Locked" ? (
+                              <span className="content-type-badge">
+                                {card.contentType === "Case" && (
+                                  <FaFolderOpen style={{ marginRight: 4 }} />
+                                )}
+                                {card.contentType === "Lecture" && (
+                                  <FaChalkboardTeacher
+                                    style={{ marginRight: 4 }}
+                                  />
+                                )}
+                                {card.contentType === "Live" && (
+                                  <FaBroadcastTower
+                                    style={{ marginRight: 4 }}
+                                  />
+                                )}
+                                {card.contentType}
+                              </span>
                               <span
-                                data-tip
-                                data-for={`locked-tip-${card.id}`}
-                                style={{
-                                  fontSize: 18,
-                                  marginRight: 6,
-                                  cursor: "pointer",
-                                }}
+                                className={`label-badge level-${card.level.toLowerCase()}`}
                               >
-                                <span role="img" aria-label="Locked">
-                                  🔒
-                                </span>
-                                <ReactTooltip
-                                  id={`locked-tip-${card.id}`}
-                                  effect="solid"
-                                  clickable={true}
+                                {card.level}
+                              </span>
+                              {card.status === "Locked" ? (
+                                <span
+                                  data-tip
+                                  data-for={`locked-tip-${card.id}`}
+                                  style={{
+                                    fontSize: 18,
+                                    marginRight: 6,
+                                    cursor: "pointer",
+                                  }}
                                 >
-                                  <div
-                                    style={{ padding: 8, textAlign: "center" }}
+                                  <span role="img" aria-label="Locked">
+                                    🔒
+                                  </span>
+                                  <ReactTooltip
+                                    id={`locked-tip-${card.id}`}
+                                    effect="solid"
+                                    clickable={true}
                                   >
-                                    <div style={{ marginBottom: 8 }}>
-                                      This content is locked.
-                                    </div>
-                                    <button
+                                    <div
                                       style={{
-                                        background: "#1976d2",
-                                        color: "#fff",
-                                        border: "none",
-                                        borderRadius: 6,
-                                        padding: "6px 18px",
-                                        fontWeight: 600,
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate("/pricing");
+                                        padding: 8,
+                                        textAlign: "center",
                                       }}
                                     >
-                                      Upgrade
-                                    </button>
-                                  </div>
-                                </ReactTooltip>
-                              </span>
-                            ) : (
-                              <span
-                                className={`label-badge status-${card.status.toLowerCase()}`}
-                              >
-                                {card.status}
-                              </span>
-                            )}
-                          </div>
-                          <div
-                            className="days-ago"
-                            style={{ color: "#666", fontSize: 15 }}
-                          >
-                            {card.isLive
-                              ? `Live - ${card.liveDate || "Now"}`
-                              : card.timeAgo}
+                                      <div style={{ marginBottom: 8 }}>
+                                        This content is locked.
+                                      </div>
+                                      <button
+                                        style={{
+                                          background: "#1976d2",
+                                          color: "#fff",
+                                          border: "none",
+                                          borderRadius: 6,
+                                          padding: "6px 18px",
+                                          fontWeight: 600,
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          navigate("/pricing");
+                                        }}
+                                      >
+                                        Upgrade
+                                      </button>
+                                    </div>
+                                  </ReactTooltip>
+                                </span>
+                              ) : (
+                                <span
+                                  className={`label-badge status-${card.status.toLowerCase()}`}
+                                >
+                                  {card.status}
+                                </span>
+                              )}
+                            </div>
+                            <div
+                              className="days-ago"
+                              style={{ color: "#666", fontSize: 15 }}
+                            >
+                              {card.isLive
+                                ? `Live - ${card.liveDate || "Now"}`
+                                : card.timeAgo}
+                            </div>
                           </div>
                         </>
                       ) : (

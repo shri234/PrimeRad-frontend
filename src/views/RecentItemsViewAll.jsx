@@ -5,6 +5,7 @@ import CardStyle from "../components/cards/CardStyle";
 import BreadCrumbWidget from "../components/BreadcrumbWidget";
 import { latestMovie } from "../StaticData/data";
 import axios from "axios";
+import { FixedBackButton } from "../utilities/BackButton";
 
 const RecentItemsViewAll = memo(() => {
   const [cases, setCases] = useState([]);
@@ -38,6 +39,7 @@ const RecentItemsViewAll = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/home"></FixedBackButton>
       {/* <h3
         style={{
           marginTop: "40px",

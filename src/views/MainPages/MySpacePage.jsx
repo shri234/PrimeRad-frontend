@@ -820,6 +820,7 @@ const MySpacePage = memo(() => {
   const { activeFilters } = useFilter();
   const buttonRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isProgressBarMobile, setIsProgressBarMobile] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -877,6 +878,7 @@ const MySpacePage = memo(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 550);
+      setIsProgressBarMobile(width >= 300 && width <= 1290);
       setIsResponsiveRange(width >= 350 && width <= 890);
       if (width > 890) {
         setSidebarOpen(false);
@@ -1303,10 +1305,10 @@ const MySpacePage = memo(() => {
         <div
           style={{
             display: "flex",
-            minHeight: "100vh",
+            // minHeight: "100vh",
             background: "transparent",
             flex: 1,
-            overflowY: "auto",
+            overflowY: "scroll",
             paddingTop: isMobile ? "100px" : "70px",
             paddingRight: isMobile ? "12px" : "18px",
             paddingLeft: isMobile ? "12px" : "0",
@@ -1315,8 +1317,9 @@ const MySpacePage = memo(() => {
           <div
             style={{
               flex: 1,
-              padding: isMobile ? "4px" : "8px",
+              // padding: isMobile ? "4px" : "8px",
               backgroundColor: "transparent",
+              // overflowY: "auto",
             }}
           >
             <div
@@ -1332,18 +1335,18 @@ const MySpacePage = memo(() => {
               <div
                 style={{
                   background: "antiquewhite",
-                  borderRadius: isMobile ? 12 : 16,
+                  borderRadius: isProgressBarMobile ? 12 : 16,
                   boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  padding: isMobile ? "12px 16px" : "18px 28px",
+                  padding: isProgressBarMobile ? "12px 16px" : "18px 28px",
                   display: "flex",
                   alignItems: "center",
-                  gap: isMobile ? 16 : 24,
+                  gap: isProgressBarMobile ? 16 : 24,
                   marginTop: "-20px",
                   maxWidth: 900,
                   width: "100%",
-                  minWidth: isMobile ? 280 : 320,
+                  minWidth: isProgressBarMobile ? 280 : 320,
                   flex: 1,
-                  flexDirection: isMobile ? "column" : "row",
+                  flexDirection: isProgressBarMobile ? "column" : "row",
                 }}
               >
                 <div
@@ -1436,7 +1439,7 @@ const MySpacePage = memo(() => {
                         right: -1,
                         background: "linear-gradient(135deg, #ffd700, #ffb300)",
                         color: "#333",
-                        fontSize: isMobile ? 8 : 9,
+                        fontSize: isProgressBarMobile ? 8 : 9,
                         fontWeight: 700,
                         padding: "2px 6px",
                         borderRadius: "0 14px 0 8px",
@@ -1468,10 +1471,10 @@ const MySpacePage = memo(() => {
                 </div>
                 <div
                   style={{
-                    fontSize: isMobile ? 16 : 20,
+                    fontSize: isProgressBarMobile ? 16 : 20,
                     fontWeight: 400,
-                    minWidth: isMobile ? 120 : 180,
-                    textAlign: isMobile ? "center" : "left",
+                    minWidth: isProgressBarMobile ? 120 : 180,
+                    textAlign: isProgressBarMobile ? "center" : "left",
                   }}
                 >
                   Current Belt:{" "}
@@ -1483,8 +1486,8 @@ const MySpacePage = memo(() => {
                 <div
                   style={{
                     flex: 1,
-                    minWidth: isMobile ? 100 : 120,
-                    margin: isMobile ? "0 8px" : "0 18px",
+                    minWidth: isProgressBarMobile ? 100 : 120,
+                    margin: isProgressBarMobile ? "0 8px" : "0 18px",
                   }}
                 >
                   <div
@@ -1514,26 +1517,31 @@ const MySpacePage = memo(() => {
 
                 <div
                   style={{
-                    fontSize: isMobile ? 14 : 18,
+                    fontSize: isProgressBarMobile ? 12 : 16,
                     fontWeight: 400,
-                    minWidth: isMobile ? 100 : 180,
-                    textAlign: isMobile ? "center" : "right",
+                    minWidth: isProgressBarMobile ? 80 : 100,
+                    textAlign: isProgressBarMobile ? "center" : "center",
                   }}
                 >
                   {totalPoints} / {maxPoints} pts to{" "}
                   <span style={{ fontWeight: 700, color: "#222" }}>Black</span>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: isMobile ? "6px" : "8px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: isProgressBarMobile ? "6px" : "8px",
+                }}
+              >
                 <button
                   style={{
-                    padding: isMobile ? "4px 6px" : "8px 10px",
+                    padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
                     backgroundColor:
                       view === "watching" ? "darkslategray" : "lightgray",
                     color: view === "watching" ? "white" : "black",
                     border: "none",
-                    borderRadius: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "12px" : "14px",
+                    borderRadius: isProgressBarMobile ? "8px" : "10px",
+                    fontSize: isProgressBarMobile ? "12px" : "14px",
                     fontWeight: "600",
                   }}
                   onClick={() => setView("watching")}
@@ -1542,13 +1550,13 @@ const MySpacePage = memo(() => {
                 </button>
                 <button
                   style={{
-                    padding: isMobile ? "6px 8px" : "8px 10px",
+                    padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
                     backgroundColor:
                       view === "completed" ? "darkslategray" : "lightgray",
                     color: view === "completed" ? "white" : "black",
                     border: "none",
-                    borderRadius: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "12px" : "14px",
+                    borderRadius: isProgressBarMobile ? "8px" : "10px",
+                    fontSize: isProgressBarMobile ? "12px" : "14px",
                     fontWeight: "600",
                   }}
                   onClick={() => setView("completed")}
@@ -1557,13 +1565,13 @@ const MySpacePage = memo(() => {
                 </button>
                 <button
                   style={{
-                    padding: isMobile ? "6px 8px" : "8px 10px",
+                    padding: isProgressBarMobile ? "6px 8px" : "8px 10px",
                     backgroundColor:
                       view === "saved" ? "darkslategray" : "lightgray",
                     color: view === "saved" ? "white" : "black",
                     border: "none",
-                    borderRadius: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "12px" : "14px",
+                    borderRadius: isProgressBarMobile ? "8px" : "10px",
+                    fontSize: isProgressBarMobile ? "12px" : "14px",
                     fontWeight: "600",
                   }}
                   onClick={() => setView("saved")}

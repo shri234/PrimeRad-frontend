@@ -18,6 +18,7 @@ import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import ReviewComponent from "../../components/ReviewComponent";
 import Sources from "../../components/Sources";
 import LatestMovies from "../../components/sections/LatestMovies";
+import { FixedBackButton } from "../../utilities/BackButton";
 
 // Icons
 import {
@@ -66,8 +67,7 @@ const MovieDetail = memo(() => {
     id: sessionId, // ID of the current session/lecture
     vimeoVideoId = null, // Vimeo video ID for playback
     title = "Untitled Lecture",
-    description = "No description available.",
-    faculty = [], // Assuming faculty is an array of objects from backend
+    description = "No description available.", // Assuming faculty is an array of objects from backend
     module = "General",
     submodule = "General",
     duration = "N/A",
@@ -94,6 +94,52 @@ const MovieDetail = memo(() => {
   // Refs for DOM elements
   const videoContainerRef = useRef(null);
   const vimeoPlayerInstance = useRef(null);
+
+  const [faculty, setFaculty] = useState([
+    {
+      _id: "fac1",
+      name: "Dr. Alok Sharma",
+      image: "/assets/images/faculty1.jpg",
+      specializations: ["Diagnostic Radiology", "MRI Interpretation"],
+      description:
+        "Experienced educator with expertise in medical sciences and innovative teaching methodologies. Passionate about student success and industry-relevant curriculum development.",
+      rating: 4.9,
+      yearsExp: 15,
+    },
+    {
+      _id: "fac2",
+      name: "Dr. Priya Gupta",
+      image: "/assets/images/faculty2.jpg",
+      specializations: ["Orthopedic Imaging", "Musculoskeletal MRI"],
+      description:
+        "Specialist in Musculoskeletal Radiology, focusing on complex joint pathologies. Renowned for detailed and evidence-based case reviews.",
+      rating: 4.8,
+      yearsExp: 10,
+    },
+    {
+      _id: "fac3",
+      name: "Dr. Ben Carter",
+      image: "/assets/images/faculty3.jpg",
+      specializations: ["Neuroradiology", "Spine Pathology"],
+      description:
+        "An expert in interpreting spine MRIs and CT scans. Dr. Carter provides clear, concise, and clinically relevant insights for aspiring radiologists.",
+      rating: 5.0,
+      yearsExp: 8,
+    },
+    {
+      _id: "fac4",
+      name: "Dr. Maria Rodriguez",
+      image: "/assets/images/faculty4.jpg",
+      specializations: ["Emergency Radiology", "Trauma Imaging"],
+      description:
+        "A dedicated educator with a passion for teaching emergency room imaging. Her sessions focus on rapid diagnosis and critical decision-making.",
+      rating: 4.7,
+      yearsExp: 12,
+    },
+  ]);
+
+  // A helper function to generate the image path, assuming a static asset folder
+  const generateImgPath = (path) => path;
 
   // Hook for page entry/exit animations/logic (assuming it's external)
   useEnterExit();
@@ -451,6 +497,7 @@ const MovieDetail = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/main-page"></FixedBackButton>
       <style>{tabStyles}</style>
       <div style={{ backgroundColor: THEME.background }}>
         <div
@@ -469,9 +516,11 @@ const MovieDetail = memo(() => {
                   <div className="pt-0">
                     <div
                       style={{
-                        // marginTop: "10px",
-                        padding: "57.5% 0 0 0", // Increased from 56.25% to give more room for controls
-                        position: "relative",
+                        display: "flex", // Use a flexbox layout
+                        justifyContent: "center", // Center content horizontally
+                        alignItems: "center", // Center content vertically
+                        height: "90vh", // Example: Fill the full viewport height
+                        // width: "100vw",
                       }}
                     >
                       {/* --- Conditional Video Playback / Subscribe Button --- */}
@@ -534,15 +583,14 @@ const MovieDetail = memo(() => {
                           <div
                             ref={videoContainerRef}
                             style={{
-                              position: "absolute",
-                              top: "50%", // Center vertically
-                              left: "50%", // Center horizontally
-                              width: "100%", // Still 100% of the parent's width
-                              height: "100%", // Still 100% of the parent's height (which is determined by padding-top)
-                              transform: "translate(-50%, -50%)", // Adjust for element's own size
+                              width: "80%", // For example, 80% of the parent container's width
+                              height: "auto", // This will automatically maintain the video's aspect ratio
+                              maxWidth: "85%", // Optional: Set a maximum size to prevent it from getting too large on big screens
                               border: "none",
-                              // paddingBottom: "10px",
-                              // padding: "80px",
+                              // paddingTop: "268px",
+                              // paddingLeft: "12px",
+                              // paddingRight: "12px",
+                              // marginBottom: "60px",
                               // Remove alignItems as it's not a flex container here
                             }}
                           />
@@ -1619,9 +1667,7 @@ const MovieDetail = memo(() => {
                                         src={
                                           member.image
                                             ? `https://primerad-backend.onrender.com${member.image}`
-                                            : generateImgPath(
-                                                "/assets/images/faculty1.jpg"
-                                              )
+                                            : "/assets/images/faculty1.jpg"
                                         }
                                         alt={`${member.name} profile`}
                                         className="img-fluid"

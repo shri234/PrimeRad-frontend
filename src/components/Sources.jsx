@@ -25,7 +25,7 @@ const Sources = memo(() => {
               <td>
                 <div className="iq-button">
                   <Link
-                    to="/movies-detail"
+                    to="/lecture-detail"
                     className="btn text-uppercase position-relative"
                   >
                     <span className="button-text">
@@ -45,7 +45,7 @@ const Sources = memo(() => {
               <td>
                 <div className="iq-button">
                   <Link
-                    to="/movies-detail"
+                    to="/lecture-detail"
                     className="btn text-uppercase position-relative"
                   >
                     <span className="button-text">
@@ -64,7 +64,7 @@ const Sources = memo(() => {
               <td>
                 <div className="iq-button">
                   <Link
-                    to="/movies-detail"
+                    to="/lecture-detail"
                     className="btn text-uppercase position-relative"
                   >
                     <span className="button-text">

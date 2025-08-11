@@ -187,7 +187,6 @@ const ContinueWatching = memo(() => {
                 onClick={canGoPrev ? handlePrev : null}
                 style={{
                   position: "absolute",
-                  left: "0px",
                   top: "50%",
                   transform: "translateY(-50%)",
                   zIndex: 10,
@@ -236,6 +235,8 @@ const ContinueWatching = memo(() => {
                 >
                   <ContinueWatchCard
                     sessionData={data}
+                    contentType={data.contentType}
+                    category={data.module}
                     imagePath={data.image}
                     progressValue={data.value}
                     dataLeftTime={data.leftTime}

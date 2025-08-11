@@ -43,7 +43,6 @@ const Assessment = () => {
   const [showSummary, setShowSummary] = useState(false);
   const [showBackModal, setShowBackModal] = useState(false);
 
-  // Robust scroll lock: always restore scroll on route change or unmount
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
