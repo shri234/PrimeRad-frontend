@@ -4,7 +4,13 @@ import { useNavigate } from "react-router-dom";
 import BreadcrumbWidget from "../components/BreadcrumbWidget";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faGraduationCap,
+  faUserTie,
+  faCalendarAlt,
+  faCreditCard,
+} from "@fortawesome/free-solid-svg-icons";
 import { FixedBackButton } from "../utilities/BackButton";
 import axios from "axios";
 
@@ -18,98 +24,120 @@ const THEME = {
   border: "#e0e0e0",
 };
 
-// Enhanced Tab Component with modern styling
-const TabSelector = ({ options, activeTab, onTabChange, label }) => (
-  <div
-    style={
-      {
-        // marginBottom: "4px"
-      }
-    }
-  >
-    <h5
-      style={{
-        color: THEME.text,
-        marginBottom: "12px",
-        fontWeight: 600,
-        fontSize: "16px",
-      }}
-    >
-      {label}
-    </h5>
+// Compact Toggle Component matching the image design
+const ModernToggle = ({
+  options,
+  activeOption,
+  onOptionChange,
+  label,
+  icon,
+}) => (
+  <div style={{ marginBottom: "0" }}>
     <div
       style={{
         display: "flex",
-        background: "#f8fafc",
-        borderRadius: "12px",
-        // padding: "4px",
-        border: `1px solid ${THEME.border}`,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-        gap: "2px",
+        alignItems: "center",
+        gap: "16px",
+        justifyContent: "flex-start",
       }}
     >
-      {options.map((option) => (
-        <button
-          key={option.value}
-          onClick={() => onTabChange(option.value)}
+      {/* Left option text */}
+      <span
+        style={{
+          fontSize: "15px",
+          fontWeight: activeOption === options[0].value ? 600 : 400,
+          color: activeOption === options[0].value ? THEME.text : "#9ca3af",
+          transition: "all 0.3s ease",
+          cursor: "pointer",
+          minWidth: "70px",
+          textAlign: "right",
+        }}
+        onClick={() => onOptionChange(options[0].value)}
+      >
+        {options[0].label}
+      </span>
+
+      <div
+        style={{
+          position: "relative",
+          background: "#90ee90",
+          borderRadius: "25px",
+          padding: "3px",
+          width: "64px",
+          height: "30px",
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+        }}
+        onClick={() =>
+          onOptionChange(
+            activeOption === options[0].value
+              ? options[1].value
+              : options[0].value
+          )
+        }
+      >
+        {/* Sliding white indicator with icon */}
+        <div
           style={{
-            flex: 1,
-            padding: "10px 10px",
-            border: "none",
-            borderRadius: "10px",
-            background:
-              activeTab === option.value ? THEME.primary : "transparent",
-            color: activeTab === option.value ? "#fff" : THEME.text,
-            fontWeight: activeTab === option.value ? 700 : 500,
-            fontSize: "14px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            position: "relative",
-            overflow: "hidden",
-          }}
-          onMouseEnter={(e) => {
-            if (activeTab !== option.value) {
-              e.target.style.background = "#e2e8f0";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeTab !== option.value) {
-              e.target.style.background = "transparent";
-            }
+            position: "absolute",
+            top: "3px",
+            left:
+              activeOption === options[0].value ? "3px" : "calc(100% - 27px)",
+            width: "24px",
+            height: "24px",
+            background: "#ffffff",
+            borderRadius: "50%",
+            transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {option.label}
-          {activeTab === option.value && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: "2px",
-                background: "#fff",
-                borderRadius: "1px",
-              }}
-            />
-          )}
-        </button>
-      ))}
+          <FontAwesomeIcon
+            icon={
+              activeOption === options[0].value
+                ? options[0].icon
+                : options[1].icon
+            }
+            style={{
+              fontSize: "10px",
+              color: "#555",
+              transition: "all 0.3s ease",
+            }}
+          />
+        </div>
+      </div>
+
+      <span
+        style={{
+          fontSize: "15px",
+          fontWeight: activeOption === options[1].value ? 600 : 400,
+          color: activeOption === options[1].value ? THEME.text : "#9ca3af",
+          transition: "all 0.3s ease",
+          cursor: "pointer",
+          minWidth: "70px",
+          textAlign: "left",
+        }}
+        onClick={() => onOptionChange(options[1].value)}
+      >
+        {options[1].label}
+      </span>
     </div>
   </div>
 );
 
-// Enhanced Pricing Card with billing period adjustments
 const PricingCard = ({ pkg, navigate, billingPeriod, userType }) => {
-  // Calculate price based on billing period
   const getAdjustedPrice = () => {
     if (pkg.amount === 0) return 0;
 
-    // If the package is monthly and we want annual, multiply by 12 with discount
     if (pkg.durationUnit === "month" && billingPeriod === "annually") {
       return Math.round(pkg.amount * 12 * 0.83); // 17% annual discount
     }
 
-    // If the package is annual and we want monthly, divide by 12
     if (pkg.durationUnit === "year" && billingPeriod === "monthly") {
       return Math.round((pkg.amount / 12) * 100) / 100;
     }
@@ -545,13 +573,29 @@ const PricingPage = memo(() => {
   const [billingPeriod, setBillingPeriod] = useState("annually"); // Default to annually
 
   const userTypeOptions = [
-    { value: "student", label: "Student" },
-    { value: "consultant", label: "Consultant" },
+    {
+      value: "student",
+      label: "Student",
+      icon: faGraduationCap,
+    },
+    {
+      value: "consultant",
+      label: "Consultant",
+      icon: faUserTie,
+    },
   ];
 
   const billingPeriodOptions = [
-    { value: "annually", label: "Annual" },
-    { value: "monthly", label: "Monthly" },
+    {
+      value: "annually",
+      label: "Annual",
+      icon: faCalendarAlt,
+    },
+    {
+      value: "monthly",
+      label: "Monthly",
+      icon: faCreditCard,
+    },
   ];
 
   useEffect(() => {
@@ -620,6 +664,75 @@ const PricingPage = memo(() => {
 
   return (
     <Fragment>
+      {/* Add responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .pricing-title {
+            font-size: 2rem !important;
+            margin-bottom: 0.75rem !important;
+          }
+          
+          .pricing-subtitle {
+            font-size: 16px !important;
+          }
+          
+          .toggle-container {
+            flex-direction: column !important;
+            gap: 30px !important;
+            padding: 15px 20px !important;
+            max-width: 100% !important;
+          }
+          
+          .pricing-card {
+            padding: 24px !important;
+            margin-bottom: 20px !important;
+          }
+          
+          .card-button {
+            font-size: 14px !important;
+            padding: 14px 20px !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
+          .pricing-title {
+            font-size: 1.75rem !important;
+          }
+          
+          .toggle-container {
+            gap: 25px !important;
+            padding: 15px !important;
+          }
+          
+          .pricing-card {
+            padding: 20px !important;
+          }
+          
+          .popular-badge {
+            right: 15px !important;
+            font-size: 10px !important;
+            padding: 5px 12px !important;
+          }
+          
+          .save-badge {
+            left: 15px !important;
+            font-size: 10px !important;
+            padding: 3px 6px !important;
+          }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .toggle-container {
+            gap: 100px !important;
+            padding: 20px 30px !important;
+          }
+          
+          .pricing-card {
+            padding: 28px !important;
+          }
+        }
+      `}</style>
+
       <div
         className="section-padding"
         style={{
@@ -632,16 +745,18 @@ const PricingPage = memo(() => {
           <Row className="justify-content-center">
             <Col lg={8} className="text-center mb-5">
               <h1
+                className="pricing-title"
                 style={{
                   color: THEME.text,
                   fontWeight: 700,
                   fontSize: "2.5rem",
-                  marginBottom: "1rem",
+                  // marginBottom: "1rem",
                 }}
               >
                 Find the Perfect Plan for Your Needs
               </h1>
               <p
+                className="pricing-subtitle"
                 style={{
                   color: THEME.text,
                   fontSize: 18,
@@ -655,36 +770,39 @@ const PricingPage = memo(() => {
             </Col>
           </Row>
 
-          {/* Tab Selectors */}
+          {/* Toggle Selectors */}
           <Row className="justify-content-center mb-5">
-            <Col lg={8}>
+            <Col lg={10}>
               <div
+                className="toggle-container"
                 style={{
-                  background: THEME.card,
-                  borderRadius: 20,
-                  padding: "32px",
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
-                  border: `1px solid ${THEME.border}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: "190px",
+                  padding: "20px 40px",
+                  maxWidth: "800px",
+                  margin: "0 auto",
                 }}
               >
-                <Row>
-                  <Col md={6}>
-                    <TabSelector
-                      options={userTypeOptions}
-                      activeTab={userType}
-                      onTabChange={setUserType}
-                      label="Account Type"
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <TabSelector
-                      options={billingPeriodOptions}
-                      activeTab={billingPeriod}
-                      onTabChange={setBillingPeriod}
-                      label="Billing Period"
-                    />
-                  </Col>
-                </Row>
+                <div style={{ flex: 1 }}>
+                  <ModernToggle
+                    options={userTypeOptions}
+                    activeOption={userType}
+                    onOptionChange={setUserType}
+                    label="Designation"
+                    icon={faUserTie}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <ModernToggle
+                    options={billingPeriodOptions}
+                    activeOption={billingPeriod}
+                    onOptionChange={setBillingPeriod}
+                    label="Billing Period"
+                    icon={faCreditCard}
+                  />
+                </div>
               </div>
             </Col>
           </Row>
@@ -742,12 +860,14 @@ const PricingPage = memo(() => {
             <Row className="justify-content-center">
               {pricingPlans.map((pkg, idx) => (
                 <Col key={pkg._id || idx} lg="4" md="6" className="mb-4">
-                  <PricingCard
-                    pkg={pkg}
-                    navigate={navigate}
-                    billingPeriod={billingPeriod}
-                    userType={userType}
-                  />
+                  <div className="pricing-card">
+                    <PricingCard
+                      pkg={pkg}
+                      navigate={navigate}
+                      billingPeriod={billingPeriod}
+                      userType={userType}
+                    />
+                  </div>
                 </Col>
               ))}
             </Row>

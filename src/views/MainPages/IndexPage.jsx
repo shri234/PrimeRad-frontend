@@ -75,7 +75,7 @@ const HomePage = memo(() => {
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "40px" }}>
+      <div style={{ textAlign: "center", padding: "40px 20px" }}>
         Loading Faculty...
       </div>
     );
@@ -83,7 +83,7 @@ const HomePage = memo(() => {
 
   if (error) {
     return (
-      <div style={{ textAlign: "center", padding: "40px", color: "red" }}>
+      <div style={{ textAlign: "center", padding: "40px 20px", color: "red" }}>
         {error}
       </div>
     );
@@ -92,7 +92,11 @@ const HomePage = memo(() => {
   if (facultyList.length === 0) {
     return (
       <div
-        style={{ textAlign: "center", padding: "40px", color: THEME.textColor }}
+        style={{
+          textAlign: "center",
+          padding: "40px 20px",
+          color: THEME.textColor,
+        }}
       >
         No faculty members found.
       </div>
@@ -103,7 +107,7 @@ const HomePage = memo(() => {
     <div
       style={{
         background: "#2A2F42",
-        padding: "48px 0 32px 0",
+        padding: "48px 20px 32px 20px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -113,11 +117,12 @@ const HomePage = memo(() => {
         data-aos="fade-up"
         style={{
           fontWeight: 430,
-          fontSize: 34,
+          fontSize: "clamp(24px, 5vw, 34px)",
           marginBottom: 36,
           color: "ghostwhite",
           letterSpacing: -1,
           textAlign: "center",
+          padding: "0 10px",
         }}
       >
         Why Choose PrimeRad?
@@ -125,10 +130,11 @@ const HomePage = memo(() => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "32px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "24px",
           width: "100%",
           maxWidth: 1200,
+          padding: "0 10px",
         }}
         className="why-choose-grid"
       >
@@ -143,6 +149,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#8e24aa", marginBottom: 18 }}>
@@ -151,7 +158,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -159,7 +166,13 @@ const HomePage = memo(() => {
           >
             Accredited CME/CE
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Valuable credits from recognized bodies.
           </div>
         </div>
@@ -174,6 +187,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#6d4c41", marginBottom: 18 }}>
@@ -182,7 +196,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -190,11 +204,16 @@ const HomePage = memo(() => {
           >
             Expert-Led Content
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Learn from top radiologists and medical professionals.
           </div>
         </div>
-        {/* Card 3 */}
         <div
           data-aos="fade-up"
           data-aos-delay="300"
@@ -206,6 +225,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#1976d2", marginBottom: 18 }}>
@@ -214,7 +234,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -222,11 +242,16 @@ const HomePage = memo(() => {
           >
             Vast Content Library
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Access thousands of hours of lectures and cases.
           </div>
         </div>
-        {/* Card 4 */}
         <div
           data-aos="fade-up"
           data-aos-delay="400"
@@ -238,6 +263,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#ffb300", marginBottom: 18 }}>
@@ -246,7 +272,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -254,11 +280,16 @@ const HomePage = memo(() => {
           >
             Interactive Assessments
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Test your knowledge and track your progress.
           </div>
         </div>
-        {/* Card 5 - Community Support */}
         <div
           data-aos="fade-up"
           data-aos-delay="500"
@@ -270,6 +301,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#00bfae", marginBottom: 18 }}>
@@ -278,7 +310,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -286,12 +318,17 @@ const HomePage = memo(() => {
           >
             Community Support
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Join a vibrant community of peers and mentors for guidance and
             collaboration.
           </div>
         </div>
-        {/* Card 6 - Flexible Learning */}
         <div
           data-aos="fade-up"
           data-aos-delay="600"
@@ -303,6 +340,7 @@ const HomePage = memo(() => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            minHeight: "200px",
           }}
         >
           <span style={{ fontSize: 38, color: "#ff7043", marginBottom: 18 }}>
@@ -311,7 +349,7 @@ const HomePage = memo(() => {
           <div
             style={{
               fontWeight: 700,
-              fontSize: 22,
+              fontSize: "clamp(18px, 3vw, 22px)",
               color: "#222",
               marginBottom: 8,
               textAlign: "center",
@@ -319,14 +357,19 @@ const HomePage = memo(() => {
           >
             Flexible Learning
           </div>
-          <div style={{ color: "#555", fontSize: 16, textAlign: "center" }}>
+          <div
+            style={{
+              color: "#555",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textAlign: "center",
+            }}
+          >
             Learn at your own pace, anytime, anywhere, with on-demand access.
           </div>
         </div>
       </div>
     </div>
   );
-  // Faculty data (unique instructors from latestMovie)
 
   return (
     <>
@@ -340,7 +383,7 @@ const HomePage = memo(() => {
           data-aos-duration="1000"
           style={{
             background: sectionBg[0],
-            padding: "48px 0",
+            padding: "clamp(30px, 6vw, 48px) 0",
           }}
         >
           <ContinueWatching />
@@ -355,16 +398,17 @@ const HomePage = memo(() => {
         data-aos-duration="1000"
         style={{
           background: sectionBg[1],
-          padding: "48px 0",
+          padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
         <LatestMovies title="Trending" />
       </div>
 
+      {/* Assessment Card Section - Made Fully Responsive */}
       <div
         style={{
           background: "lavender",
-          padding: "40px 30px",
+          padding: "clamp(30px, 5vw, 40px) clamp(15px, 3vw, 30px)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -376,16 +420,16 @@ const HomePage = memo(() => {
           data-aos-duration="1000"
           style={{
             position: "relative",
-            borderRadius: 24,
+            borderRadius: "clamp(16px, 3vw, 24px)",
             boxShadow: "0 8px 32px 0 rgba(255, 193, 7, 0.18)",
             background: "linear-gradient(120deg, #fbf7e2 80%, #fef8df 100%)",
             padding: "10px",
-            minWidth: 420,
+            minWidth: "min(320px, 90vw)",
             maxWidth: 920,
             width: "100%",
             overflow: "hidden",
             display: "flex",
-            flexDirection: "row",
+            flexDirection: window.innerWidth <= 768 ? "column" : "row",
             alignItems: "center",
             zIndex: 1,
             animation: "assessmentCardPop 1s cubic-bezier(.4,2,.6,1)",
@@ -401,7 +445,7 @@ const HomePage = memo(() => {
               height: "100%",
               background:
                 "linear-gradient(120deg, rgba(255, 235, 59, 0.12) 60%, rgba(255, 193, 7, 0.10) 100%)",
-              borderRadius: 24,
+              borderRadius: "clamp(16px, 3vw, 24px)",
               zIndex: 0,
               pointerEvents: "none",
             }}
@@ -409,14 +453,16 @@ const HomePage = memo(() => {
           {/* Left Thumbnail */}
           <div
             style={{
-              flex: "0 0 160px",
-              height: 190,
-              marginLeft: "100px",
+              flex: window.innerWidth <= 768 ? "none" : "0 0 160px",
+              width: window.innerWidth <= 768 ? "100%" : "160px",
+              height: window.innerWidth <= 768 ? "140px" : "190px",
+              marginLeft: window.innerWidth <= 768 ? "0" : "100px",
+              marginBottom: window.innerWidth <= 768 ? "20px" : "0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               background: "rgba(255, 243, 128, 0.18)",
-              borderRadius: "24px 0 0 24px",
+              borderRadius: window.innerWidth <= 768 ? "24px" : "24px 0 0 24px",
               zIndex: 2,
             }}
           >
@@ -424,8 +470,8 @@ const HomePage = memo(() => {
               src="/assets/images/assessment.jpeg"
               alt="Assessment Thumbnail"
               style={{
-                width: 160,
-                height: 120,
+                width: window.innerWidth <= 768 ? "120px" : "160px",
+                height: window.innerWidth <= 768 ? "100px" : "120px",
                 objectFit: "cover",
                 borderRadius: 18,
                 boxShadow: "0 2px 12px #ffe08288",
@@ -437,19 +483,20 @@ const HomePage = memo(() => {
           <div
             style={{
               flex: 1,
-              padding: "36px 36px 36px 32px",
+              padding:
+                window.innerWidth <= 768 ? "20px" : "36px 36px 36px 32px",
               position: "relative",
               zIndex: 1,
-              textAlign: "left",
+              textAlign: window.innerWidth <= 768 ? "center" : "left",
               display: "flex",
               flexDirection: "column",
-              alignItems: "flex-start",
+              alignItems: window.innerWidth <= 768 ? "center" : "flex-start",
               justifyContent: "center",
             }}
           >
             <div
               style={{
-                fontSize: 34,
+                fontSize: "clamp(28px, 5vw, 34px)",
                 marginBottom: 10,
                 color: "#ffb300",
                 fontWeight: 700,
@@ -464,7 +511,7 @@ const HomePage = memo(() => {
             <h2
               style={{
                 fontWeight: 800,
-                fontSize: 24,
+                fontSize: "clamp(20px, 4vw, 24px)",
                 color: "#b28704",
                 marginBottom: 8,
                 letterSpacing: 0.5,
@@ -474,10 +521,11 @@ const HomePage = memo(() => {
             </h2>
             <p
               style={{
-                fontSize: 17,
+                fontSize: "clamp(15px, 3vw, 17px)",
                 color: "#7c6f1c",
                 marginBottom: 18,
                 fontWeight: 500,
+                lineHeight: "1.5",
               }}
             >
               Test your knowledge and track your progress.
@@ -491,19 +539,24 @@ const HomePage = memo(() => {
                 color: "black",
                 border: "none",
                 borderRadius: 8,
-                padding: "12px 28px",
+                padding: "clamp(10px, 2vw, 12px) clamp(20px, 4vw, 28px)",
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: "clamp(14px, 3vw, 16px)",
                 boxShadow: "0 2px 8px #ffe08288",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                transition: "background 0.2s",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
               }}
             >
               Go to Modules
-              <span style={{ fontSize: 20, marginLeft: 2 }}>→</span>
+              <span
+                style={{ fontSize: "clamp(18px, 3vw, 20px)", marginLeft: 2 }}
+              >
+                →
+              </span>
             </button>
           </div>
         </div>
@@ -521,17 +574,18 @@ const HomePage = memo(() => {
         data-aos-duration="2000"
         style={{
           background: sectionBg[0],
-          padding: "48px 0px",
+          padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
         <LatestMovies title="Recent Items" />
       </div>
 
-      {/* Faculty Carousel Section */}
+      {/* Faculty Carousel Section - Enhanced Responsiveness */}
       <div
         style={{
-          background: "#e3f2fd", // Consistent with your provided snippet
-          padding: "40px 20px 48px 0",
+          background: "#e3f2fd",
+          padding:
+            "clamp(30px, 5vw, 40px) clamp(10px, 2vw, 20px) clamp(40px, 6vw, 48px) 0",
           margin: "0 0 0 0",
           position: "relative",
           width: "100vw",
@@ -544,22 +598,23 @@ const HomePage = memo(() => {
         <h2
           style={{
             fontWeight: 600,
-            fontSize: 28,
+            fontSize: "clamp(22px, 4vw, 28px)",
             color: "#222",
-            marginBottom: 24,
+            marginBottom: "clamp(20px, 3vw, 24px)",
             textAlign: "center",
             letterSpacing: -0.5,
+            padding: "0 20px",
           }}
         >
           Meet Our Faculty
         </h2>
-        {/* Decorative gradients for carousel ends - adjust padding: "40px 20px 48px 0" if they cut off content */}
+        {/* Decorative gradients for carousel ends - Hidden on mobile */}
         <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
-            width: 60,
+            width: window.innerWidth <= 768 ? 0 : 60,
             height: "100%",
             background:
               "linear-gradient(to right, #e3f2fd 80%, rgba(227,242,253,0))",
@@ -572,7 +627,7 @@ const HomePage = memo(() => {
             position: "absolute",
             top: 0,
             right: 0,
-            width: 60,
+            width: window.innerWidth <= 768 ? 0 : 60,
             height: "100%",
             background:
               "linear-gradient(to left, #e3f2fd 80%, rgba(227,242,253,0))",
@@ -582,96 +637,90 @@ const HomePage = memo(() => {
         />
         <Swiper
           modules={[Navigation, Autoplay]}
-          navigation // Enables default navigation arrows
+          navigation={window.innerWidth > 768} // Disable navigation on mobile
           autoplay={{ delay: 3500, disableOnInteraction: false }}
-          spaceBetween={24}
-          slidesPerView={3}
+          spaceBetween={window.innerWidth <= 480 ? 16 : 24}
+          slidesPerView={1}
           breakpoints={{
-            0: { slidesPerView: 1 },
-            600: { slidesPerView: 2 },
-            900: { slidesPerView: 3 },
-            1200: { slidesPerView: 4 }, // Added 1200 breakpoint for more slides on larger screens
+            0: { slidesPerView: 1, spaceBetween: 16 },
+            480: { slidesPerView: 1.2, spaceBetween: 20 },
+            600: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 2.5, spaceBetween: 24 },
+            900: { slidesPerView: 3, spaceBetween: 24 },
+            1200: { slidesPerView: 4, spaceBetween: 24 },
           }}
           style={{
             maxWidth: 1200,
             margin: "0 auto",
             position: "relative",
             zIndex: 3,
+            padding: "0 clamp(10px, 2vw, 20px)",
           }}
         >
           {facultyList.map((faculty, idx) => (
             <SwiperSlide key={faculty._id || idx}>
-              {" "}
-              {/* Use unique _id for key */}
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: 18,
+                  borderRadius: "clamp(14px, 2.5vw, 18px)",
                   boxShadow: "0 2px 12px rgba(33, 150, 243, 0.08)",
-                  padding: 32,
+                  padding: "clamp(24px, 4vw, 32px)",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  minHeight: 340,
-                  height: "auto", // Changed to auto to allow content to dictate height, but minHeight ensures consistency
+                  minHeight: "clamp(280px, 45vw, 340px)",
+                  height: "auto",
                   transition: "transform 0.2s",
                   textAlign: "center",
-                  cursor: "pointer", // Make it clickable
+                  cursor: "pointer",
                 }}
                 onClick={() => navigate("/faculty-detail")}
-                // Optional: Add onClick to navigate to a faculty detail page
-                // onClick={() => navigate(`/faculty/${faculty._id}`)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
+                  if (window.innerWidth > 768) {
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
+                  if (window.innerWidth > 768) {
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }
                 }}
               >
                 <img
                   src={faculty.image}
-                  alt={faculty.name + " photo"} // Better alt text
+                  alt={faculty.name + " photo"}
                   style={{
-                    width: 160,
-                    height: 160,
+                    width: "clamp(120px, 20vw, 160px)",
+                    height: "clamp(120px, 20vw, 160px)",
                     objectFit: "cover",
                     borderRadius: "50%",
-                    marginBottom: 22,
-                    boxShadow: "0 2px 8px rgba(25,118,210,0.2)", // More pronounced shadow for depth
-                    border: `3px solid ${THEME.primary}`, // Border matching theme primary
+                    marginBottom: "clamp(16px, 3vw, 22px)",
+                    boxShadow: "0 2px 8px rgba(25,118,210,0.2)",
+                    border: `3px solid ${THEME.primary}`,
                   }}
                   loading="lazy"
                 />
                 <div
                   style={{
                     fontWeight: 700,
-                    fontSize: 20,
-                    color: THEME.text, // Use theme color
+                    fontSize: "clamp(16px, 3vw, 20px)",
+                    color: THEME.text,
                     marginBottom: 4,
+                    lineHeight: "1.2",
                   }}
                 >
-                  {faculty.name} {/* Use 'name' from API */}
+                  {faculty.name}
                 </div>
-                <div style={{ color: THEME.textColor, fontSize: 16 }}>
-                  {" "}
-                  {/* Use theme color */}
-                  {faculty.title} {/* Use 'title' (description) from API */}
+                <div
+                  style={{
+                    color: THEME.textColor,
+                    fontSize: "clamp(14px, 2.5vw, 16px)",
+                    lineHeight: "1.3",
+                    padding: "0 5px",
+                  }}
+                >
+                  {faculty.title}
                 </div>
-                {/* Optional: Add a "View Profile" button */}
-                {/* <button
-                style={{
-                  marginTop: 15,
-                  padding: "8px 16px",
-                  background: THEME.secondary,
-                  color: "white",
-                  border: "none",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
-              >
-                View Profile
-              </button> */}
               </div>
             </SwiperSlide>
           ))}
@@ -683,8 +732,7 @@ const HomePage = memo(() => {
         data-aos-duration="1000"
         style={{
           background: sectionBg[1],
-          padding: "48px 0",
-          // height: "30%",
+          padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
         <LatestMovies title="Recommended Cases" />
@@ -698,7 +746,7 @@ const HomePage = memo(() => {
         data-aos-duration="1000"
         style={{
           background: sectionBg[0],
-          padding: "48px 0",
+          padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
         <LatestMovies title="Upcoming Live Programs" />
@@ -713,54 +761,138 @@ const HomePage = memo(() => {
         data-aos-duration="1000"
         style={{
           background: "ghostwhite",
-          padding: "48px 0",
+          padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
         <LatestMovies title="Recommended Lectures" />
       </div>
 
-      {/* Global Styles */}
+      {/* Enhanced Responsive Styles */}
       <style jsx>{`
         /* Smooth scrolling for better UX */
         html {
           scroll-behavior: smooth;
         }
 
-        /* Responsive padding adjustments */
-        @media (max-width: 768px) {
-          div[style*="padding: 60px 0"] {
-            padding: 40px 0 !important;
-          }
+        /* Base responsive adjustments */
+        * {
+          box-sizing: border-box;
+        }
 
-          div[style*="padding: 40px 0"] {
-            padding: 30px 0 !important;
+        /* Container max-width adjustments */
+        .container {
+          max-width: 100%;
+          padding: 0 clamp(15px, 3vw, 30px);
+        }
+
+        /* Typography scaling */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          word-wrap: break-word;
+          hyphens: auto;
+        }
+
+        /* Button responsiveness */
+        button {
+          min-height: 44px; /* Touch target size */
+          touch-action: manipulation;
+        }
+
+        /* Image responsiveness */
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+
+        /* Responsive grid adjustments */
+        @media (max-width: 1024px) {
+          .why-choose-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 20px !important;
           }
         }
 
-        @media (max-width: 576px) {
-          div[style*="padding: 60px 0"] {
-            padding: 30px 0 !important;
+        @media (max-width: 768px) {
+          .why-choose-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+            padding: 0 5px !important;
           }
 
-          div[style*="padding: 40px 0"] {
-            padding: 20px 0 !important;
+          /* Assessment card mobile adjustments */
+          [data-aos="flip-left"] {
+            flex-direction: column !important;
+            text-align: center !important;
+          }
+
+          /* Faculty section mobile spacing */
+          .swiper {
+            padding: 0 10px !important;
+          }
+
+          /* Section padding mobile override */
+          div[style*="padding"] {
+            padding-left: clamp(15px, 4vw, 20px) !important;
+            padding-right: clamp(15px, 4vw, 20px) !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          /* Extra small screens */
+          .why-choose-grid div {
+            padding: 24px 16px !important;
+            min-height: 180px !important;
+          }
+
+          /* Faculty cards smaller */
+          .swiper-slide > div {
+            min-height: 260px !important;
+            padding: 20px !important;
+          }
+
+          /* Assessment card extra small */
+          [data-aos="flip-left"] {
+            min-width: 95vw !important;
+            margin: 0 auto !important;
+          }
+        }
+
+        /* Landscape tablet adjustments */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+          .why-choose-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+          img {
+            image-rendering: -webkit-optimize-contrast;
           }
         }
 
         .main-title {
           color: #1976d2 !important;
         }
-      `}</style>
-      <style>{`
-        @media (max-width: 900px) {
-          .why-choose-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
           }
         }
-        @media (max-width: 600px) {
-          .why-choose-grid {
-            grid-template-columns: 1fr !important;
-          }
+
+        /* Focus styles for keyboard navigation */
+        button:focus,
+        [tabindex]:focus {
+          outline: 2px solid #1976d2;
+          outline-offset: 2px;
         }
       `}</style>
     </>

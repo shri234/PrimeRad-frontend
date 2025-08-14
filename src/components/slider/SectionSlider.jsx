@@ -158,7 +158,7 @@ const SectionSlider = memo(
                   {children(data)}
                 </SwiperSlide>
               ))}
-              <div className="swiper-button-next">
+              <div className="swiper-button-next" style={{}}>
                 {/* <i className="fas fa-chevron-right"></i> */}
               </div>
               <div

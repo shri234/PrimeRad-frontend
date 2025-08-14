@@ -184,6 +184,7 @@ const HeaderDefault = memo(() => {
                           fontSize: windowWidth < 1200 ? "13px" : "14px",
                           display: "flex",
                           alignItems: "center",
+                          // padding: "10px",
                           whiteSpace: "nowrap",
                         }}
                       >

@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import NavCategories from "../../MainPages/NavCategories";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import {
+  selectIsAuthenticated,
+  selectUser,
+} from "../../../store/auth/selectors";
+import { useSelector } from "react-redux";
 import { GiAtlas } from "react-icons/gi";
 import { FaTh } from "react-icons/fa";
 import axios from "axios";
@@ -14,6 +20,15 @@ const modules = [
   { name: "Elbow", pathologies: 2 },
   { name: "Hip", pathologies: 2 },
 ];
+const THEME = {
+  primary: "#1976d2", // blue
+  secondary: "#00bfae", // teal
+  background: "#f4f8fb", // light blue/gray
+  card: "#fff",
+  accent: "#ffb300", // amber
+  text: "#263238", // dark blue-gray
+  border: "#e0e0e0",
+};
 
 const subModulesData = {
   Knee: [
@@ -593,6 +608,8 @@ const SubModuleView = () => {
   );
 
   const [viewMode, setViewMode] = useState("list");
+  const [view, setView] = useState("atlas");
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [selectedSubModuleId, setSelectedSubModuleId] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -620,6 +637,9 @@ const SubModuleView = () => {
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [submittingAnswer, setSubmittingAnswer] = useState(false);
   const [userProgress, setUserProgress] = useState(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const questionsPerBatch = 5;
   const totalBatches = Math.ceil(
@@ -1393,6 +1413,10 @@ const SubModuleView = () => {
     setCurrentView("submodules");
   };
 
+  const handleFilterChange = (type) => {
+    setFilters((prev) => ({ ...prev, [type]: !prev[type] }));
+  };
+
   const handleSubModuleClick = (pathologyItem) => {
     if (selectedSubModuleId === pathologyItem._id) {
       setSelectedSubModuleId(null);
@@ -1417,6 +1441,40 @@ const SubModuleView = () => {
     }
     setSelectedVideo(null);
   };
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setIsMobileNavOpen(false);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    // const handleWindowScroll = () => {
+    //   if (!isMobile) {
+    //     const { scrollY } = window;
+    //     const { scrollHeight, clientHeight } = document.documentElement;
+    //     if (scrollHeight - scrollY <= clientHeight + 200) {
+    //       if (hasMore && !isFetchingMore && !initialLoading) {
+    //         setPage((prevPage) => prevPage + 1);
+    //       }
+    //     }
+    //   }
+    // };
+
+    // if (!isMobile) {
+    //   window.addEventListener("scroll", handleWindowScroll);
+    // }
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      if (!isMobile) {
+        // window.removeEventListener("scroll", handleWindowScroll);
+      }
+    };
+  }, [isMobile]);
 
   const handleAssessmentClick = () => {
     setCurrentView("difficulty");
@@ -1445,946 +1503,920 @@ const SubModuleView = () => {
   return (
     <>
       <div
-        className="submodule-wrapper"
-        style={{ boxSizing: "border-box", overflowX: "hidden", marginTop: 0 }}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          height: "100vh",
+          overflow: "hidden",
+        }}
       >
         {currentView !== "assessment" && (
-          <>
-            <button
-              className={`arrow-toggle ${sidebarOpen ? "open" : ""}`}
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
-              {sidebarOpen ? <FaArrowLeft /> : <FaArrowRight />}
-            </button>
-            <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
-              <div
-                style={{
-                  padding: "16px",
-                  borderBottom: "1px solid #e0e0e0",
-                  // marginTop: "70px",
-                  background: "#fff",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    background: "#f5f5f5",
-                    borderRadius: "12px",
-                    padding: "4px",
-                    gap: "2px",
-                  }}
-                >
-                  <button
-                    style={{
-                      flex: 1,
-                      padding: "8px 8px",
-                      backgroundColor: "transparent",
-                      color: "#666",
-                      border: "none",
-                      borderRadius: "8px",
-                      gap: "6px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onClick={() => navigate("/main-page")}
-                  >
-                    <FaTh size={14} />
-                    List
-                  </button>
-                  <button
-                    style={{
-                      flex: 1,
-                      padding: "8px 8px",
-                      backgroundColor:
-                        viewMode === "list" ? "darkslategrey" : "transparent",
-                      color: viewMode === "list" ? "white" : "#666",
-                      border: "none",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "6px",
-                    }}
-                    onClick={() => setViewMode("atlas")}
-                  >
-                    <GiAtlas style={{ fontSize: 18 }} />
-                    Atlas
-                  </button>
-                </div>
-              </div>
-              <h3 style={{ marginTop: "20px" }}>Modules</h3>
-              {loadingModules ? (
-                <div className="sidebar-loading">Loading modules...</div>
-              ) : modulesError ? (
-                <div className="sidebar-error">Error: {modulesError}</div>
-              ) : allModules.length === 0 ? (
-                <div className="sidebar-empty">No modules found.</div>
-              ) : (
-                allModules.map((mod, modIdx) => (
-                  <div key={mod._id}>
-                    <div
-                      className={`sidebar-item ${
-                        mod.moduleName === activeModuleName ? "active" : ""
-                      }`}
-                      onClick={() => handleModuleClick(mod)}
-                    >
-                      <span className="sidebar-number">{modIdx + 1}.</span>
-                      <span className="sidebar-icon">
-                        {moduleIcons[mod.moduleName]}
-                      </span>
-                      <span>{mod.moduleName}</span>
-                      <span className="count">
-                        {mod.totalPathologiesCount || 0}
-                      </span>
-                    </div>
-                    {mod.moduleName === activeModuleName && (
-                      <div className="submodule-list">
-                        {loadingPathologies ? (
-                          <div className="sidebar-loading">
-                            Loading pathologies...
-                          </div>
-                        ) : pathologiesError ? (
-                          <div className="sidebar-error">
-                            Error: {pathologiesError}
-                          </div>
-                        ) : (
-                          modulePathologiesData.map((pathology) => (
-                            <div key={pathology._id}>
-                              <div
-                                className={`sidebar-subitem ${
-                                  selectedSubModuleId === pathology._id
-                                    ? "open"
-                                    : ""
-                                }`}
-                                onClick={() => handleSubModuleClick(pathology)}
-                              >
-                                <span
-                                  className={`chevron ${
-                                    selectedSubModuleId === pathology._id
-                                      ? "rotated"
-                                      : ""
-                                  }`}
-                                >
-                                  ▶
-                                </span>
-                                {pathology.pathologyName}
-                              </div>
-                              {selectedSubModuleId === pathology._id && (
-                                <div className="sidebar-level-dropdown">
-                                  <div
-                                    className={`sidebar-level-item ${
-                                      selectedLevel === "beginner"
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                    onClick={() => handleLevelClick("beginner")}
-                                    style={{
-                                      marginLeft: "30px",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    {" "}
-                                    Beginner
-                                  </div>
-                                  <div
-                                    className={`sidebar-level-item ${
-                                      selectedLevel === "advanced"
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                    onClick={() => handleLevelClick("advanced")}
-                                    style={{
-                                      marginLeft: "30px",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    {" "}
-                                    Advanced
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ))
-                        )}
-
-                        <div
-                          className={`sidebar-subitem assessment-item ${
-                            currentView === "difficulty" ? "open" : ""
-                          }`}
-                          style={{
-                            // Layout & Sizing
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            padding: "12px 16px",
-                            minHeight: "48px",
-                            width: "100%",
-
-                            // Background & Colors
-                            backgroundColor:
-                              currentView === "difficulty"
-                                ? "#e6e6fa"
-                                : "#f8f9fa",
-                            borderLeft:
-                              currentView === "difficulty"
-                                ? "4px solid #6366f1"
-                                : "4px solid transparent",
-
-                            // Typography
-                            fontSize: "14px",
-                            fontWeight:
-                              currentView === "difficulty" ? "600" : "500",
-                            color:
-                              currentView === "difficulty"
-                                ? "#4338ca"
-                                : "#374151",
-
-                            // Interactive States
-                            cursor: "pointer",
-                            transition: "all 0.2s ease-in-out",
-                            borderRadius: "8px",
-                            margin: "2px 8px",
-
-                            // Hover Effects
-                            "&:hover": {
-                              backgroundColor:
-                                currentView === "difficulty"
-                                  ? "#e6e6fa"
-                                  : "#f3f4f6",
-                              transform: "translateX(2px)",
-                              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            },
-
-                            // Focus States
-                            "&:focus": {
-                              outline: "2px solid #6366f1",
-                              outlineOffset: "2px",
-                            },
-
-                            // Active State
-                            "&:active": {
-                              transform: "translateX(1px)",
-                              backgroundColor:
-                                currentView === "difficulty"
-                                  ? "#ddd6fe"
-                                  : "#e5e7eb",
-                            },
-                          }}
-                          onClick={() => handleAssessmentClick()}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              handleAssessmentClick();
-                            }
-                          }}
-                          tabIndex={0}
-                          role="button"
-                          aria-pressed={currentView === "difficulty"}
-                          aria-label="Assessment menu item"
-                        >
-                          {/* Icon Container */}
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              width: "24px",
-                              height: "24px",
-                              flexShrink: 0,
-                              borderRadius: "4px",
-                              backgroundColor:
-                                currentView === "difficulty"
-                                  ? "#6366f1"
-                                  : "#9ca3af",
-                              padding: "2px",
-                              transition: "all 0.2s ease-in-out",
-                            }}
-                          >
-                            <img
-                              src="/assets/images/assessment.jpeg"
-                              alt="Assessment icon"
-                              style={{
-                                width: "16px",
-                                height: "16px",
-                                objectFit: "contain",
-                                filter:
-                                  currentView === "difficulty"
-                                    ? "brightness(0) invert(1)"
-                                    : "brightness(0.8)",
-                              }}
-                            />
-                          </div>
-
-                          {/* Text Label */}
-                          <span
-                            style={{
-                              flex: 1,
-                              lineHeight: "1.4",
-                              letterSpacing: "0.025em",
-                            }}
-                          >
-                            Assessment
-                          </span>
-
-                          {/* Optional Active Indicator */}
-                          {currentView === "difficulty" && (
-                            <div
-                              style={{
-                                width: "6px",
-                                height: "6px",
-                                borderRadius: "50%",
-                                backgroundColor: "#6366f1",
-                                flexShrink: 0,
-                                animation: "pulse 2s infinite",
-                              }}
-                            />
-                          )}
-                        </div>
-                        {/* Add this CSS for the pulse animation */}
-                        <style jsx>{`
-                          @keyframes pulse {
-                            0%,
-                            100% {
-                              opacity: 1;
-                            }
-                            50% {
-                              opacity: 0.5;
-                            }
-                          }
-                        `}</style>
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-            {sidebarOpen && (
-              <div
-                className="overlay"
-                onClick={() => setSidebarOpen(false)}
-              ></div>
-            )}
-          </>
-        )}
-        <div
-          className="submodule-main-content"
-          style={{
-            padding: "32px 40px 32px 40px",
-            background: "#f8fafc",
-            minHeight: "100vh",
-            boxSizing: "border-box",
-            flex: 1,
-            overflowY: "auto",
-          }}
-          ref={sectionRef}
-        >
-          {/* Assessment Difficulty Cards - Only shown when currentView === "difficulty" */}
-
-          {currentView === "assessment" ? (
-            <div>
-              <button
-                onClick={() => setCurrentView("submodules")}
-                className="back-link"
-              >
-                ← Back to Modules
-              </button>
-              <div
-                style={{
-                  display: "flex",
-                  height: "calc(100vh - 64px)",
-                  background: "#f4f8fb",
-                  borderRadius: 16,
-                  overflowY: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  position: "relative",
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    borderRight: "1px solid #e0e0e0",
-                    padding: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "stretch",
-                    background: "#fff",
-                    borderRadius: "16px 0 0 16px",
-                    margin: 24,
-                    marginRight: 0,
-                    minWidth: 320,
-                    maxWidth: 420,
-                    overflowY: "hidden",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  {renderAssessmentHeader()}
-                  <div style={{ padding: 32, flex: 1, overflowY: "auto" }}>
-                    {renderAssessmentContent()}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    flex: 2,
-                    background: "#f4f8fb",
-                    borderRadius: "0 16px 16px 0",
-                    margin: 24,
-                    marginLeft: 0,
-                    padding: 32,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <h2
-                    style={{
-                      color: "#1976d2",
-                      fontWeight: 700,
-                      fontSize: 22,
-                      marginBottom: 1,
-                    }}
-                  >
-                    DICOM Viewer
-                  </h2>
-                  <iframe
-                    className="dicomview sessioniframe"
-                    src="https://app.medicai.io/public-study/5e8c1f7e2f8fbf0017b2b1a1"
-                    width="100%"
-                    height="650px"
-                    style={{
-                      width: "100%",
-                      borderRadius: 12,
-                      border: "1px solid #e0e0e0",
-                      background: "#fff",
-                    }}
-                    title="DICOM Viewer"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : /* Difficulty Assessment Cards View */
-          currentView === "difficulty" ? (
+          <div
+            className={!isMobile ? "desktop-sidebar" : ""}
+            style={{
+              width: isMobile ? (isMobileNavOpen ? "250px" : "0") : undefined,
+              position: isMobile ? "fixed" : undefined,
+              top: isMobile ? 0 : undefined,
+              height: isMobile ? "100vh" : undefined,
+              overflowY: isMobile ? "auto" : "hidden",
+              background: isMobile ? THEME.card : undefined,
+              zIndex: isMobile ? 1000 : 990,
+              transition: isMobile ? "width 0.3s ease" : undefined,
+            }}
+          >
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-                padding: "24px",
-                backgroundColor: "#f8fafc",
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0",
-                animation: "slideIn 0.3s ease-out",
-                margin: "20px",
+                padding: "16px",
+                borderBottom: "1px solid #e0e0e0",
+                marginTop: isAuthenticated ? "50px" : "40px",
+                background: "#fff",
               }}
             >
-              {/* Back Button for Difficulty View */}
-              <button
-                onClick={() => setCurrentView("main")} // or whatever your default view should be
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  background: "none",
-                  border: "none",
-                  color: "#6366f1",
-                  fontSize: "14px",
-                  cursor: "pointer",
-                  padding: "8px 12px",
-                  borderRadius: "6px",
-                  transition: "all 0.2s ease",
-                  marginBottom: "16px",
-                }}
-              >
-                ← Back to Pathologies
-              </button>
-
-              {/* Assessment Difficulty Selection Title */}
-              <div style={{ marginBottom: "20px" }}>
-                <h2
-                  style={{
-                    fontSize: "28px",
-                    fontWeight: "700",
-                    color: "#1f2937",
-                    margin: 0,
-                    marginBottom: "8px",
-                  }}
-                >
-                  Choose Assessment Level
-                </h2>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    color: "#6b7280",
-                    margin: 0,
-                  }}
-                >
-                  Select the difficulty level that matches your expertise in{" "}
-                  {activeModuleName} pathologies.
-                </p>
-              </div>
-
-              {/* Beginner Assessment Card */}
               <div
-                className="assessment-card beginner-card"
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  padding: "20px",
-                  backgroundColor: "#ffffff",
+                  background: "#f5f5f5",
                   borderRadius: "12px",
-                  border: "2px solid #10b981",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-                onClick={() => {
-                  handleDifficultySelect("beginner");
-                  setCurrentView("assessment"); // Switch to assessment view
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 25px rgba(16, 185, 129, 0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(16, 185, 129, 0.1)";
+                  padding: "4px",
+                  // marginTop: 90,
+                  gap: "2px",
                 }}
               >
-                {/* Background Pattern */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "80px",
-                    height: "80px",
-                    background: "linear-gradient(135deg, #10b981, #34d399)",
-                    borderRadius: "0 12px 0 100%",
-                    opacity: 0.1,
-                  }}
-                />
-
-                {/* Header */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      backgroundColor: "#10b981",
-                      borderRadius: "10px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                    }}
-                  >
-                    🌱
-                  </div>
-                  <div>
-                    <h3
-                      style={{
-                        margin: 0,
-                        fontSize: "18px",
-                        fontWeight: "700",
-                        color: "#065f46",
-                        lineHeight: "1.2",
-                      }}
-                    >
-                      Beginner Assessment
-                    </h3>
-                    <p
-                      style={{
-                        margin: 0,
-                        fontSize: "12px",
-                        color: "#10b981",
-                        fontWeight: "600",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      Foundation Level
-                    </p>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "14px",
-                    color: "#374151",
-                    lineHeight: "1.6",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  Perfect for those starting their journey. Covers basic
-                  concepts, fundamental skills, and core knowledge areas with
-                  guided support.
-                </p>
-
-                {/* Features */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "8px",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  {[
-                    "20-30 mins",
-                    "Basic concepts",
-                    "Guided hints",
-                    "Multiple attempts",
-                  ].map((feature, index) => (
-                    <span
-                      key={index}
-                      style={{
-                        fontSize: "11px",
-                        padding: "4px 8px",
-                        backgroundColor: "#d1fae5",
-                        color: "#065f46",
-                        borderRadius: "12px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Action Button */}
                 <button
                   style={{
-                    padding: "12px 16px",
-                    backgroundColor: "#10b981",
-                    color: "white",
-                    width: "20%",
+                    flex: 1,
+                    padding: "8px 8px",
+                    backgroundColor:
+                      view === "list" ? "	#B0E0E6" : "transparent",
+                    color: view === "list" ? "black" : "black",
                     border: "none",
                     borderRadius: "8px",
+                    gap: "6px",
                     fontSize: "14px",
                     fontWeight: "600",
                     cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                  onClick={() => handleDifficultyCardClick("Beginner")}
-                >
-                  Start Beginner Assessment
-                </button>
-              </div>
-
-              {/* Advanced Assessment Card */}
-              <div
-                className="assessment-card advanced-card"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  padding: "20px",
-                  backgroundColor: "#ffffff",
-                  borderRadius: "12px",
-                  border: "2px solid #8b5cf6",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-                onClick={() => {
-                  handleDifficultySelect("advanced");
-                  setCurrentView("assessment"); // Switch to assessment view
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 25px rgba(139, 92, 246, 0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(139, 92, 246, 0.1)";
-                }}
-              >
-                {/* Background Pattern */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "80px",
-                    height: "80px",
-                    background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
-                    borderRadius: "0 12px 0 100%",
-                    opacity: 0.1,
-                  }}
-                />
-
-                {/* Header */}
-                <div
-                  style={{
+                    transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
+                    justifyContent: "center",
                   }}
-                >
-                  <div
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      backgroundColor: "#8b5cf6",
-                      borderRadius: "10px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                    }}
-                  >
-                    🚀
-                  </div>
-                  <div>
-                    <h3
-                      style={{
-                        margin: 0,
-                        fontSize: "18px",
-                        fontWeight: "700",
-                        color: "#581c87",
-                        lineHeight: "1.2",
-                      }}
-                    >
-                      Advanced Assessment
-                    </h3>
-                    <p
-                      style={{
-                        margin: 0,
-                        fontSize: "12px",
-                        color: "#8b5cf6",
-                        fontWeight: "600",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      Expert Level
-                    </p>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "14px",
-                    color: "#374151",
-                    lineHeight: "1.6",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  Designed for experienced learners. Tests deep understanding,
-                  complex problem-solving, and advanced application of concepts.
-                </p>
-
-                {/* Features */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "8px",
-                    marginBottom: "16px",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  {[
-                    "45-60 mins",
-                    "Complex scenarios",
-                    "Detailed analysis",
-                    "Single attempt",
-                  ].map((feature, index) => (
-                    <span
-                      key={index}
-                      style={{
-                        fontSize: "11px",
-                        padding: "4px 8px",
-                        backgroundColor: "#ede9fe",
-                        color: "#581c87",
-                        borderRadius: "12px",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Action Button */}
-                <button
-                  style={{
-                    padding: "12px 16px",
-                    backgroundColor: "#8b5cf6",
-                    color: "white",
-                    width: "20%",
-                    border: "none",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                  onClick={() => handleDifficultyCardClick("Advanced")}
-                >
-                  Start Advanced Assessment
-                </button>
-              </div>
-
-              {/* Quick Stats */}
-            </div>
-          ) : (
-            <>
-              <div className="header">
-                <button
                   onClick={() => {
-                    setActiveModuleId(null);
-                    setActiveModuleName(null);
-                    setSelectedSubModuleId(null);
-                    setSelectedLevel(null);
-                    {
-                      activeModuleId === null
-                        ? navigate("/main-page")
-                        : navigate("/atlas");
-                    }
+                    navigate("/main-page");
                   }}
-                  className="back-link"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
-                    />
-                  </svg>
-                  Back
+                  <FaTh size={14} />
+                  List
                 </button>
-                <h2 style={{ color: "darkslategray", fontWeight: "bold" }}>
-                  {activeModuleName
-                    ? `${activeModuleName} Pathologies`
-                    : "Select a Module"}
-                </h2>
-              </div>
-
-              {initialView ? (
-                <div
-                  className={
-                    viewMode === "list"
-                      ? "submodule-list-right"
-                      : "submodule-grid-right"
-                  }
+                <button
+                  style={{
+                    flex: 1,
+                    padding: "8px 8px",
+                    backgroundColor:
+                      view === "atlas" ? "	#B0E0E6" : "transparent",
+                    color: "black",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  onClick={() => {
+                    navigate("/atlas");
+                  }}
                 >
-                  {loadingModules ? (
-                    <div className="loading-message">Loading modules...</div>
-                  ) : modulesError ? (
-                    <div className="error-message">Error: {modulesError}</div>
-                  ) : (
-                    allModules.map((mod) => (
-                      <div
-                        key={mod._id}
-                        className={`module-card ${viewMode}`}
-                        onClick={() => handleModuleClick(mod)}
-                      >
-                        <img
-                          src={mod.imageUrl || getRandomImage()}
-                          alt={mod.moduleName}
-                          className="module-thumbnail"
-                        />
-                        <div className="module-info">
-                          <h4 className="module-title">{mod.moduleName}</h4>
-                          <p className="module-description">
-                            {mod.description ||
-                              `Explore pathologies of the ${mod.moduleName} joint.`}
-                          </p>
-                          <span className="module-pathologies-count">
-                            {mod.totalPathologiesCount || 0} pathologies
-                          </span>
+                  <GiAtlas style={{ fontSize: 18 }} />
+                  Atlas
+                </button>
+              </div>
+            </div>
+            <>
+              <div className="nav-categories-wrapper">
+                <div
+                  className="nav-categories-container"
+                  style={{
+                    borderRadius: "10px",
+                  }}
+                >
+                  <button
+                    className={`arrow-toggle ${sidebarOpen ? "open" : ""}`}
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                  >
+                    {sidebarOpen ? <FaArrowLeft /> : <FaArrowRight />}
+                  </button>
+                  <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
+                    <h3 style={{ marginTop: "20px" }}>Modules</h3>
+                    {loadingModules ? (
+                      <div className="sidebar-loading">Loading modules...</div>
+                    ) : modulesError ? (
+                      <div className="sidebar-error">Error: {modulesError}</div>
+                    ) : allModules.length === 0 ? (
+                      <div className="sidebar-empty">No modules found.</div>
+                    ) : (
+                      allModules.map((mod, modIdx) => (
+                        <div key={mod._id}>
+                          <div
+                            className={`sidebar-item ${
+                              mod.moduleName === activeModuleName
+                                ? "active"
+                                : ""
+                            }`}
+                            onClick={() => handleModuleClick(mod)}
+                          >
+                            <span className="sidebar-number">
+                              {modIdx + 1}.
+                            </span>
+                            <span className="sidebar-icon">
+                              {moduleIcons[mod.moduleName]}
+                            </span>
+                            <span>{mod.moduleName}</span>
+                            <span className="count">
+                              {mod.totalPathologiesCount || 0}
+                            </span>
+                          </div>
+                          {mod.moduleName === activeModuleName && (
+                            <div className="submodule-list">
+                              {loadingPathologies ? (
+                                <div className="sidebar-loading">
+                                  Loading pathologies...
+                                </div>
+                              ) : pathologiesError ? (
+                                <div className="sidebar-error">
+                                  Error: {pathologiesError}
+                                </div>
+                              ) : (
+                                modulePathologiesData.map((pathology) => (
+                                  <div key={pathology._id}>
+                                    <div
+                                      className={`sidebar-subitem ${
+                                        selectedSubModuleId === pathology._id
+                                          ? "open"
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        handleSubModuleClick(pathology)
+                                      }
+                                    >
+                                      <span
+                                        className={`chevron ${
+                                          selectedSubModuleId === pathology._id
+                                            ? "rotated"
+                                            : ""
+                                        }`}
+                                      >
+                                        ▶
+                                      </span>
+                                      {pathology.pathologyName}
+                                    </div>
+                                    {selectedSubModuleId === pathology._id && (
+                                      <div className="sidebar-level-dropdown">
+                                        <div
+                                          className={`sidebar-level-item ${
+                                            selectedLevel === "beginner"
+                                              ? "active"
+                                              : ""
+                                          }`}
+                                          onClick={() =>
+                                            handleLevelClick("beginner")
+                                          }
+                                          style={{
+                                            marginLeft: "30px",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          {" "}
+                                          Beginner
+                                        </div>
+                                        <div
+                                          className={`sidebar-level-item ${
+                                            selectedLevel === "advanced"
+                                              ? "active"
+                                              : ""
+                                          }`}
+                                          onClick={() =>
+                                            handleLevelClick("advanced")
+                                          }
+                                          style={{
+                                            marginLeft: "30px",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          {" "}
+                                          Advanced
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))
+                              )}
+
+                              <div
+                                className={`sidebar-subitem assessment-item ${
+                                  currentView === "difficulty" ? "open" : ""
+                                }`}
+                                style={{
+                                  // Layout & Sizing
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  padding: "12px 16px",
+                                  minHeight: "48px",
+                                  width: "100%",
+
+                                  // Background & Colors
+                                  backgroundColor:
+                                    currentView === "difficulty"
+                                      ? "#e6e6fa"
+                                      : "#f8f9fa",
+                                  borderLeft:
+                                    currentView === "difficulty"
+                                      ? "4px solid #6366f1"
+                                      : "4px solid transparent",
+
+                                  // Typography
+                                  fontSize: "14px",
+                                  fontWeight:
+                                    currentView === "difficulty"
+                                      ? "600"
+                                      : "500",
+                                  color:
+                                    currentView === "difficulty"
+                                      ? "#4338ca"
+                                      : "#374151",
+
+                                  // Interactive States
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease-in-out",
+                                  borderRadius: "8px",
+                                  margin: "2px 8px",
+
+                                  // Hover Effects
+                                  "&:hover": {
+                                    backgroundColor:
+                                      currentView === "difficulty"
+                                        ? "#e6e6fa"
+                                        : "#f3f4f6",
+                                    transform: "translateX(2px)",
+                                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                  },
+
+                                  // Focus States
+                                  "&:focus": {
+                                    outline: "2px solid #6366f1",
+                                    outlineOffset: "2px",
+                                  },
+
+                                  // Active State
+                                  "&:active": {
+                                    transform: "translateX(1px)",
+                                    backgroundColor:
+                                      currentView === "difficulty"
+                                        ? "#ddd6fe"
+                                        : "#e5e7eb",
+                                  },
+                                }}
+                                onClick={() => handleAssessmentClick()}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    handleAssessmentClick();
+                                  }
+                                }}
+                                tabIndex={0}
+                                role="button"
+                                aria-pressed={currentView === "difficulty"}
+                                aria-label="Assessment menu item"
+                              >
+                                {/* Icon Container */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    width: "24px",
+                                    height: "24px",
+                                    flexShrink: 0,
+                                    borderRadius: "4px",
+                                    backgroundColor:
+                                      currentView === "difficulty"
+                                        ? "#6366f1"
+                                        : "#9ca3af",
+                                    padding: "2px",
+                                    transition: "all 0.2s ease-in-out",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/images/assessment.jpeg"
+                                    alt="Assessment icon"
+                                    style={{
+                                      width: "16px",
+                                      height: "16px",
+                                      objectFit: "contain",
+                                      filter:
+                                        currentView === "difficulty"
+                                          ? "brightness(0) invert(1)"
+                                          : "brightness(0.8)",
+                                    }}
+                                  />
+                                </div>
+
+                                {/* Text Label */}
+                                <span
+                                  style={{
+                                    flex: 1,
+                                    lineHeight: "1.4",
+                                    letterSpacing: "0.025em",
+                                  }}
+                                >
+                                  Assessment
+                                </span>
+
+                                {/* Optional Active Indicator */}
+                                {currentView === "difficulty" && (
+                                  <div
+                                    style={{
+                                      width: "6px",
+                                      height: "6px",
+                                      borderRadius: "50%",
+                                      backgroundColor: "#6366f1",
+                                      flexShrink: 0,
+                                      animation: "pulse 2s infinite",
+                                    }}
+                                  />
+                                )}
+                              </div>
+                              {/* Add this CSS for the pulse animation */}
+                              <style jsx>{`
+                                @keyframes pulse {
+                                  0%,
+                                  100% {
+                                    opacity: 1;
+                                  }
+                                  50% {
+                                    opacity: 0.5;
+                                  }
+                                }
+                              `}</style>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))
+                      ))
+                    )}
+                  </div>
+                  {sidebarOpen && (
+                    <div
+                      className="overlay"
+                      onClick={() => setSidebarOpen(false)}
+                    ></div>
                   )}
                 </div>
-              ) : (
-                <>
-                  <div className="breadcrumb">
-                    <span
-                      onClick={() => {
-                        setActiveModuleId(null);
-                        setActiveModuleName(null);
-                        setSelectedSubModuleId(null);
-                        setSelectedLevel(null);
-                      }}
-                      className="breadcrumb-link"
-                    >
-                      {activeModuleName}
-                    </span>
-                    {selectedSubModuleId && (
-                      <>
-                        <span className="breadcrumb-separator">/</span>
-                        <span
-                          onClick={() => {
-                            setSelectedSubModuleId(null);
-                            setSelectedLevel(null);
-                          }}
-                          className="breadcrumb-link"
-                        >
-                          {selectedSubModule?.pathologyName}{" "}
-                        </span>
-                      </>
-                    )}
-                    {selectedSubModuleId && selectedLevel && (
-                      <>
-                        <span className="breadcrumb-separator">/</span>
-                        <span
-                          onClick={() => setSelectedLevel(null)}
-                          className="breadcrumb-link"
-                        >
-                          {selectedLevel.charAt(0).toUpperCase() +
-                            selectedLevel.slice(1)}
-                        </span>
-                      </>
-                    )}
+              </div>
+            </>
+          </div>
+        )}
+
+        <div
+          className="submodule-wrapper"
+          style={{
+            boxSizing: "border-box",
+            overflowX: "hidden",
+            marginTop: 0,
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+          }}
+        >
+          <div
+            className="submodule-main-content"
+            style={{
+              padding: "32px 40px 32px 40px",
+              background: "#f8fafc",
+              height: "100%",
+              boxSizing: "border-box",
+              flex: 1,
+              overflowY: "auto",
+            }}
+            ref={sectionRef}
+          >
+            {currentView === "assessment" ? (
+              <div>
+                <button
+                  onClick={() => setCurrentView("submodules")}
+                  className="back-link"
+                >
+                  ← Back to Modules
+                </button>
+                <div
+                  style={{
+                    display: "flex",
+                    height: "calc(100vh - 64px)",
+                    background: "#f4f8fb",
+                    borderRadius: 16,
+                    overflowY: "hidden",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1,
+                      borderRight: "1px solid #e0e0e0",
+                      padding: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      background: "#fff",
+                      borderRadius: "16px 0 0 16px",
+                      margin: 24,
+                      marginRight: 0,
+                      minWidth: 320,
+                      maxWidth: 420,
+                      overflowY: "hidden",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    {renderAssessmentHeader()}
+                    <div style={{ padding: 32, flex: 1, overflowY: "auto" }}>
+                      {renderAssessmentContent()}
+                    </div>
                   </div>
+                  <div
+                    style={{
+                      flex: 2,
+                      background: "#f4f8fb",
+                      borderRadius: "0 16px 16px 0",
+                      margin: 24,
+                      marginLeft: 0,
+                      padding: 32,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        color: "#1976d2",
+                        fontWeight: 700,
+                        fontSize: 22,
+                        marginBottom: 1,
+                      }}
+                    >
+                      DICOM Viewer
+                    </h2>
+                    <iframe
+                      className="dicomview sessioniframe"
+                      src="https://app.medicai.io/public-study/5e8c1f7e2f8fbf0017b2b1a1"
+                      width="100%"
+                      height="650px"
+                      style={{
+                        width: "100%",
+                        borderRadius: 12,
+                        border: "1px solid #e0e0e0",
+                        background: "#fff",
+                      }}
+                      title="DICOM Viewer"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : /* Difficulty Assessment Cards View */
+            currentView === "difficulty" ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                  padding: "24px",
+                  backgroundColor: "#f8fafc",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                  animation: "slideIn 0.3s ease-out",
+                  margin: "20px",
+                }}
+              >
+                {/* Back Button for Difficulty View */}
+                <button
+                  onClick={() => setCurrentView("main")} // or whatever your default view should be
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "none",
+                    border: "none",
+                    color: "#6366f1",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    transition: "all 0.2s ease",
+                    marginBottom: "16px",
+                  }}
+                >
+                  ← Back to Pathologies
+                </button>
+
+                {/* Assessment Difficulty Selection Title */}
+                <div style={{ marginBottom: "20px" }}>
+                  <h2
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: "700",
+                      color: "#1f2937",
+                      margin: 0,
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Choose Assessment Level
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#6b7280",
+                      margin: 0,
+                    }}
+                  >
+                    Select the difficulty level that matches your expertise in{" "}
+                    {activeModuleName} pathologies.
+                  </p>
+                </div>
+
+                {/* Beginner Assessment Card */}
+                <div
+                  className="assessment-card beginner-card"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "20px",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    border: "2px solid #10b981",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onClick={() => {
+                    handleDifficultySelect("beginner");
+                    setCurrentView("assessment"); // Switch to assessment view
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 25px rgba(16, 185, 129, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(16, 185, 129, 0.1)";
+                  }}
+                >
+                  {/* Background Pattern */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "80px",
+                      height: "80px",
+                      background: "linear-gradient(135deg, #10b981, #34d399)",
+                      borderRadius: "0 12px 0 100%",
+                      opacity: 0.1,
+                    }}
+                  />
+
+                  {/* Header */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#10b981",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                      }}
+                    >
+                      🌱
+                    </div>
+                    <div>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#065f46",
+                          lineHeight: "1.2",
+                        }}
+                      >
+                        Beginner Assessment
+                      </h3>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "12px",
+                          color: "#10b981",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        Foundation Level
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "14px",
+                      color: "#374151",
+                      lineHeight: "1.6",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    Perfect for those starting their journey. Covers basic
+                    concepts, fundamental skills, and core knowledge areas with
+                    guided support.
+                  </p>
+
+                  {/* Features */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    {[
+                      "20-30 mins",
+                      "Basic concepts",
+                      "Guided hints",
+                      "Multiple attempts",
+                    ].map((feature, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          backgroundColor: "#d1fae5",
+                          color: "#065f46",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#10b981",
+                      color: "white",
+                      width: "20%",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                    onClick={() => handleDifficultyCardClick("Beginner")}
+                  >
+                    Start Beginner Assessment
+                  </button>
+                </div>
+
+                {/* Advanced Assessment Card */}
+                <div
+                  className="assessment-card advanced-card"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "20px",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    border: "2px solid #8b5cf6",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onClick={() => {
+                    handleDifficultySelect("advanced");
+                    setCurrentView("assessment"); // Switch to assessment view
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 25px rgba(139, 92, 246, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(139, 92, 246, 0.1)";
+                  }}
+                >
+                  {/* Background Pattern */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "80px",
+                      height: "80px",
+                      background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
+                      borderRadius: "0 12px 0 100%",
+                      opacity: 0.1,
+                    }}
+                  />
+
+                  {/* Header */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#8b5cf6",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                      }}
+                    >
+                      🚀
+                    </div>
+                    <div>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#581c87",
+                          lineHeight: "1.2",
+                        }}
+                      >
+                        Advanced Assessment
+                      </h3>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "12px",
+                          color: "#8b5cf6",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        Expert Level
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "14px",
+                      color: "#374151",
+                      lineHeight: "1.6",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    Designed for experienced learners. Tests deep understanding,
+                    complex problem-solving, and advanced application of
+                    concepts.
+                  </p>
+
+                  {/* Features */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    {[
+                      "45-60 mins",
+                      "Complex scenarios",
+                      "Detailed analysis",
+                      "Single attempt",
+                    ].map((feature, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          backgroundColor: "#ede9fe",
+                          color: "#581c87",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#8b5cf6",
+                      color: "white",
+                      width: "20%",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                    onClick={() => handleDifficultyCardClick("Advanced")}
+                  >
+                    Start Advanced Assessment
+                  </button>
+                </div>
+
+                {/* Quick Stats */}
+              </div>
+            ) : (
+              <>
+                <div className="header">
+                  <button
+                    onClick={() => {
+                      setActiveModuleId(null);
+                      setActiveModuleName(null);
+                      setSelectedSubModuleId(null);
+                      setSelectedLevel(null);
+                      {
+                        activeModuleId === null
+                          ? navigate("/main-page")
+                          : navigate("/atlas");
+                      }
+                    }}
+                    className="back-link"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
+                      />
+                    </svg>
+                    Back
+                  </button>
+                  <h2 style={{ color: "darkslategray", fontWeight: "bold" }}>
+                    {activeModuleName
+                      ? `${activeModuleName} Pathologies`
+                      : "Select a Module"}
+                  </h2>
+                </div>
+
+                {initialView ? (
                   <div
                     className={
                       viewMode === "list"
@@ -2392,8 +2424,86 @@ const SubModuleView = () => {
                         : "submodule-grid-right"
                     }
                   >
-                    <div className="submodule-container">
-                      {/* <div
+                    {loadingModules ? (
+                      <div className="loading-message">Loading modules...</div>
+                    ) : modulesError ? (
+                      <div className="error-message">Error: {modulesError}</div>
+                    ) : (
+                      allModules.map((mod) => (
+                        <div
+                          key={mod._id}
+                          className={`module-card ${viewMode}`}
+                          onClick={() => handleModuleClick(mod)}
+                        >
+                          <img
+                            src={mod.imageUrl || getRandomImage()}
+                            alt={mod.moduleName}
+                            className="module-thumbnail"
+                          />
+                          <div className="module-info">
+                            <h4 className="module-title">{mod.moduleName}</h4>
+                            <p className="module-description">
+                              {mod.description ||
+                                `Explore pathologies of the ${mod.moduleName} joint.`}
+                            </p>
+                            <span className="module-pathologies-count">
+                              {mod.totalPathologiesCount || 0} pathologies
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div className="breadcrumb">
+                      <span
+                        onClick={() => {
+                          setActiveModuleId(null);
+                          setActiveModuleName(null);
+                          setSelectedSubModuleId(null);
+                          setSelectedLevel(null);
+                        }}
+                        className="breadcrumb-link"
+                      >
+                        {activeModuleName}
+                      </span>
+                      {selectedSubModuleId && (
+                        <>
+                          <span className="breadcrumb-separator">/</span>
+                          <span
+                            onClick={() => {
+                              setSelectedSubModuleId(null);
+                              setSelectedLevel(null);
+                            }}
+                            className="breadcrumb-link"
+                          >
+                            {selectedSubModule?.pathologyName}{" "}
+                          </span>
+                        </>
+                      )}
+                      {selectedSubModuleId && selectedLevel && (
+                        <>
+                          <span className="breadcrumb-separator">/</span>
+                          <span
+                            onClick={() => setSelectedLevel(null)}
+                            className="breadcrumb-link"
+                          >
+                            {selectedLevel.charAt(0).toUpperCase() +
+                              selectedLevel.slice(1)}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <div
+                      className={
+                        viewMode === "list"
+                          ? "submodule-list-right"
+                          : "submodule-grid-right"
+                      }
+                    >
+                      <div className="submodule-container">
+                        {/* <div
                         className={`submodule-item ${viewMode}-view`}
                         onClick={handleAssessmentClick}
                       >
@@ -2428,661 +2538,664 @@ const SubModuleView = () => {
                           </span>
                         </div>
                       </div> */}
-                    </div>
-                    {loadingPathologies ? (
-                      <div className="loading-message">
-                        Loading pathologies...
                       </div>
-                    ) : pathologiesError ? (
-                      <div className="error-message">
-                        Error: {pathologiesError}
-                      </div>
-                    ) : modulePathologiesData.length === 0 ? (
-                      <div className="no-data-message">
-                        No pathologies found for this module.
-                      </div>
-                    ) : (
-                      modulePathologiesData.map((pathologyItem) => {
-                        const staticSubModuleDataForPathology = subModulesData[
-                          activeModuleName
-                        ]?.find(
-                          (sub) => sub.name === pathologyItem.pathologyName
-                        );
-                        const isSelected =
-                          selectedSubModuleId === pathologyItem._id;
-                        const apiSessionsForPathology =
-                          pathologyItem.sessions || [];
-                        const staticSessionsForPathology = [
-                          ...(staticSubModuleDataForPathology?.levels
-                            ?.beginner || []),
-                          ...(staticSubModuleDataForPathology?.levels
-                            ?.advanced || []),
-                        ];
-                        const combinedSessionsForCounts = [
-                          ...apiSessionsForPathology,
-                          ...staticSessionsForPathology,
-                        ];
-                        const counts = countTypes(combinedSessionsForCounts);
+                      {loadingPathologies ? (
+                        <div className="loading-message">
+                          Loading pathologies...
+                        </div>
+                      ) : pathologiesError ? (
+                        <div className="error-message">
+                          Error: {pathologiesError}
+                        </div>
+                      ) : modulePathologiesData.length === 0 ? (
+                        <div className="no-data-message">
+                          No pathologies found for this module.
+                        </div>
+                      ) : (
+                        modulePathologiesData.map((pathologyItem) => {
+                          const staticSubModuleDataForPathology =
+                            subModulesData[activeModuleName]?.find(
+                              (sub) => sub.name === pathologyItem.pathologyName
+                            );
+                          const isSelected =
+                            selectedSubModuleId === pathologyItem._id;
+                          const apiSessionsForPathology =
+                            pathologyItem.sessions || [];
+                          const staticSessionsForPathology = [
+                            ...(staticSubModuleDataForPathology?.levels
+                              ?.beginner || []),
+                            ...(staticSubModuleDataForPathology?.levels
+                              ?.advanced || []),
+                          ];
+                          const combinedSessionsForCounts = [
+                            ...apiSessionsForPathology,
+                            ...staticSessionsForPathology,
+                          ];
+                          const counts = countTypes(combinedSessionsForCounts);
 
-                        return (
-                          <div
-                            key={pathologyItem._id}
-                            className="submodule-container"
-                          >
+                          return (
                             <div
-                              className={`submodule-item ${viewMode}-view ${
-                                isSelected ? "selected" : ""
-                              }`}
-                              onClick={() => {
-                                handleSubModuleClick(pathologyItem);
-                                setTimeout(() => {
-                                  handleScroll();
-                                }, 0);
-                              }}
+                              key={pathologyItem._id}
+                              className="submodule-container"
                             >
-                              <img
-                                src={
-                                  `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
-                                  staticSubModuleDataForPathology?.thumbnail ||
-                                  getRandomImage()
-                                }
-                                alt={pathologyItem.pathologyName}
-                                className="submodule-thumbnail"
-                              />
                               <div
-                                className="submodule-title"
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  fontWeight: "600",
-                                  fontSize: "18px",
+                                className={`submodule-item ${viewMode}-view ${
+                                  isSelected ? "selected" : ""
+                                }`}
+                                onClick={() => {
+                                  handleSubModuleClick(pathologyItem);
+                                  setTimeout(() => {
+                                    handleScroll();
+                                  }, 0);
                                 }}
                               >
-                                <i
-                                  className={`fas fa-angle-right icon-indicator ${
-                                    isSelected ? "rotated-down" : ""
-                                  }`}
-                                  style={{ marginRight: "10px" }}
-                                ></i>{" "}
-                                {pathologyItem.pathologyName}{" "}
+                                <img
+                                  src={
+                                    `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
+                                    staticSubModuleDataForPathology?.thumbnail ||
+                                    getRandomImage()
+                                  }
+                                  alt={pathologyItem.pathologyName}
+                                  className="submodule-thumbnail"
+                                />
+                                <div
+                                  className="submodule-title"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    fontWeight: "600",
+                                    fontSize: "18px",
+                                  }}
+                                >
+                                  <i
+                                    className={`fas fa-angle-right icon-indicator ${
+                                      isSelected ? "rotated-down" : ""
+                                    }`}
+                                    style={{ marginRight: "10px" }}
+                                  ></i>{" "}
+                                  {pathologyItem.pathologyName}{" "}
+                                </div>
+                                <div
+                                  className="submodule-type-badges"
+                                  style={{
+                                    marginLeft: "10px",
+                                  }}
+                                >
+                                  <span className="type-badge badge-lecture">
+                                    Lectures: {counts.lecture}
+                                  </span>
+                                  <span className="type-badge badge-case">
+                                    Cases: {counts.case}
+                                  </span>
+                                  <span className="type-badge badge-live">
+                                    Live Programs: {counts.live}
+                                  </span>
+                                </div>
                               </div>
-                              <div
-                                className="submodule-type-badges"
-                                style={{
-                                  marginLeft: "10px",
-                                }}
-                              >
-                                <span className="type-badge badge-lecture">
-                                  Lectures: {counts.lecture}
-                                </span>
-                                <span className="type-badge badge-case">
-                                  Cases: {counts.case}
-                                </span>
-                                <span className="type-badge badge-live">
-                                  Live Programs: {counts.live}
-                                </span>
-                              </div>
-                            </div>
-                            {isSelected && (
-                              <>
-                                {pathologyItem.isPlaceholder ? (
-                                  <div
-                                    style={{
-                                      textAlign: "center",
-                                      padding: "50px",
-                                      fontSize: "1.2rem",
-                                      color: "#666",
-                                      width: "100%",
-                                    }}
-                                  >
-                                    No video content defined for "
-                                    {pathologyItem.pathologyName}" yet.
-                                  </div>
-                                ) : (
-                                  <div
-                                    className={
-                                      viewMode === "list"
-                                        ? "level-list-view"
-                                        : "level-grid-view lecture-grid-view"
-                                    }
-                                  >
+                              {isSelected && (
+                                <>
+                                  {pathologyItem.isPlaceholder ? (
                                     <div
-                                      ref={
-                                        selectedLevel === "beginner"
-                                          ? sectionRef
-                                          : null
-                                      }
-                                      className={`level-card ${viewMode} ${
-                                        selectedLevel === "beginner"
-                                          ? "selected"
-                                          : ""
-                                      }`}
-                                      onClick={() =>
-                                        handleLevelClick("beginner")
-                                      }
-                                    >
-                                      <div className="level-thumbnail">
-                                        <div className="level-icon">🎓</div>
-                                      </div>
-                                      <i
-                                        className={`fas fa-angle-right icon-indicator ${
-                                          selectedLevel === "beginner"
-                                            ? "rotated-down"
-                                            : ""
-                                        }`}
-                                        style={{ marginRight: "10px" }}
-                                      ></i>
-                                      <div className="level-info">
-                                        <h4 className="level-title">
-                                          Beginner
-                                        </h4>
-                                        <p className="level-description">
-                                          Basic concepts and fundamental
-                                          knowledge for{" "}
-                                          {pathologyItem?.pathologyName}
-                                        </p>
-                                        <div className="level-full-badges">
-                                          {(() => {
-                                            const staticBeginnerSessions =
-                                              staticSubModuleDataForPathology
-                                                ?.levels?.beginner || [];
-                                            const apiBeginnerSessions =
-                                              pathologyItem.sessions?.filter(
-                                                (s) =>
-                                                  s.difficulty === "Beginner"
-                                              ) || [];
-                                            const combinedBeginner = [
-                                              ...staticBeginnerSessions,
-                                              ...apiBeginnerSessions,
-                                            ];
-                                            const levelCounts =
-                                              countTypes(combinedBeginner);
-                                            return (
-                                              <>
-                                                <span className="type-badge badge-lecture">
-                                                  Lectures:{" "}
-                                                  {levelCounts.lecture}
-                                                </span>
-                                                <span className="type-badge badge-case">
-                                                  Cases: {levelCounts.case}
-                                                </span>
-                                                <span className="type-badge badge-live">
-                                                  Live Programs:{" "}
-                                                  {levelCounts.live}
-                                                </span>
-                                              </>
-                                            );
-                                          })()}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    {selectedLevel === "beginner" && (
-                                      <div
-                                        className={
-                                          viewMode === "list"
-                                            ? "lecture-grid-view"
-                                            : "lecture-grid-view"
-                                        }
-                                        style={{}}
-                                      >
-                                        <div className="polished-filter-bar">
-                                          <label className="polished-filter-checkbox">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.dicom}
-                                              onChange={() =>
-                                                handleFilterChange("dicom")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />{" "}
-                                            DICOM
-                                          </label>
-                                          <label className="polished-filter-checkbox">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.lecture}
-                                              onChange={() =>
-                                                handleFilterChange("lecture")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />{" "}
-                                            Lectures
-                                          </label>
-                                          <label className="polished-filter-checkbox live">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.live}
-                                              onChange={() =>
-                                                handleFilterChange("live")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />{" "}
-                                            Live Programs
-                                          </label>
-                                        </div>
-                                        <div className="polished-grid-container">
-                                          {loadingLevelSessions ? (
-                                            <div
-                                              className="loading-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                              }}
-                                            >
-                                              Loading {selectedLevel}{" "}
-                                              sessions...
-                                            </div>
-                                          ) : levelSessionsError ? (
-                                            <div
-                                              className="error-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                                color: "#d32f2f",
-                                              }}
-                                            >
-                                              {levelSessionsError}
-                                            </div>
-                                          ) : levelSessions.length === 0 ? (
-                                            <div
-                                              className="no-data-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                                color: "#666",
-                                              }}
-                                            >
-                                              No {selectedLevel} sessions found
-                                              for this pathology.
-                                            </div>
-                                          ) : (
-                                            levelSessions
-                                              .filter((session) => {
-                                                const sessionType =
-                                                  session.sessionType?.toLowerCase() ||
-                                                  session.type?.toLowerCase();
-                                                return (
-                                                  ((sessionType === "dicom" ||
-                                                    sessionType === "case") &&
-                                                    filters.dicom) ||
-                                                  ((sessionType === "vimeo" ||
-                                                    sessionType ===
-                                                      "lecture") &&
-                                                    filters.lecture) ||
-                                                  (sessionType === "live" &&
-                                                    filters.live)
-                                                );
-                                              })
-                                              .map((session) => (
-                                                <div
-                                                  key={
-                                                    session._id || session.id
-                                                  }
-                                                  className={`lecture-card ${
-                                                    viewMode === "list"
-                                                      ? "polished-grid-view"
-                                                      : "polished-grid-view"
-                                                  }`}
-                                                  onClick={() =>
-                                                    handleSessionClick(session)
-                                                  }
-                                                >
-                                                  <div
-                                                    className={
-                                                      viewMode === "list"
-                                                        ? "polished-grid-thumbnail"
-                                                        : "polished-grid-thumbnail"
-                                                    }
-                                                  >
-                                                    <img
-                                                      src={`https://primerad-backend.onrender.com${
-                                                        session.imageUrl_522x760 ||
-                                                        session.imageUrl_1920x1080 ||
-                                                        session.thumbnail
-                                                      }`}
-                                                      alt={session.title}
-                                                    />
-                                                  </div>
-                                                  <div
-                                                    className={
-                                                      viewMode === "list"
-                                                        ? "polished-grid-content"
-                                                        : "polished-grid-content"
-                                                    }
-                                                  >
-                                                    <div className="title-row">
-                                                      <div
-                                                        className={
-                                                          viewMode === "list"
-                                                            ? "polished-grid-title"
-                                                            : "polished-grid-title"
-                                                        }
-                                                        style={{
-                                                          whiteSpace: "nowrap",
-                                                          overflow: "hidden",
-                                                          textOverflow:
-                                                            "ellipsis",
-                                                        }}
-                                                      >
-                                                        {session.title}
-                                                      </div>
-                                                      {viewMode === "grid" && (
-                                                        <div className="polished-list-desc">
-                                                          {session.description}
-                                                        </div>
-                                                      )}
-                                                    </div>
-                                                  </div>
-
-                                                  {viewMode === "list" && (
-                                                    <div
-                                                      className={`type-badge ${
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.className || ""
-                                                      } polished-grid-badge`}
-                                                    >
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.icon
-                                                      }{" "}
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.label
-                                                      }
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              ))
-                                          )}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    <div
-                                      ref={
-                                        selectedLevel === "advanced"
-                                          ? sectionRef
-                                          : null
-                                      }
-                                      className={`level-card ${viewMode} ${
-                                        selectedLevel === "advanced"
-                                          ? "selected"
-                                          : ""
-                                      }`}
-                                      onClick={() => {
-                                        handleLevelClick("advanced");
-                                        setTimeout(() => {
-                                          handleScroll();
-                                        }, 0);
+                                      style={{
+                                        textAlign: "center",
+                                        padding: "50px",
+                                        fontSize: "1.2rem",
+                                        color: "#666",
+                                        width: "100%",
                                       }}
                                     >
-                                      <div className="level-thumbnail">
-                                        <div className="level-icon">⚡</div>
-                                      </div>
-                                      <i
-                                        className={`fas fa-angle-right icon-indicator ${
-                                          selectedLevel === "advanced"
-                                            ? "rotated-down"
+                                      No video content defined for "
+                                      {pathologyItem.pathologyName}" yet.
+                                    </div>
+                                  ) : (
+                                    <div
+                                      className={
+                                        viewMode === "list"
+                                          ? "level-list-view"
+                                          : "level-grid-view lecture-grid-view"
+                                      }
+                                    >
+                                      <div
+                                        ref={
+                                          selectedLevel === "beginner"
+                                            ? sectionRef
+                                            : null
+                                        }
+                                        className={`level-card ${viewMode} ${
+                                          selectedLevel === "beginner"
+                                            ? "selected"
                                             : ""
                                         }`}
-                                        style={{ marginRight: "10px" }}
-                                      ></i>
-                                      <div className="level-info">
-                                        <h4 className="level-title">
-                                          Advanced
-                                        </h4>
-                                        <p className="level-description">
-                                          Advanced techniques and complex cases
-                                          for {selectedSubModule?.pathologyName}
-                                        </p>
-                                        <div className="level-full-badges">
-                                          {(() => {
-                                            const staticAdvancedSessions =
-                                              staticSubModuleDataForPathology
-                                                ?.levels?.advanced || [];
-                                            const apiAdvancedSessions =
-                                              selectedSubModule.sessions?.filter(
-                                                (s) =>
-                                                  s.difficulty === "Advanced"
-                                              ) || [];
-                                            const combinedAdvanced = [
-                                              ...staticAdvancedSessions,
-                                              ...apiAdvancedSessions,
-                                            ];
-                                            const levelCounts =
-                                              countTypes(combinedAdvanced);
-                                            return (
-                                              <>
-                                                <span className="type-badge badge-lecture">
-                                                  Lectures:{" "}
-                                                  {levelCounts.lecture}
-                                                </span>
-                                                <span className="type-badge badge-case">
-                                                  Cases: {levelCounts.case}
-                                                </span>
-                                                <span className="type-badge badge-live">
-                                                  Live Programs:{" "}
-                                                  {levelCounts.live}
-                                                </span>
-                                              </>
-                                            );
-                                          })()}
+                                        onClick={() =>
+                                          handleLevelClick("beginner")
+                                        }
+                                      >
+                                        <div className="level-thumbnail">
+                                          <div className="level-icon">🎓</div>
+                                        </div>
+                                        <i
+                                          className={`fas fa-angle-right icon-indicator ${
+                                            selectedLevel === "beginner"
+                                              ? "rotated-down"
+                                              : ""
+                                          }`}
+                                          style={{ marginRight: "10px" }}
+                                        ></i>
+                                        <div className="level-info">
+                                          <h4 className="level-title">
+                                            Beginner
+                                          </h4>
+                                          <div className="level-full-badges">
+                                            {(() => {
+                                              const staticBeginnerSessions =
+                                                staticSubModuleDataForPathology
+                                                  ?.levels?.beginner || [];
+                                              const apiBeginnerSessions =
+                                                pathologyItem.sessions?.filter(
+                                                  (s) =>
+                                                    s.difficulty === "Beginner"
+                                                ) || [];
+                                              const combinedBeginner = [
+                                                ...staticBeginnerSessions,
+                                                ...apiBeginnerSessions,
+                                              ];
+                                              const levelCounts =
+                                                countTypes(combinedBeginner);
+                                              return (
+                                                <>
+                                                  <span className="type-badge badge-lecture">
+                                                    Lectures:{" "}
+                                                    {levelCounts.lecture}
+                                                  </span>
+                                                  <span className="type-badge badge-case">
+                                                    Cases: {levelCounts.case}
+                                                  </span>
+                                                  <span className="type-badge badge-live">
+                                                    Live Programs:{" "}
+                                                    {levelCounts.live}
+                                                  </span>
+                                                </>
+                                              );
+                                            })()}
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-
-                                    {selectedLevel === "advanced" && (
-                                      <div
-                                        className={
-                                          viewMode === "list"
-                                            ? "lecture-grid-view"
-                                            : "lecture-grid-view"
-                                        }
-                                        style={{}}
-                                      >
-                                        <div className="polished-filter-bar">
-                                          <label className="polished-filter-checkbox">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.dicom}
-                                              onChange={() =>
-                                                handleFilterChange("dicom")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />
-                                            DICOM
-                                          </label>
-                                          <label className="polished-filter-checkbox">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.lecture}
-                                              onChange={() =>
-                                                handleFilterChange("lecture")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />
-                                            Lectures
-                                          </label>
-                                          <label className="polished-filter-checkbox live">
-                                            <input
-                                              type="checkbox"
-                                              checked={filters.live}
-                                              onChange={() =>
-                                                handleFilterChange("live")
-                                              }
-                                            />
-                                            <span className="polished-custom-checkbox" />
-                                            Live Programs
-                                          </label>
-                                        </div>
+                                      {selectedLevel === "beginner" && (
                                         <div
                                           className={
                                             viewMode === "list"
-                                              ? "polished-grid-container"
-                                              : "polished-grid-container"
+                                              ? "lecture-grid-view"
+                                              : "lecture-grid-view"
                                           }
+                                          style={{}}
                                         >
-                                          {loadingLevelSessions ? (
-                                            <div
-                                              className="loading-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                              }}
-                                            >
-                                              Loading {selectedLevel}{" "}
-                                              sessions...
-                                            </div>
-                                          ) : levelSessionsError ? (
-                                            <div
-                                              className="error-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                                color: "#d32f2f",
-                                              }}
-                                            >
-                                              {levelSessionsError}
-                                            </div>
-                                          ) : levelSessions.length === 0 ? (
-                                            <div
-                                              className="no-data-message"
-                                              style={{
-                                                textAlign: "center",
-                                                padding: "20px",
-                                                color: "#666",
-                                              }}
-                                            >
-                                              No {selectedLevel} sessions found
-                                              for this pathology.
-                                            </div>
-                                          ) : (
-                                            levelSessions
-                                              .filter((session) => {
-                                                const sessionType =
-                                                  session.sessionType?.toLowerCase() ||
-                                                  session.type?.toLowerCase();
-                                                return (
-                                                  ((sessionType === "dicom" ||
-                                                    sessionType === "case") &&
-                                                    filters.dicom) ||
-                                                  ((sessionType === "vimeo" ||
-                                                    sessionType ===
-                                                      "lecture") &&
-                                                    filters.lecture) ||
-                                                  (sessionType === "live" &&
-                                                    filters.live)
-                                                );
-                                              })
-                                              .map((session) => (
-                                                <div
-                                                  key={
-                                                    session._id || session.id
-                                                  }
-                                                  className={`lecture-card ${
-                                                    viewMode === "list"
-                                                      ? "polished-grid-view"
-                                                      : "polished-grid-view"
-                                                  }`}
-                                                  onClick={() =>
-                                                    handleSessionClick(session)
-                                                  }
-                                                >
+                                          <div className="polished-filter-bar">
+                                            <label className="polished-filter-checkbox">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.dicom}
+                                                onChange={() =>
+                                                  handleFilterChange("dicom")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />{" "}
+                                              DICOM
+                                            </label>
+                                            <label className="polished-filter-checkbox">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.lecture}
+                                                onChange={() =>
+                                                  handleFilterChange("lecture")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />{" "}
+                                              Lectures
+                                            </label>
+                                            <label className="polished-filter-checkbox live">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.live}
+                                                onChange={() =>
+                                                  handleFilterChange("live")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />{" "}
+                                              Live Programs
+                                            </label>
+                                          </div>
+                                          <div className="polished-grid-container">
+                                            {loadingLevelSessions ? (
+                                              <div
+                                                className="loading-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                }}
+                                              >
+                                                Loading {selectedLevel}{" "}
+                                                sessions...
+                                              </div>
+                                            ) : levelSessionsError ? (
+                                              <div
+                                                className="error-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                  color: "#d32f2f",
+                                                }}
+                                              >
+                                                {levelSessionsError}
+                                              </div>
+                                            ) : levelSessions.length === 0 ? (
+                                              <div
+                                                className="no-data-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                  color: "#666",
+                                                }}
+                                              >
+                                                No {selectedLevel} sessions
+                                                found for this pathology.
+                                              </div>
+                                            ) : (
+                                              levelSessions
+                                                .filter((session) => {
+                                                  const sessionType =
+                                                    session.sessionType?.toLowerCase() ||
+                                                    session.type?.toLowerCase();
+                                                  return (
+                                                    ((sessionType === "dicom" ||
+                                                      sessionType === "case") &&
+                                                      filters.dicom) ||
+                                                    ((sessionType === "vimeo" ||
+                                                      sessionType ===
+                                                        "lecture") &&
+                                                      filters.lecture) ||
+                                                    (sessionType === "live" &&
+                                                      filters.live)
+                                                  );
+                                                })
+                                                .map((session) => (
                                                   <div
-                                                    className={
+                                                    key={
+                                                      session._id || session.id
+                                                    }
+                                                    className={`lecture-card ${
                                                       viewMode === "list"
-                                                        ? "polished-grid-thumbnail"
-                                                        : "polished-grid-thumbnail"
+                                                        ? "polished-grid-view"
+                                                        : "polished-grid-view"
+                                                    }`}
+                                                    onClick={() =>
+                                                      handleSessionClick(
+                                                        session
+                                                      )
                                                     }
                                                   >
-                                                    <img
-                                                      src={`https://primerad-backend.onrender.com${
-                                                        session.imageUrl_522x760 ||
-                                                        session.imageUrl_1920x1080 ||
-                                                        session.thumbnail
-                                                      }`}
-                                                      alt={session.title}
-                                                    />
-                                                  </div>
-                                                  <div
-                                                    className={
-                                                      viewMode === "list"
-                                                        ? "polished-grid-content"
-                                                        : "polished-grid-content"
-                                                    }
-                                                  >
-                                                    <div className="title-row">
-                                                      <div
-                                                        className={
-                                                          viewMode === "list"
-                                                            ? "polished-grid-title"
-                                                            : "polished-grid-title"
-                                                        }
-                                                        style={{
-                                                          whiteSpace: "nowrap",
-                                                          overflow: "hidden",
-                                                          textOverflow:
-                                                            "ellipsis",
-                                                        }}
-                                                      >
-                                                        {session.title}
-                                                      </div>
-                                                      {viewMode === "grid" && (
-                                                        <div className="polished-list-desc">
-                                                          {session.description}
-                                                        </div>
-                                                      )}
-                                                    </div>
-                                                  </div>
-
-                                                  {viewMode === "list" && (
                                                     <div
-                                                      className={`type-badge ${
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.className || ""
-                                                      } polished-grid-badge`}
-                                                    >
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.icon
-                                                      }{" "}
-                                                      {
-                                                        getSessionTypeBadge(
-                                                          session.sessionType ||
-                                                            session.type
-                                                        )?.label
+                                                      className={
+                                                        viewMode === "list"
+                                                          ? "polished-grid-thumbnail"
+                                                          : "polished-grid-thumbnail"
                                                       }
+                                                    >
+                                                      <img
+                                                        src={`https://primerad-backend.onrender.com${
+                                                          session.imageUrl_522x760 ||
+                                                          session.imageUrl_1920x1080 ||
+                                                          session.thumbnail
+                                                        }`}
+                                                        alt={session.title}
+                                                      />
                                                     </div>
-                                                  )}
-                                                </div>
-                                              ))
-                                          )}{" "}
+                                                    <div
+                                                      className={
+                                                        viewMode === "list"
+                                                          ? "polished-grid-content"
+                                                          : "polished-grid-content"
+                                                      }
+                                                    >
+                                                      <div className="title-row">
+                                                        <div
+                                                          className={
+                                                            viewMode === "list"
+                                                              ? "polished-grid-title"
+                                                              : "polished-grid-title"
+                                                          }
+                                                          style={{
+                                                            whiteSpace:
+                                                              "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                              "ellipsis",
+                                                          }}
+                                                        >
+                                                          {session.title}
+                                                        </div>
+                                                        {viewMode ===
+                                                          "grid" && (
+                                                          <div className="polished-list-desc">
+                                                            {
+                                                              session.description
+                                                            }
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+
+                                                    {viewMode === "list" && (
+                                                      <div
+                                                        className={`type-badge ${
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.className || ""
+                                                        } polished-grid-badge`}
+                                                      >
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.icon
+                                                        }{" "}
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.label
+                                                        }
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                ))
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      <div
+                                        ref={
+                                          selectedLevel === "advanced"
+                                            ? sectionRef
+                                            : null
+                                        }
+                                        className={`level-card ${viewMode} ${
+                                          selectedLevel === "advanced"
+                                            ? "selected"
+                                            : ""
+                                        }`}
+                                        onClick={() => {
+                                          handleLevelClick("advanced");
+                                          setTimeout(() => {
+                                            handleScroll();
+                                          }, 0);
+                                        }}
+                                      >
+                                        <div className="level-thumbnail">
+                                          <div className="level-icon">⚡</div>
+                                        </div>
+                                        <i
+                                          className={`fas fa-angle-right icon-indicator ${
+                                            selectedLevel === "advanced"
+                                              ? "rotated-down"
+                                              : ""
+                                          }`}
+                                          style={{ marginRight: "10px" }}
+                                        ></i>
+                                        <div className="level-info">
+                                          <h4 className="level-title">
+                                            Advanced
+                                          </h4>
+                                          <div className="level-full-badges">
+                                            {(() => {
+                                              const staticAdvancedSessions =
+                                                staticSubModuleDataForPathology
+                                                  ?.levels?.advanced || [];
+                                              const apiAdvancedSessions =
+                                                selectedSubModule.sessions?.filter(
+                                                  (s) =>
+                                                    s.difficulty === "Advanced"
+                                                ) || [];
+                                              const combinedAdvanced = [
+                                                ...staticAdvancedSessions,
+                                                ...apiAdvancedSessions,
+                                              ];
+                                              const levelCounts =
+                                                countTypes(combinedAdvanced);
+                                              return (
+                                                <>
+                                                  <span className="type-badge badge-lecture">
+                                                    Lectures:{" "}
+                                                    {levelCounts.lecture}
+                                                  </span>
+                                                  <span className="type-badge badge-case">
+                                                    Cases: {levelCounts.case}
+                                                  </span>
+                                                  <span className="type-badge badge-live">
+                                                    Live Programs:{" "}
+                                                    {levelCounts.live}
+                                                  </span>
+                                                </>
+                                              );
+                                            })()}
+                                          </div>
                                         </div>
                                       </div>
-                                    )}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </>
-              )}
-            </>
-          )}
+
+                                      {selectedLevel === "advanced" && (
+                                        <div
+                                          className={
+                                            viewMode === "list"
+                                              ? "lecture-grid-view"
+                                              : "lecture-grid-view"
+                                          }
+                                          style={{}}
+                                        >
+                                          <div className="polished-filter-bar">
+                                            <label className="polished-filter-checkbox">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.dicom}
+                                                onChange={() =>
+                                                  handleFilterChange("dicom")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />
+                                              DICOM
+                                            </label>
+                                            <label className="polished-filter-checkbox">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.lecture}
+                                                onChange={() =>
+                                                  handleFilterChange("lecture")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />
+                                              Lectures
+                                            </label>
+                                            <label className="polished-filter-checkbox live">
+                                              <input
+                                                type="checkbox"
+                                                checked={filters.live}
+                                                onChange={() =>
+                                                  handleFilterChange("live")
+                                                }
+                                              />
+                                              <span className="polished-custom-checkbox" />
+                                              Live Programs
+                                            </label>
+                                          </div>
+                                          <div
+                                            className={
+                                              viewMode === "list"
+                                                ? "polished-grid-container"
+                                                : "polished-grid-container"
+                                            }
+                                          >
+                                            {loadingLevelSessions ? (
+                                              <div
+                                                className="loading-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                }}
+                                              >
+                                                Loading {selectedLevel}{" "}
+                                                sessions...
+                                              </div>
+                                            ) : levelSessionsError ? (
+                                              <div
+                                                className="error-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                  color: "#d32f2f",
+                                                }}
+                                              >
+                                                {levelSessionsError}
+                                              </div>
+                                            ) : levelSessions.length === 0 ? (
+                                              <div
+                                                className="no-data-message"
+                                                style={{
+                                                  textAlign: "center",
+                                                  padding: "20px",
+                                                  color: "#666",
+                                                }}
+                                              >
+                                                No {selectedLevel} sessions
+                                                found for this pathology.
+                                              </div>
+                                            ) : (
+                                              levelSessions
+                                                .filter((session) => {
+                                                  const sessionType =
+                                                    session.sessionType?.toLowerCase() ||
+                                                    session.type?.toLowerCase();
+                                                  return (
+                                                    ((sessionType === "dicom" ||
+                                                      sessionType === "case") &&
+                                                      filters.dicom) ||
+                                                    ((sessionType === "vimeo" ||
+                                                      sessionType ===
+                                                        "lecture") &&
+                                                      filters.lecture) ||
+                                                    (sessionType === "live" &&
+                                                      filters.live)
+                                                  );
+                                                })
+                                                .map((session) => (
+                                                  <div
+                                                    key={
+                                                      session._id || session.id
+                                                    }
+                                                    className={`lecture-card ${
+                                                      viewMode === "list"
+                                                        ? "polished-grid-view"
+                                                        : "polished-grid-view"
+                                                    }`}
+                                                    onClick={() =>
+                                                      handleSessionClick(
+                                                        session
+                                                      )
+                                                    }
+                                                  >
+                                                    <div
+                                                      className={
+                                                        viewMode === "list"
+                                                          ? "polished-grid-thumbnail"
+                                                          : "polished-grid-thumbnail"
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={`https://primerad-backend.onrender.com${
+                                                          session.imageUrl_522x760 ||
+                                                          session.imageUrl_1920x1080 ||
+                                                          session.thumbnail
+                                                        }`}
+                                                        alt={session.title}
+                                                      />
+                                                    </div>
+                                                    <div
+                                                      className={
+                                                        viewMode === "list"
+                                                          ? "polished-grid-content"
+                                                          : "polished-grid-content"
+                                                      }
+                                                    >
+                                                      <div className="title-row">
+                                                        <div
+                                                          className={
+                                                            viewMode === "list"
+                                                              ? "polished-grid-title"
+                                                              : "polished-grid-title"
+                                                          }
+                                                          style={{
+                                                            whiteSpace:
+                                                              "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                              "ellipsis",
+                                                          }}
+                                                        >
+                                                          {session.title}
+                                                        </div>
+                                                        {viewMode ===
+                                                          "grid" && (
+                                                          <div className="polished-list-desc">
+                                                            {
+                                                              session.description
+                                                            }
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+
+                                                    {viewMode === "list" && (
+                                                      <div
+                                                        className={`type-badge ${
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.className || ""
+                                                        } polished-grid-badge`}
+                                                      >
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.icon
+                                                        }{" "}
+                                                        {
+                                                          getSessionTypeBadge(
+                                                            session.sessionType ||
+                                                              session.type
+                                                          )?.label
+                                                        }
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                ))
+                                            )}{" "}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>

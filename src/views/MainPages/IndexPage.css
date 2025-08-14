@@ -1,6 +1,6 @@
 .swiper {
-  padding-left: 20px;
-  padding-right: 20px;
+  /* padding-left: 20px; */
+  /* padding-right: 20px; */
   /* width: 80%; */
   /* box-sizing: border-box; */
 }/* Custom styles for smaller, black navigation arrows */
@@ -9,8 +9,8 @@
   font-size: 14px !important; /* Make the icon smaller */
   width: 40px !important; /* Adjust button size */
   height: 40px !important; /* Adjust button size */
-  background-color: transparent !important; /* Remove any background color */
-  border: 1px solid #000 !important; /* Add a thin black border */
+  background-color: transparent !important; 
+  border: 1px solid #000 !important; 
   border-radius: 50% !important; /* Make it a circle */
   transition: all 0.2s ease;
   margin-right: 20px

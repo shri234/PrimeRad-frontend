@@ -1173,46 +1173,68 @@ const MySpacePage = memo(() => {
 
   if (!isAuthenticated) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#f1f7fb",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div>
+        {/* <style>{styles}</style> */}
         <div
           style={{
-            fontSize: "2.3rem",
-            color: "#0a197d",
-            fontFamily: "monospace",
-            marginBottom: 48,
-            textAlign: "center",
-            fontWeight: 500,
-            letterSpacing: 2,
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%)",
+            padding: "20px",
           }}
         >
-          Login to Watch Unlimited Videos
+          <div style={{ textAlign: "center", maxWidth: "400px" }}>
+            <h2
+              style={{
+                fontSize: isMobile ? "24px" : "32px",
+                fontWeight: "bold",
+                color: "#1565c0",
+                marginBottom: "16px",
+                fontFamily: "system-ui, -apple-system, sans-serif",
+              }}
+            >
+              Login to view your Watched Sessions
+            </h2>
+            <p
+              style={{
+                color: "#546e7a",
+                marginBottom: "32px",
+                fontSize: "16px",
+                lineHeight: "1.5",
+              }}
+            >
+              Module progress and compete with others!
+            </p>
+            <button
+              onClick={() => navigate("/login")}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #1976d2, #1565c0)",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(25,118,210,0.3)",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow = "0 8px 24px rgba(25,118,210,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 16px rgba(25,118,210,0.3)";
+              }}
+            >
+              Get Started
+            </button>
+          </div>
         </div>
-        <button
-          style={{
-            background: "#8fd0e8",
-            color: "#111",
-            border: "none",
-            borderRadius: 40,
-            padding: "10px 28px",
-            fontSize: "1.5rem",
-            fontWeight: 700,
-            boxShadow: "0 4px 18px 0 #b6e0f7",
-            cursor: "pointer",
-            transition: "background 0.2s",
-          }}
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </button>
       </div>
     );
   }
@@ -1373,7 +1395,6 @@ const MySpacePage = memo(() => {
                     overflow: "hidden",
                   }}
                 >
-                  {/* Status Icon */}
                   <div
                     style={{
                       width: isMobile ? 24 : 28,
@@ -1581,7 +1602,6 @@ const MySpacePage = memo(() => {
               </div>
             </div>
 
-            {/* NEW: View Mode Toggle - Grid/List */}
             <div
               style={{
                 marginBottom: isMobile ? "16px" : "20px",

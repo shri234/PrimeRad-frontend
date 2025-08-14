@@ -6,7 +6,7 @@ import { GiAtlas } from "react-icons/gi";
 import isFirstRender from "./hooks/useIsFirstRender";
 import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
 import FloatingActionButton from "../ExtraPages/FloatingActionButton";
-import { FaPlay } from "react-icons/fa"; // Not used but kept from original
+import { FaPlay, FaUnlockAlt, FaSignInAlt } from "react-icons/fa"; // Not used but kept from original
 import {
   FaFolderOpen,
   FaChalkboardTeacher,
@@ -41,6 +41,8 @@ const videoCardStyles = `
     padding: 0 !important;
     margin: 0;
     transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+    boxshadow: 
     max-width: 200px;
     min-width: 100px;
     border-radius: 20px;
@@ -826,7 +828,6 @@ const MainPage = memo(() => {
             transition: isMobile ? "width 0.3s ease" : undefined,
           }}
         >
-          {/* Toggle Button Above NavCategories */}
           <div
             style={{
               padding: "16px",
@@ -849,9 +850,8 @@ const MainPage = memo(() => {
                 style={{
                   flex: 1,
                   padding: "8px 8px",
-                  backgroundColor:
-                    view === "atlas" ? "darkslategrey" : "darkslategrey",
-                  color: view === "atlas" ? "white" : "white",
+                  backgroundColor: view === "atlas" ? "#B0E0E6" : "#B0E0E6",
+                  color: view === "atlas" ? "black" : "black",
                   border: "none",
                   borderRadius: "8px",
                   gap: "6px",
@@ -863,7 +863,9 @@ const MainPage = memo(() => {
                   alignItems: "center", // Add this
                   justifyContent: "center", // Optional: to center content horizontally
                 }}
-                onClick={() => setView("atlas")}
+                onClick={() => {
+                  setView("atlas");
+                }}
               >
                 <FaTh size={14} />
                 List
@@ -881,14 +883,18 @@ const MainPage = memo(() => {
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
-                onClick={() => navigate("/atlas")}
+                onClick={() => {
+                  navigate("/atlas");
+                }}
               >
                 <GiAtlas style={{ fontSize: 18 }} />
                 Atlas
               </button>
             </div>
           </div>
-          <NavCategories />
+          {/* Toggle Button Above NavCategories */}
+
+          <NavCategories view="atlas" />
         </div>
 
         {isMobile && isMobileNavOpen && (
@@ -925,15 +931,15 @@ const MainPage = memo(() => {
             <div
               style={{
                 display: "flex",
-                flexWrap: "wrap", // Allows items to wrap to a new line on small screens
-                justifyContent: "space-between", // Pushes items to opposite ends of the container
-                alignItems: "center", // Vertically centers items within the container
-                width: "100%", // Ensures the container takes up the full width
-                gap: "16px", // Adds space between the items
+                flexWrap: "wrap",
+                justifyContent: "space-between", // This can be removed or kept as it doesn't affect the new structure
+                alignItems: "center",
+                width: "100%",
+                gap: "16px",
                 marginBottom: "2px",
               }}
             >
-              {isAuthenticated && (
+              {isAuthenticated ? (
                 <div
                   style={{
                     background: "antiquewhite",
@@ -949,7 +955,6 @@ const MainPage = memo(() => {
                     maxWidth: 900,
                     width: "100%",
                     minWidth: isMobile ? 280 : 320,
-                    // flex: 1,
                     flexDirection: isMobile ? "column" : "row",
                   }}
                 >
@@ -966,7 +971,6 @@ const MainPage = memo(() => {
                       Green
                     </span>
                   </div>
-
                   <div
                     style={{
                       flex: 1,
@@ -998,7 +1002,6 @@ const MainPage = memo(() => {
                       />
                     </div>
                   </div>
-
                   <div
                     style={{
                       fontSize: isMobile ? 14 : 18,
@@ -1013,16 +1016,96 @@ const MainPage = memo(() => {
                     </span>
                   </div>
                 </div>
+              ) : (
+                <div
+                  style={{
+                    background: "#E8F5E9",
+                    border: "1px solid #C8E6C9",
+                    marginLeft: "18px",
+                    marginBottom: "10px",
+                    marginTop: "-20px",
+                    borderRadius: isMobile ? 12 : 16,
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                    padding: isMobile ? "16px 20px" : "18px 28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: isMobile ? 16 : 24,
+                    maxWidth: 900,
+                    width: "100%",
+                    minWidth: isMobile ? 280 : 320,
+                    flexDirection: isMobile ? "column" : "row",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: isMobile ? 16 : 22,
+                      fontWeight: 600,
+                      textAlign: "center",
+                      color: "#2E7D32",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <FaUnlockAlt size={isMobile ? 16 : 20} />
+
+                    <span style={{ fontWeight: 500, fontSize: "18px" }}>
+                      Login to watch unlimited videos and win big with module
+                      assessments!
+                    </span>
+
+                    <button
+                      style={{
+                        padding: "4px 6px",
+                        backgroundColor: "#4CAF50",
+                        color: "darkslategrey",
+                        border: "none",
+                        borderRadius: "8px",
+                        display: "flex",
+                        // marginLeft: "10px",
+                        alignItems: "center",
+                        gap: "8px",
+                        letterSpacing: 1,
+                        cursor: "pointer",
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        transition:
+                          "transform 0.2s ease, background-color 0.2s ease",
+                        marginLeft: "auto", // Pushes the button to the right on desktop
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "scale(1.05)";
+                        e.target.style.backgroundColor = "#66BB6A";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "scale(1)";
+                        e.target.style.backgroundColor = "#4CAF50";
+                      }}
+                      onClick={() => {
+                        navigate("/login");
+                      }}
+                    >
+                      <FaSignInAlt size={16} />
+                      Login
+                    </button>
+                  </div>
+                </div>
               )}
 
-              {/* NEW: View Mode Toggle - Grid/List */}
               <div
                 style={{
-                  // marginBottom: isMobile ? "10px" : "16px",
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: isAuthenticated ? "flex-end" : "flex-end", // This is the key change
                   alignItems: "center",
                   gap: "8px",
+                  marginBottom: isAuthenticated ? "0px" : "10px",
+                  marginTop: "-10px",
+                  // Add flex-grow so it takes up remaining space
+                  flexGrow: 1,
+                  // Add padding for consistency
+                  paddingRight: "18px",
                 }}
               >
                 <button
