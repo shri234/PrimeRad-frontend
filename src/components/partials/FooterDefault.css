@@ -11,7 +11,6 @@
   background-color: darkslategrey;
   
   color: #c9c9c9;
-  /* padding: 80px 0 20px; */
 }
 
 .footer-default a {
@@ -118,7 +117,7 @@
   align-items: flex-start;
   display: flex;
   flex-direction: row;
-  gap: 40px;
+  /* gap: 40px; */
 }
 
 /* Hide the middle column in the minimal layout */

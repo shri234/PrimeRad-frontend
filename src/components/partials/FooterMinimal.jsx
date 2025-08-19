@@ -18,15 +18,15 @@ const FooterMinimal = memo(() => {
         <div
           className="footer-minimal-layout"
           style={{
-            padding: "10px 0",
+            padding: "5px 0",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            minHeight: "40px",
           }}
         >
-          {/* Left Section: Logo */}
           <div className="footer-col-left">
-            <div className="footer-logo">
+            <div className="footer-logo" style={{ maxHeight: "20px" }}>
               <Logo />
             </div>
           </div>
@@ -36,7 +36,7 @@ const FooterMinimal = memo(() => {
               className="legal-links"
               style={{
                 display: "flex",
-                gap: "20px",
+                gap: "15px", // slightly reduced gap
                 listStyle: "none",
                 margin: 0,
                 padding: 0,
@@ -47,9 +47,10 @@ const FooterMinimal = memo(() => {
                   <Link
                     to={link.path}
                     style={{
-                      color: "white", // You can adjust the color
+                      color: "white",
                       textDecoration: "none",
-                      fontSize: "14px", // Adjust font size as needed
+                      fontSize: "13px", // slightly smaller font
+                      lineHeight: "1", // compact line-height
                     }}
                   >
                     {link.label}
@@ -60,10 +61,18 @@ const FooterMinimal = memo(() => {
           </div>
         </div>
 
-        <hr className="footer-divider-minimal" />
+        <hr
+          className="footer-divider-minimal"
+          style={{ margin: "8px 0" }} // tighter divider spacing
+        />
+
         <div
           className="footer-bottom-section footer-bottom-minimal"
-          style={{ paddingBottom: "20px" }}
+          style={{
+            paddingBottom: "4px", // reduced bottom padding
+            fontSize: "13px",
+            lineHeight: "1",
+          }}
         >
           <span>© {new Date().getFullYear()} Powered by VIDOCTO</span>
         </div>

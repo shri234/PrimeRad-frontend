@@ -5,9 +5,16 @@ import { Row, Col, Container, Nav, Tab, Form, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import Sources from "../../components/Sources";
 import ReviewComponent from "../../components/ReviewComponent";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Navigation, Pagination } from "swiper";
+SwiperCore.use([Navigation, Pagination]);
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { FaGraduationCap, FaUser } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import { FixedBackButton } from "../../utilities/BackButton";
 
@@ -53,13 +60,54 @@ const CaseViewerPage = () => {
   const videoUrl = "https://player.vimeo.com/video/1102457741"; // Replace with your Vimeo video ID
   const [startDate, setStartDate] = useState(null);
   const [sessionId, setSessionId] = useState(null);
-  const [faculty, setFaculty] = useState(null);
+  // const [faculty, setFaculty] = useState(null);
   const isAuthenticated = useSelector(selectIsAuthenticated); // Auth status from Redux
   const user = useSelector(selectUser);
   const [contentType, setContentType] = useState("dicom");
 
-  // In an useEffect hook, you would set the startDate after fetching the data.
-  // For now, you can just define a placeholder.
+  const [faculty, setFaculty] = useState([
+    {
+      _id: "fac1",
+      name: "Dr. Alok Sharma",
+      image: "/assets/images/faculty1.jpg",
+      specializations: ["Diagnostic Radiology", "MRI Interpretation"],
+      description:
+        "Experienced educator with expertise in medical sciences and innovative teaching methodologies. Passionate about student success and industry-relevant curriculum development.",
+      rating: 4.9,
+      yearsExp: 15,
+    },
+    {
+      _id: "fac2",
+      name: "Dr. Priya Gupta",
+      image: "/assets/images/faculty2.jpg",
+      specializations: ["Orthopedic Imaging", "Musculoskeletal MRI"],
+      description:
+        "Specialist in Musculoskeletal Radiology, focusing on complex joint pathologies. Renowned for detailed and evidence-based case reviews.",
+      rating: 4.8,
+      yearsExp: 10,
+    },
+    {
+      _id: "fac3",
+      name: "Dr. Ben Carter",
+      image: "/assets/images/faculty3.jpg",
+      specializations: ["Neuroradiology", "Spine Pathology"],
+      description:
+        "An expert in interpreting spine MRIs and CT scans. Dr. Carter provides clear, concise, and clinically relevant insights for aspiring radiologists.",
+      rating: 5.0,
+      yearsExp: 8,
+    },
+    {
+      _id: "fac4",
+      name: "Dr. Maria Rodriguez",
+      image: "/assets/images/faculty4.jpg",
+      specializations: ["Emergency Radiology", "Trauma Imaging"],
+      description:
+        "A dedicated educator with a passion for teaching emergency room imaging. Her sessions focus on rapid diagnosis and critical decision-making.",
+      rating: 4.7,
+      yearsExp: 12,
+    },
+  ]);
+
   useEffect(() => {
     // This is just a placeholder, you would replace it with your actual data fetch.
     setStartDate("2025-07-15T10:00:00Z");
@@ -425,42 +473,55 @@ const CaseViewerPage = () => {
     <>
       <FixedBackButton customPath="/main-page"></FixedBackButton>
       <div
-        className="case-viewer-container" // Add a class for global styles
+        className="case-viewer-container"
         style={{
           display: "flex",
           height: "calc(100vh - 64px)",
-          marginTop: 64,
+          // marginTop: 64,
           background: THEME.background,
-          flexDirection: "row", // Default for larger screens
+          flexDirection: window.innerWidth <= 1024 ? "column" : "row",
         }}
       >
-        {/* Left: DICOM Viewer */}
         <div
           className="dicom-viewer-panel" // Add a class for global styles
           style={{
-            flex: 2,
-            padding: 32,
+            flex: window.innerWidth <= 1024 ? "none" : 2,
+            height: window.innerWidth <= 1024 ? "50vh" : "auto",
+            padding: window.innerWidth <= 768 ? 16 : 32,
             display: "flex",
             flexDirection: "column",
             alignItems: "stretch",
             background: THEME.card,
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            borderRadius: "16px 0 0 16px",
-            margin: 24,
-            marginRight: 0,
+            borderRadius:
+              window.innerWidth <= 1024 ? "16px 16px 0 0" : "16px 0 0 16px",
+            margin: window.innerWidth <= 768 ? 12 : 24,
+            marginRight:
+              window.innerWidth <= 1024
+                ? window.innerWidth <= 768
+                  ? 12
+                  : 24
+                : 0,
+            marginBottom:
+              window.innerWidth <= 1024
+                ? 0
+                : window.innerWidth <= 768
+                ? 12
+                : 24,
             minWidth: 0,
           }}
         >
-          <h2
+          <h4
             style={{
-              marginBottom: 24,
+              marginBottom: window.innerWidth <= 768 ? 16 : 24,
               color: THEME.primary,
               fontWeight: 700,
               letterSpacing: 1,
+              fontSize: window.innerWidth <= 768 ? 16 : 18,
             }}
           >
             DICOM Viewer
-          </h2>
+          </h4>
           {loading && <p>Loading DICOM viewer...</p>}
           {error && <p style={{ color: "red" }}>Error: {error}</p>}
           {!loading && !error && token && (
@@ -496,19 +557,35 @@ const CaseViewerPage = () => {
         <div
           className="observations-form-panel" // Add a class for global styles
           style={{
-            flex: 1,
-            borderLeft: `1px solid ${THEME.border}`,
+            flex: window.innerWidth <= 1024 ? "1" : 1,
+            height: window.innerWidth <= 1024 ? "auto" : "auto",
+            borderLeft:
+              window.innerWidth <= 1024 ? "none" : `1px solid ${THEME.border}`,
+            borderTop:
+              window.innerWidth <= 1024 ? `1px solid ${THEME.border}` : "none",
             padding: 0,
             display: "flex",
             flexDirection: "column",
             alignItems: "stretch",
             background: THEME.card,
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            borderRadius: "0 16px 16px 0",
-            margin: 24,
-            marginLeft: 0,
-            minWidth: 320,
-            maxWidth: 420,
+            borderRadius:
+              window.innerWidth <= 1024 ? "0 0 16px 16px" : "0 16px 16px 0",
+            margin: window.innerWidth <= 768 ? 12 : 24,
+            marginLeft:
+              window.innerWidth <= 1024
+                ? window.innerWidth <= 768
+                  ? 12
+                  : 24
+                : 0,
+            marginTop:
+              window.innerWidth <= 1024
+                ? 0
+                : window.innerWidth <= 768
+                ? 12
+                : 24,
+            minWidth: window.innerWidth <= 1024 ? "auto" : 320,
+            maxWidth: window.innerWidth <= 1024 ? "none" : 420,
             overflow: "hidden",
           }}
         >
@@ -517,17 +594,32 @@ const CaseViewerPage = () => {
             style={{
               background: THEME.primary,
               color: "#fff",
-              padding: "20px 32px 12px 32px",
+              padding:
+                window.innerWidth <= 768
+                  ? "16px 20px 8px 20px"
+                  : "20px 32px 12px 32px",
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
               borderBottom: `4px solid ${THEME.accent}`,
             }}
           >
-            <div style={{ fontWeight: 700, fontSize: 18, letterSpacing: 1 }}>
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: window.innerWidth <= 768 ? 16 : 18,
+                letterSpacing: 1,
+              }}
+            >
               Your observations
             </div>
-            <div style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>
+            <div
+              style={{
+                fontSize: window.innerWidth <= 768 ? 12 : 14,
+                opacity: 0.9,
+                marginTop: 4,
+              }}
+            >
               (On submitting your observations, you will be able to compare your
               observations with the faculty's observations along with an
               explanation video)
@@ -537,12 +629,15 @@ const CaseViewerPage = () => {
           {/* Observations Form */}
           <div
             style={{
-              padding: 32,
+              padding: window.innerWidth <= 768 ? 20 : 32,
               flex: 1,
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-start",
-              maxHeight: "calc(100vh - 64px - 90px)",
+              maxHeight:
+                window.innerWidth <= 1024
+                  ? "50vh"
+                  : "calc(100vh - 64px - 90px)",
               overflowY: "auto",
               position: "relative",
             }}
@@ -558,13 +653,16 @@ const CaseViewerPage = () => {
                 }}
               >
                 {/* Section 1: Medial Meniscus */}
-                <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
+                >
                   <h3
                     style={{
                       color: THEME.text,
                       fontWeight: 600,
-                      fontSize: 16,
-                      marginBottom: 12,
+                      fontSize: window.innerWidth <= 768 ? 14 : 16,
+                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
+                      lineHeight: 1.4,
                     }}
                   >
                     1. Medial compartment: A) Medial meniscus
@@ -577,11 +675,11 @@ const CaseViewerPage = () => {
                     placeholder="Add your comments"
                     style={{
                       width: "100%",
-                      minHeight: 100,
-                      padding: 12,
+                      minHeight: window.innerWidth <= 768 ? 80 : 100,
+                      padding: window.innerWidth <= 768 ? 10 : 12,
                       border: `1px solid ${THEME.border}`,
                       borderRadius: 8,
-                      fontSize: 14,
+                      fontSize: window.innerWidth <= 768 ? 13 : 14,
                       fontFamily: "inherit",
                       resize: "vertical",
                       outline: "none",
@@ -597,13 +695,16 @@ const CaseViewerPage = () => {
                 </div>
 
                 {/* Section 2: Medial Cartilage */}
-                <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
+                >
                   <h3
                     style={{
                       color: THEME.text,
                       fontWeight: 600,
-                      fontSize: 16,
-                      marginBottom: 12,
+                      fontSize: window.innerWidth <= 768 ? 14 : 16,
+                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
+                      lineHeight: 1.4,
                     }}
                   >
                     2. Medial compartment: B) Medial femoral condyle and medial
@@ -617,11 +718,11 @@ const CaseViewerPage = () => {
                     placeholder="Add your comments"
                     style={{
                       width: "100%",
-                      minHeight: 100,
-                      padding: 12,
+                      minHeight: window.innerWidth <= 768 ? 80 : 100,
+                      padding: window.innerWidth <= 768 ? 10 : 12,
                       border: `1px solid ${THEME.border}`,
                       borderRadius: 8,
-                      fontSize: 14,
+                      fontSize: window.innerWidth <= 768 ? 13 : 14,
                       fontFamily: "inherit",
                       resize: "vertical",
                       outline: "none",
@@ -637,13 +738,16 @@ const CaseViewerPage = () => {
                 </div>
 
                 {/* Section 3: Lateral Meniscus */}
-                <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
+                >
                   <h3
                     style={{
                       color: THEME.text,
                       fontWeight: 600,
-                      fontSize: 16,
-                      marginBottom: 12,
+                      fontSize: window.innerWidth <= 768 ? 14 : 16,
+                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
+                      lineHeight: 1.4,
                     }}
                   >
                     3. Lateral compartment: A) Lateral meniscus
@@ -656,11 +760,11 @@ const CaseViewerPage = () => {
                     placeholder="Add your comments"
                     style={{
                       width: "100%",
-                      minHeight: 100,
-                      padding: 12,
+                      minHeight: window.innerWidth <= 768 ? 80 : 100,
+                      padding: window.innerWidth <= 768 ? 10 : 12,
                       border: `1px solid ${THEME.border}`,
                       borderRadius: 8,
-                      fontSize: 14,
+                      fontSize: window.innerWidth <= 768 ? 13 : 14,
                       fontFamily: "inherit",
                       resize: "vertical",
                       outline: "none",
@@ -676,13 +780,16 @@ const CaseViewerPage = () => {
                 </div>
 
                 {/* Section 4: Lateral Cartilage */}
-                <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
+                >
                   <h3
                     style={{
                       color: THEME.text,
                       fontWeight: 600,
-                      fontSize: 16,
-                      marginBottom: 12,
+                      fontSize: window.innerWidth <= 768 ? 14 : 16,
+                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
+                      lineHeight: 1.4,
                     }}
                   >
                     4. Lateral compartment: B) Lateral femoral condyle and
@@ -699,11 +806,11 @@ const CaseViewerPage = () => {
                     placeholder="Add your comments"
                     style={{
                       width: "100%",
-                      minHeight: 100,
-                      padding: 12,
+                      minHeight: window.innerWidth <= 768 ? 80 : 100,
+                      padding: window.innerWidth <= 768 ? 10 : 12,
                       border: `1px solid ${THEME.border}`,
                       borderRadius: 8,
-                      fontSize: 14,
+                      fontSize: window.innerWidth <= 768 ? 13 : 14,
                       fontFamily: "inherit",
                       resize: "vertical",
                       outline: "none",
@@ -722,13 +829,14 @@ const CaseViewerPage = () => {
                   type="submit"
                   style={{
                     marginTop: 12,
-                    padding: "12px 24px",
+                    padding:
+                      window.innerWidth <= 768 ? "10px 20px" : "12px 24px",
                     background: THEME.primary,
                     color: "#fff",
                     border: "none",
                     borderRadius: 8,
                     fontWeight: 600,
-                    fontSize: 16,
+                    fontSize: window.innerWidth <= 768 ? 14 : 16,
                     letterSpacing: 1,
                     boxShadow: "0 2px 8px rgba(25,118,210,0.15)",
                     cursor: "pointer",
@@ -766,32 +874,36 @@ const CaseViewerPage = () => {
                   zIndex: 2,
                   animation: "fadeIn 0.7s",
                   background: "#f8f9fa",
-                  borderRadius: "0 16px 16px 0",
+                  borderRadius:
+                    window.innerWidth <= 1024
+                      ? "0 0 16px 16px"
+                      : "0 16px 16px 0",
                 }}
               >
                 <div
                   style={{
                     background: "#fff",
                     borderRadius: 16,
-                    padding: "32px 24px",
+                    padding:
+                      window.innerWidth <= 768 ? "24px 20px" : "32px 24px",
                     boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
                     textAlign: "center",
-                    maxWidth: 320,
+                    maxWidth: window.innerWidth <= 768 ? 280 : 320,
                     width: "100%",
                   }}
                 >
                   {/* Success Icon */}
                   <div
                     style={{
-                      width: 60,
-                      height: 60,
+                      width: window.innerWidth <= 768 ? 50 : 60,
+                      height: window.innerWidth <= 768 ? 50 : 60,
                       background: "#00bfae",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       margin: "0 auto 16px",
-                      fontSize: 24,
+                      fontSize: window.innerWidth <= 768 ? 20 : 24,
                       color: "#fff",
                     }}
                   >
@@ -802,7 +914,7 @@ const CaseViewerPage = () => {
                     style={{
                       color: THEME.text,
                       fontWeight: 600,
-                      fontSize: 18,
+                      fontSize: window.innerWidth <= 768 ? 16 : 18,
                       marginBottom: 8,
                     }}
                   >
@@ -812,8 +924,8 @@ const CaseViewerPage = () => {
                   <p
                     style={{
                       color: "#666",
-                      fontSize: 14,
-                      marginBottom: 24,
+                      fontSize: window.innerWidth <= 768 ? 13 : 14,
+                      marginBottom: window.innerWidth <= 768 ? 20 : 24,
                     }}
                   >
                     You can now compare your observations with faculty feedback
@@ -830,13 +942,14 @@ const CaseViewerPage = () => {
                     <button
                       onClick={handleCompareObservations}
                       style={{
-                        padding: "12px 20px",
+                        padding:
+                          window.innerWidth <= 768 ? "10px 16px" : "12px 20px",
                         background: "#00bfae",
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,
                         fontWeight: 600,
-                        fontSize: 14,
+                        fontSize: window.innerWidth <= 768 ? 13 : 14,
                         cursor: "pointer",
                         transition: "background 0.2s",
                       }}
@@ -853,13 +966,14 @@ const CaseViewerPage = () => {
                     <button
                       onClick={() => setShowVideo(true)}
                       style={{
-                        padding: "12px 20px",
+                        padding:
+                          window.innerWidth <= 768 ? "10px 16px" : "12px 20px",
                         background: "#00bfae",
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,
                         fontWeight: 600,
-                        fontSize: 14,
+                        fontSize: window.innerWidth <= 768 ? 13 : 14,
                         cursor: "pointer",
                         transition: "background 0.2s",
                         display: "flex",
@@ -896,8 +1010,8 @@ const CaseViewerPage = () => {
                     >
                       <iframe
                         src={videoUrl}
-                        width="80%"
-                        height="80%"
+                        width={window.innerWidth <= 768 ? "95%" : "80%"}
+                        height={window.innerWidth <= 768 ? "60%" : "80%"}
                         frameborder="0"
                         allow="autoplay; fullscreen"
                         allowfullscreen
@@ -2664,7 +2778,7 @@ const CaseViewerPage = () => {
 
           /* Base styles for larger screens (1025px and up) - already mostly in JS inline styles */
           .case-viewer-container {
-            padding: 0 24px; /* Add some horizontal padding to the main container */
+            padding: 0px 6px; /* Add some horizontal padding to the main container */
           }
 
           /* Medium screens (769px to 1024px) */
@@ -2672,7 +2786,7 @@ const CaseViewerPage = () => {
             .case-viewer-container {
               flex-direction: column;
               height: auto; /* Allow height to adjust */
-              margin-top: 64px;
+              // margin-top: 64px;
               padding: 24px; /* Uniform padding */
             }
 
@@ -2797,7 +2911,7 @@ const CaseViewerPage = () => {
           @media (min-width: 1401px) and (max-width: 1600px) {
             .case-viewer-container {
               max-width: 1500px; /* Constrain max-width for very wide screens */
-              margin: 64px auto 0 auto; /* Center the container */
+              margin: 28px auto 0 auto; /* Center the container */
             }
             .observations-form-panel {
                 max-width: 480px; /* Slightly wider form */

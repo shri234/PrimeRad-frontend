@@ -265,34 +265,23 @@
 
 /* Responsive Breakpoints */
 @media (max-width: 991.98px) {
-  .right-panel {
+  /* .right-panel {
     display: none !important;
   }
-  
+   */
   .mobile-menu-toggle {
     display: block !important;
   }
 }
 
 @media (min-width: 992px) {
-  .mobile-menu-toggle {
+  /* .mobile-menu-toggle {
     display: none !important;
-  }
+  } */
 }
 
 /* Tablet Responsive */
-@media (max-width: 1199.98px) and (min-width: 992px) {
-  .polished-nav .nav-link {
-    margin: 7px;
-    padding: 8px 12px;
-    font-size: 0.8rem;
-  }
-  
-  .polished-nav .btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-}
+
 
 /* Small Mobile Responsive */
 @media (max-width: 575.98px) {
@@ -344,7 +333,7 @@
   letter-spacing: 0.5px;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1200px) {
   .header-collapsed .mobile-menu-toggle {
     opacity: 0.8;
   }
@@ -384,8 +373,8 @@
 
 /* Mobile responsiveness */
 @media (max-width: 991px) {
-  .header-minimized {
+  /* .header-minimized {
     padding: 0.5rem 0;
-  }
+  } */
 }
 

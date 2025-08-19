@@ -468,6 +468,7 @@ const MainPage = memo(() => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const LIMIT = 12;
@@ -765,7 +766,7 @@ const MainPage = memo(() => {
         },
       });
     } else if (card.contentType && card.contentType.toLowerCase() === "live") {
-      navigate("/live", { state: card });
+      navigate("/live/5387499339", { state: card });
     }
   };
 
@@ -932,7 +933,7 @@ const MainPage = memo(() => {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent: "space-between", // This can be removed or kept as it doesn't affect the new structure
+                justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
                 gap: "16px",
@@ -943,27 +944,40 @@ const MainPage = memo(() => {
                 <div
                   style={{
                     background: "antiquewhite",
-                    marginLeft: "18px",
+                    marginLeft: isMobile ? "8px" : isTablet ? "12px" : "18px",
                     marginBottom: "20px",
                     marginTop: "-20px",
-                    borderRadius: isMobile ? 12 : 16,
+                    borderRadius: isMobile ? 12 : isTablet ? 14 : 16,
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                    padding: isMobile ? "12px 16px" : "18px 28px",
+                    padding: isMobile
+                      ? "12px 16px"
+                      : isTablet
+                      ? "16px 22px"
+                      : "18px 28px",
                     display: "flex",
                     alignItems: "center",
-                    gap: isMobile ? 16 : 24,
+                    gap: isMobile ? 12 : isTablet ? 20 : 24,
                     maxWidth: 900,
-                    width: "100%",
-                    minWidth: isMobile ? 280 : 320,
-                    flexDirection: isMobile ? "column" : "row",
+                    width: isMobile
+                      ? "calc(100% - 16px)"
+                      : isTablet
+                      ? "calc(100% - 24px)"
+                      : "100%",
+                    minWidth: isMobile ? 250 : isTablet ? 300 : 320,
+                    flexDirection: isMobile
+                      ? "column"
+                      : isTablet
+                      ? "column"
+                      : "row",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: isMobile ? 16 : 20,
+                      fontSize: isMobile ? 14 : isTablet ? 18 : 20,
                       fontWeight: 400,
-                      minWidth: isMobile ? 120 : 180,
+                      minWidth: isMobile ? "auto" : isTablet ? 160 : 180,
                       textAlign: isMobile ? "center" : "left",
+                      whiteSpace: isMobile ? "normal" : "nowrap",
                     }}
                   >
                     Current Belt:{" "}
@@ -974,16 +988,21 @@ const MainPage = memo(() => {
                   <div
                     style={{
                       flex: 1,
-                      minWidth: isMobile ? 100 : 120,
-                      margin: isMobile ? "0 8px" : "0 18px",
+                      minWidth: isMobile ? 80 : isTablet ? 100 : 120,
+                      margin: isMobile
+                        ? "8px 0"
+                        : isTablet
+                        ? "0 12px"
+                        : "0 18px",
+                      width: isMobile ? "100%" : "auto",
                     }}
                   >
                     <div
                       style={{
                         width: "100%",
-                        height: 16,
+                        height: isMobile ? 12 : isTablet ? 14 : 16,
                         background: "ghostwhite",
-                        borderRadius: 8,
+                        borderRadius: isMobile ? 6 : isTablet ? 7 : 8,
                         overflow: "hidden",
                         position: "relative",
                       }}
@@ -996,7 +1015,7 @@ const MainPage = memo(() => {
                           )}%`,
                           height: "100%",
                           background: "#1976d2",
-                          borderRadius: 8,
+                          borderRadius: isMobile ? 6 : isTablet ? 7 : 8,
                           transition: "width 0.4s",
                         }}
                       />
@@ -1004,10 +1023,15 @@ const MainPage = memo(() => {
                   </div>
                   <div
                     style={{
-                      fontSize: isMobile ? 14 : 18,
+                      fontSize: isMobile ? 12 : isTablet ? 16 : 18,
                       fontWeight: 400,
-                      minWidth: isMobile ? 120 : 180,
+                      minWidth: isMobile ? "auto" : isTablet ? 140 : 180,
                       textAlign: isMobile ? "center" : "right",
+                      whiteSpace: isMobile
+                        ? "normal"
+                        : isTablet
+                        ? "nowrap"
+                        : "nowrap",
                     }}
                   >
                     {totalPoints} / {maxPoints} pts to{" "}
@@ -1021,59 +1045,94 @@ const MainPage = memo(() => {
                   style={{
                     background: "#E8F5E9",
                     border: "1px solid #C8E6C9",
-                    marginLeft: "18px",
+                    marginLeft: isMobile ? "8px" : isTablet ? "12px" : "18px",
                     marginBottom: "10px",
                     marginTop: "-20px",
-                    borderRadius: isMobile ? 12 : 16,
+                    borderRadius: isMobile ? 12 : isTablet ? 14 : 16,
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                    padding: isMobile ? "16px 20px" : "18px 28px",
+                    padding: isMobile
+                      ? "16px 20px"
+                      : isTablet
+                      ? "16px 24px"
+                      : "18px 28px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: isMobile ? 16 : 24,
+                    gap: isMobile ? 16 : isTablet ? 20 : 24,
                     maxWidth: 900,
-                    width: "100%",
-                    minWidth: isMobile ? 280 : 320,
+                    width: isMobile
+                      ? "calc(100% - 16px)"
+                      : isTablet
+                      ? "calc(100% - 24px)"
+                      : "100%",
+                    minWidth: isMobile ? 250 : isTablet ? 300 : 320,
                     flexDirection: isMobile ? "column" : "row",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: isMobile ? 16 : 22,
+                      fontSize: isMobile ? 14 : isTablet ? 18 : 22,
                       fontWeight: 600,
                       textAlign: "center",
                       color: "#2E7D32",
                       display: "flex",
                       alignItems: "center",
                       gap: "5px",
+                      flexDirection: isMobile ? "column" : "row",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
                     }}
                   >
-                    <FaUnlockAlt size={isMobile ? 16 : 20} />
-
-                    <span style={{ fontWeight: 500, fontSize: "18px" }}>
-                      Login to watch unlimited videos and win big with module
-                      assessments!
-                    </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                      }}
+                    >
+                      <FaUnlockAlt size={isMobile ? 14 : isTablet ? 16 : 20} />
+                      <span
+                        style={{
+                          fontWeight: 500,
+                          fontSize: isMobile
+                            ? "14px"
+                            : isTablet
+                            ? "16px"
+                            : "18px",
+                        }}
+                      >
+                        Login to watch unlimited videos and win big with module
+                        assessments!
+                      </span>
+                    </div>
 
                     <button
                       style={{
-                        padding: "4px 6px",
+                        padding: isMobile
+                          ? "6px 8px"
+                          : isTablet
+                          ? "5px 7px"
+                          : "4px 6px",
                         backgroundColor: "#4CAF50",
                         color: "darkslategrey",
                         border: "none",
                         borderRadius: "8px",
                         display: "flex",
-                        // marginLeft: "10px",
                         alignItems: "center",
                         gap: "8px",
                         letterSpacing: 1,
                         cursor: "pointer",
-                        fontSize: "16px",
+                        fontSize: isMobile
+                          ? "14px"
+                          : isTablet
+                          ? "15px"
+                          : "16px",
                         fontWeight: "600",
                         boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                         transition:
                           "transform 0.2s ease, background-color 0.2s ease",
-                        marginLeft: "auto", // Pushes the button to the right on desktop
+                        marginLeft: isMobile ? "0" : "auto",
+                        marginTop: isMobile ? "8px" : "0",
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.transform = "scale(1.05)";
@@ -1087,7 +1146,7 @@ const MainPage = memo(() => {
                         navigate("/login");
                       }}
                     >
-                      <FaSignInAlt size={16} />
+                      <FaSignInAlt size={isMobile ? 14 : 16} />
                       Login
                     </button>
                   </div>
@@ -1097,58 +1156,71 @@ const MainPage = memo(() => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: isAuthenticated ? "flex-end" : "flex-end", // This is the key change
+                  justifyContent: "flex-end",
                   alignItems: "center",
-                  gap: "8px",
+                  gap: isMobile ? "6px" : isTablet ? "7px" : "8px",
                   marginBottom: isAuthenticated ? "0px" : "10px",
                   marginTop: "-10px",
-                  // Add flex-grow so it takes up remaining space
                   flexGrow: 1,
-                  // Add padding for consistency
-                  paddingRight: "18px",
+                  paddingRight: isMobile ? "8px" : isTablet ? "12px" : "18px",
+                  width: isMobile ? "100%" : "auto",
                 }}
               >
                 <button
                   style={{
-                    padding: "8px 12px",
+                    padding: isMobile
+                      ? "6px 10px"
+                      : isTablet
+                      ? "7px 11px"
+                      : "8px 12px",
                     backgroundColor:
                       view === "atlas" ? "darkslategrey" : "#f0f0f0",
                     color: view === "atlas" ? "white" : "#333",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "6px",
+                    gap: isMobile ? "4px" : isTablet ? "5px" : "6px",
                     cursor: "pointer",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : isTablet ? "13px" : "14px",
                     fontWeight: "500",
                     transition: "all 0.3s ease",
+                    minWidth: isMobile ? "60px" : isTablet ? "70px" : "auto",
+                    justifyContent: "center",
                   }}
                   onClick={() => setView("atlas")}
                 >
-                  <FaTh size={14} />
-                  Grid
+                  <FaTh size={isMobile ? 12 : isTablet ? 13 : 14} />
+                  {!isMobile && "Grid"}
+                  {isMobile && "Grid"}
                 </button>
                 <button
                   style={{
-                    padding: "8px 12px",
+                    padding: isMobile
+                      ? "6px 10px"
+                      : isTablet
+                      ? "7px 11px"
+                      : "8px 12px",
                     backgroundColor:
                       view === "list" ? "darkslategrey" : "#f0f0f0",
                     color: view === "list" ? "white" : "#333",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "6px",
+                    gap: isMobile ? "4px" : isTablet ? "5px" : "6px",
                     cursor: "pointer",
-                    fontSize: "14px",
+                    fontSize: isMobile ? "12px" : isTablet ? "13px" : "14px",
                     fontWeight: "500",
                     transition: "all 0.3s ease",
+                    minWidth: isMobile ? "60px" : isTablet ? "70px" : "auto",
+                    justifyContent: "center",
                   }}
                   onClick={() => setView("list")}
                 >
-                  <FaList size={14} />
-                  List
+                  <FaList size={isMobile ? 12 : isTablet ? 13 : 14} />
+                  {!isMobile && "List"}
+                  {isMobile && "List"}
                 </button>
               </div>
             </div>

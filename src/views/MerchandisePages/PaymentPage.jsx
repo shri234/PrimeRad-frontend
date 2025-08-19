@@ -3,10 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import HeaderDefault from "../../components/partials/HeaderDefault";
 import BreadCrumbWidget from "../../components/BreadcrumbWidget";
 import { Container, Button, Card } from "react-bootstrap"; // Added Card for better structure
-import axios from "axios"; // For backend API calls
+import axios from "axios";
 
-// --- Load External Payment SDKs ---
-// Razorpay: Loads a script that provides the 'Razorpay' object
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -17,7 +15,6 @@ const loadRazorpayScript = () => {
   });
 };
 
-// Stripe: Loads Stripe.js
 const loadStripeScript = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -28,7 +25,6 @@ const loadStripeScript = () => {
   });
 };
 
-// PayPal: Loads PayPal JS SDK
 const loadPayPalScript = (clientId, currency) => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -109,14 +105,10 @@ const PaymentPage = () => {
     stripe: false,
     paypal: false,
   });
-
-  // --- Mock Backend API Keys (Replace with your actual backend-fetched keys) ---
-  // These should NOT be hardcoded in production frontend code.
-  // Fetch them from your backend via a secure API endpoint.
-  const RAZORPAY_KEY_ID = "rzp_test_D6ffGs0mkGPakV"; // Replace with your test/live Key ID
-  const STRIPE_PUBLIC_KEY = "pk_test_YOUR_STRIPE_PUBLIC_KEY"; // Replace with your test/live Public Key
+  const RAZORPAY_KEY_ID = "rzp_test_D6ffGs0mkGPakV";
+  const STRIPE_PUBLIC_KEY = "pk_test_YOUR_STRIPE_PUBLIC_KEY";
   const PAYPAL_CLIENT_ID =
-    "Aeugj_1RLQz2ju0gEpUOV3smZZaKInXpBNcP6G1BOphXp1XprESBPzNjTkrDL-zIe_W3PWZGDKA0gJgh"; // Replace with your test/live Client ID
+    "Aeugj_1RLQz2ju0gEpUOV3smZZaKInXpBNcP6G1BOphXp1XprESBPzNjTkrDL-zIe_W3PWZGDKA0gJgh";
 
   useEffect(() => {
     const fetchPackageDetails = async () => {
@@ -172,7 +164,7 @@ const PaymentPage = () => {
     };
 
     fetchPackageDetails();
-  }, []); // Re-fetch if packageId changes
+  }, []);
   // Load SDKs
   useEffect(() => {
     const loadAllSDKs = async () => {
@@ -200,7 +192,6 @@ const PaymentPage = () => {
     }
   }, [selectedPlanDetails, PAYPAL_CLIENT_ID]);
 
-  // --- Razorpay Integration ---
   const handleRazorpayPayment = useCallback(async () => {
     if (!sdkLoaded.razorpay || !selectedPlanDetails) return;
 

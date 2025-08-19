@@ -6,7 +6,7 @@ import FooterDefault from "../components/partials/FooterDefault"; // Assuming th
 import FooterMinimal from "../components/partials/FooterMinimal"; // This is a new component for the minimal footer
 import MerchandiseFooter from "../components/merchandise/partials/FooterDefault";
 import Loader from "../components/Loader";
-import "../app.css";
+// import "../app.css";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../store/auth/selectors";
 

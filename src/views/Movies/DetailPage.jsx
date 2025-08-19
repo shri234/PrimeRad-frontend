@@ -504,9 +504,9 @@ const MovieDetail = memo(() => {
           className="iq-main-slider site-video mb-5"
           style={{
             borderRadius: "0 0 28px 28px",
-            overflow: "hidden", // Keep this for rounded corners
+            overflow: "hidden",
             boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-            position: "relative", // Needed for absolute positioning of overlays
+            position: "relative",
           }}
         >
           {isAuthenticated ? (
@@ -515,17 +515,30 @@ const MovieDetail = memo(() => {
                 <Col>
                   <div className="pt-0">
                     <div
+                      className="video-wrapper"
                       style={{
                         display: "flex", // Use a flexbox layout
                         justifyContent: "center", // Center content horizontally
                         alignItems: "center", // Center content vertically
-                        height: "90vh", // Example: Fill the full viewport height
-                        // width: "100vw",
+                        minHeight: "50vh", // Minimum height for mobile
+                        height: "90vh", // Full height on desktop
+                        width: "100%",
+                        padding: "0 15px", // Add padding for mobile
+                        // Responsive height adjustments
+                        "@media (max-width: 768px)": {
+                          height: "50vh",
+                          minHeight: "40vh",
+                        },
+                        "@media (max-width: 480px)": {
+                          height: "40vh",
+                          minHeight: "35vh",
+                        },
                       }}
                     >
                       {/* --- Conditional Video Playback / Subscribe Button --- */}
                       {!isFree ? ( // If the content is NOT free (i.e., locked)
                         <div
+                          className="locked-content-overlay"
                           style={{
                             position: "absolute",
                             top: 0,
@@ -541,23 +554,33 @@ const MovieDetail = memo(() => {
                             fontSize: "1.5rem",
                             textAlign: "center",
                             zIndex: 100, // Ensure this overlay is highest
+                            padding: "20px",
                           }}
                         >
                           <FaExclamationCircle
                             size={50}
-                            style={{ marginBottom: "20px" }}
+                            style={{
+                              marginBottom: "20px",
+                              // Responsive icon size
+                              fontSize: "clamp(40px, 8vw, 50px)",
+                            }}
                           />
                           <p
                             style={{
                               marginBottom: "15px",
-                              fontSize: "1.8rem",
+                              fontSize: "clamp(1.2rem, 4vw, 1.8rem)", // Responsive font size
                               fontWeight: "bold",
                             }}
                           >
                             Content Locked
                           </p>
                           <p
-                            style={{ marginBottom: "30px", fontSize: "1.1rem" }}
+                            style={{
+                              marginBottom: "30px",
+                              fontSize: "clamp(0.9rem, 3vw, 1.1rem)", // Responsive font size
+                              maxWidth: "300px", // Limit width for readability
+                              textAlign: "center",
+                            }}
                           >
                             This exclusive content requires a subscription.
                           </p>
@@ -569,9 +592,10 @@ const MovieDetail = memo(() => {
                               borderColor: THEME.primary,
                               borderRadius: "10px",
                               padding: "12px 25px",
-                              fontSize: "1.2rem",
+                              fontSize: "clamp(1rem, 3vw, 1.2rem)", // Responsive font size
                               fontWeight: 700,
                               boxShadow: "0 4px 15px rgba(25,118,210,0.4)",
+                              minWidth: "200px", // Minimum button width
                             }}
                           >
                             Subscribe to Unlock
@@ -582,21 +606,21 @@ const MovieDetail = memo(() => {
                         <>
                           <div
                             ref={videoContainerRef}
+                            className="video-container"
                             style={{
-                              width: "80%", // For example, 80% of the parent container's width
-                              height: "auto", // This will automatically maintain the video's aspect ratio
-                              maxWidth: "85%", // Optional: Set a maximum size to prevent it from getting too large on big screens
+                              width: "82%", // Full width on mobile
+                              maxWidth: "95%", // Slight margin on very small screens
+                              height: "auto", // Auto height to maintain aspect ratio
+                              aspectRatio: "16/9", // Maintain 16:9 aspect ratio
                               border: "none",
-                              // paddingTop: "268px",
-                              // paddingLeft: "12px",
-                              // paddingRight: "12px",
-                              // marginBottom: "60px",
-                              // Remove alignItems as it's not a flex container here
+                              // Responsive width adjustments
+                              // Mobile first approach
                             }}
                           />
                           {/* Loading overlay for video player (appears on top of video, under subscribe button overlay) */}
                           {!playerReady && (
                             <div
+                              className="loading-overlay"
                               style={{
                                 position: "absolute",
                                 top: 0,
@@ -608,7 +632,7 @@ const MovieDetail = memo(() => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                fontSize: "1.1rem",
+                                fontSize: "clamp(1rem, 3vw, 1.1rem)", // Responsive font size
                                 zIndex: 90, // Higher than video, lower than subscribe overlay
                               }}
                             >
@@ -619,6 +643,7 @@ const MovieDetail = memo(() => {
                       ) : (
                         // Display message if vimeoVideoId is missing
                         <div
+                          className="video-unavailable"
                           style={{
                             position: "absolute",
                             top: 0,
@@ -630,18 +655,28 @@ const MovieDetail = memo(() => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            fontSize: "1.2rem",
+                            fontSize: "clamp(1rem, 3vw, 1.2rem)", // Responsive font size
                             flexDirection: "column",
                             textAlign: "center",
                             zIndex: 10,
+                            padding: "20px",
                           }}
                         >
                           <FaExclamationCircle
                             size={40}
-                            style={{ marginBottom: "10px" }}
+                            style={{
+                              marginBottom: "10px",
+                              fontSize: "clamp(30px, 6vw, 40px)", // Responsive icon size
+                            }}
                           />
                           <p>Video not available.</p>
-                          <small>
+                          <small
+                            style={{
+                              fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)", // Responsive small text
+                              textAlign: "center",
+                              maxWidth: "280px",
+                            }}
+                          >
                             Please check if the video ID is correct or
                             available.
                           </small>
@@ -655,15 +690,22 @@ const MovieDetail = memo(() => {
           ) : (
             // Not Authenticated Section (Login Prompt)
             <div
-              className="d-flex justify-content-center align-items-center"
+              className="d-flex justify-content-center align-items-center login-prompt"
               style={{
                 height: "50vh",
+                minHeight: "300px", // Minimum height for mobile
                 background: "#333",
                 borderRadius: "0 0 28px 28px",
+                padding: "20px", // Add padding for mobile
               }}
             >
               <div className="text-center text-white">
-                <h2 className="mb-3">
+                <h2
+                  className="mb-3"
+                  style={{
+                    fontSize: "clamp(1.5rem, 5vw, 2rem)", // Responsive heading
+                  }}
+                >
                   {t("Login to watch unlimited content")}
                 </h2>
                 <Button
@@ -674,8 +716,9 @@ const MovieDetail = memo(() => {
                     backgroundColor: THEME.primary,
                     borderColor: THEME.primary,
                     borderRadius: "8px",
-                    fontSize: "1.1rem",
+                    fontSize: "clamp(1rem, 3vw, 1.1rem)", // Responsive button text
                     fontWeight: 600,
+                    minWidth: "150px", // Minimum button width
                   }}
                 >
                   {t("Login")}
@@ -684,7 +727,61 @@ const MovieDetail = memo(() => {
             </div>
           )}
         </div>
+        {/* Add responsive CSS styles */}
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .video-wrapper {
+              height: 45vh !important;
+              min-height: 45vh !important;
+              padding: 0 0px !important;
+            }
 
+            .video-container {
+              width: 98% !important;
+              max-width: 98% !important;
+            }
+
+            .locked-content-overlay,
+            .video-unavailable {
+              padding: 15px !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .video-wrapper {
+              height: 25vh !important;
+              min-height: 35vh !important;
+              padding: 0 0px !important;
+            }
+
+            .video-container {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+
+            .login-prompt {
+              height: 40vh !important;
+              padding: 15px !important;
+            }
+          }
+
+          @media (max-width: 360px) {
+            .video-wrapper {
+              height: 35vh !important;
+              min-height: 30vh !important;
+            }
+
+            .locked-content-overlay p:first-of-type,
+            .video-unavailable p {
+              font-size: 1rem !important;
+            }
+
+            .locked-content-overlay p:last-of-type,
+            .video-unavailable small {
+              font-size: 0.85rem !important;
+            }
+          }
+        `}</style>
         {/* Details Part (Metadata, Tabs, Faculty) */}
         <div className="details-part pt-4 px-4 px-md-0">
           <Container fluid>
@@ -1439,7 +1536,6 @@ const MovieDetail = memo(() => {
             </Row>
           </Container>
         </div>
-
         {/* Faculty/Cast Section */}
         <div className="cast-tabs pb-5 px-4 px-md-0">
           <Container fluid>
@@ -1972,7 +2068,7 @@ const MovieDetail = memo(() => {
           </Container>
         </div>
         {/* Recommended Movies/Lectures Section (adjust title as needed) */}
-        <LatestMovies title="Recent Items" dicomCases={[]} />
+        <LatestMovies title="Recent Items" />
       </div>
     </Fragment>
   );

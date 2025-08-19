@@ -149,6 +149,7 @@ const HeaderDefault = memo(() => {
                 style={{
                   transition: "transform 0.3s ease-in-out",
                   transformOrigin: "left center",
+                  // width: windowWidth < 1200 ? "50%" : "100%",
                 }}
               >
                 <Logo />
@@ -181,18 +182,16 @@ const HeaderDefault = memo(() => {
                         onClick={() => handleNavigation(item.path)}
                         style={{
                           transition: "all 0.3s ease-in-out",
-                          fontSize: windowWidth < 1200 ? "13px" : "14px",
+                          fontSize: windowWidth < 1200 ? "12px" : "14px",
                           display: "flex",
                           alignItems: "center",
-                          // padding: "10px",
-                          whiteSpace: "nowrap",
                         }}
                       >
                         {/* Icon */}
                         <span
                           style={{
-                            marginRight: windowWidth < 1200 ? 4 : 6,
-                            fontSize: windowWidth < 1200 ? 16 : 18,
+                            marginRight: windowWidth < 1200 ? 3 : 6,
+                            fontSize: windowWidth < 1200 ? 14 : 18,
                             verticalAlign: "middle",
                             transition: "margin-right 0.3s ease-in-out",
                             display: "flex",
@@ -206,7 +205,7 @@ const HeaderDefault = memo(() => {
                             },
                           })}
                         </span>
-                        {/* Label */}
+
                         <span
                           style={{
                             fontSize: windowWidth < 1200 ? "12px" : "14px",
@@ -243,7 +242,7 @@ const HeaderDefault = memo(() => {
                         justifyContent: "center",
                         alignItems: "center",
                         marginRight: "10px",
-                        gap: windowWidth < 1200 ? "4px" : "8px",
+                        gap: windowWidth < 1200 ? "6px" : "8px",
                         cursor: "pointer",
                         whiteSpace: "nowrap",
                       }}

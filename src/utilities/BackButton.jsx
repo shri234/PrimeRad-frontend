@@ -253,16 +253,15 @@ const BackButton = ({
   );
 };
 
-// Fixed Position Back Button (for overlaying on content)
 const FixedBackButton = ({
   position = "top-left",
   variant = "floating",
-  size = "medium",
+  size = "small",
   customPath = null,
-  topOffset = "80px", // Default offset for top navigation
+  topOffset = "70px",
 }) => {
   const positions = {
-    "top-left": { top: topOffset, left: "24px" },
+    "top-left": { top: topOffset, left: "10px" },
     "top-right": { top: topOffset, right: "24px" },
     "bottom-left": { bottom: "24px", left: "24px" },
     "bottom-right": { bottom: "24px", right: "24px" },

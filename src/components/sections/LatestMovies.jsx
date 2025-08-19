@@ -159,7 +159,6 @@ const LatestMovies = (props) => {
     [navigate]
   );
 
-  // For only title mode
   if (props.onlyTitle) {
     return (
       <div style={{ padding: "24px 0" }}>
@@ -178,8 +177,7 @@ const LatestMovies = (props) => {
     );
   }
 
-  // Decide which list to render
-  const listToRender = loading ? [] : sessions; // Show empty list if loading or no sessions
+  const listToRender = loading ? [] : sessions;
 
   return (
     <Fragment>

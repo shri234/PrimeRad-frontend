@@ -1379,7 +1379,6 @@ const CartPage = memo(() => {
                       </p>
                     </div>
 
-                    {/* GST Information */}
                     <div
                       style={{
                         marginTop: "16px",
