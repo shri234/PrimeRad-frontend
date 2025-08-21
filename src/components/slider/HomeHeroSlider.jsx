@@ -1,5 +1,5 @@
 import { Fragment, memo, useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom"; // <--- Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import FsLightbox from "fslightbox-react";
 import { useSelector } from "react-redux";
 import { theme_scheme_direction } from "../../store/setting/selectors";
@@ -21,7 +21,11 @@ const HomeHeroSlider = memo(() => {
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  const navigate = useNavigate(); // <--- Initialize useNavigate
+  /** ------ CAROUSEL PAGINATION STATE ------ **/
+  const [carouselStartIndex, setCarouselStartIndex] = useState(0);
+  const CAROUSEL_ITEMS_PER_VIEW = 4;
+
+  const navigate = useNavigate();
 
   /** --- Data fetching --- **/
   useEffect(() => {
@@ -57,7 +61,7 @@ const HomeHeroSlider = memo(() => {
     };
   }, [totalSlides]);
 
-  // Navigation handlers for the carousel arrows/dots (unchanged)
+  // Navigation handlers for the carousel arrows/dots
   const handleNext = useCallback(() => {
     setCurrentSlideIndex((prevIndex) => (prevIndex + 1) % totalSlides);
   }, [totalSlides]);
@@ -72,6 +76,35 @@ const HomeHeroSlider = memo(() => {
     setCurrentSlideIndex(index);
   }, []);
 
+  const handleCarouselItemClick = useCallback((index) => {
+    setCurrentSlideIndex(index);
+  }, []);
+
+  /** --- Carousel Navigation Handlers --- **/
+  const handleCarouselNext = useCallback(() => {
+    if (carouselStartIndex + CAROUSEL_ITEMS_PER_VIEW < totalSlides) {
+      setCarouselStartIndex((prev) => prev + 1);
+    }
+  }, [carouselStartIndex, totalSlides]);
+
+  const handleCarouselPrev = useCallback(() => {
+    if (carouselStartIndex > 0) {
+      setCarouselStartIndex((prev) => prev - 1);
+    }
+  }, [carouselStartIndex]);
+
+  // Auto-adjust carousel view when current slide changes
+  useEffect(() => {
+    if (currentSlideIndex < carouselStartIndex) {
+      setCarouselStartIndex(currentSlideIndex);
+    } else if (
+      currentSlideIndex >=
+      carouselStartIndex + CAROUSEL_ITEMS_PER_VIEW
+    ) {
+      setCarouselStartIndex(currentSlideIndex - CAROUSEL_ITEMS_PER_VIEW + 1);
+    }
+  }, [currentSlideIndex, carouselStartIndex]);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
@@ -85,26 +118,24 @@ const HomeHeroSlider = memo(() => {
   };
 
   const mapSlideData = (apiObj) => ({
-    id: apiObj._id, // <--- Crucial: Pass the _id for navigation
+    id: apiObj._id,
     title: apiObj.title,
     description: apiObj.description,
     cmeCredits: apiObj.isAssessment ? t("Assessment") : "",
     movieTime: apiObj.sessionDuration,
     level: apiObj.difficulty,
     category: apiObj.moduleName,
-    tags: [], // Assuming tags might come from API in the future
+    tags: [],
     image: apiObj.imageUrl_1920x1080
       ? `https://primerad-backend.onrender.com${apiObj.imageUrl_1920x1080}`
       : "https://placehold.co/1920x1080?text=No+Image",
-    // detailLink: `/session-detail/${apiObj._id || ""}`, // This can be removed or kept as a fallback
     previewVideoUrl: apiObj.vimeoVideoId
       ? `https://player.vimeo.com/video/${apiObj.vimeoVideoId}`
       : null,
-
     vimeoVideoId: apiObj.vimeoVideoId || null,
-    faculty: apiObj.faculty || "Unknown Faculty", // Assuming 'faculty' might be directly on the API object
+    faculty: apiObj.faculty || "Unknown Faculty",
     module: apiObj.moduleName || "General",
-    submodule: apiObj.subCategoryId || "General", // Assuming 'subCategoryId' exists on API object
+    submodule: apiObj.subCategoryId || "General",
     duration: apiObj.sessionDuration || "",
     startDate: apiObj.startDate,
     contentType:
@@ -112,16 +143,15 @@ const HomeHeroSlider = memo(() => {
         ? "Case"
         : apiObj.sessionType === "Vimeo"
         ? "Lecture"
-        : apiObj.sessionType || "Other", // <--- Crucial: Map sessionType to contentType
+        : apiObj.sessionType || "Other",
   });
 
   const currentSlideContent =
     slides.length > 0 ? mapSlideData(slides[currentSlideIndex]) : null;
 
-  // NEW: Navigation handler for "View Content" button
+  // Navigation handler for "View Content" button
   const handleViewContentClick = useCallback(
     (card) => {
-      // This logic is copied directly from your MainPage's handleCardClick
       if (card.contentType && card.contentType.toLowerCase() === "case") {
         navigate(`/case/${card.id}`);
       } else if (
@@ -132,7 +162,7 @@ const HomeHeroSlider = memo(() => {
           state: {
             id: card.id,
             vimeoVideoId: card.vimeoVideoId,
-            title: card.title, // Use card.title (mapped from API.title)
+            title: card.title,
             description: card.description,
             faculty: card.faculty,
             module: card.module,
@@ -146,11 +176,10 @@ const HomeHeroSlider = memo(() => {
         card.contentType &&
         card.contentType.toLowerCase() === "live"
       ) {
-        // For 'live', you might need more specific data, ensure 'card' contains it
         navigate("/live", { state: card });
       }
     },
-    [navigate] // Dependency on navigate
+    [navigate]
   );
 
   /** --- Loading & Empty states --- **/
@@ -189,6 +218,16 @@ const HomeHeroSlider = memo(() => {
       </div>
     );
   }
+
+  // Get visible carousel items
+  const visibleCarouselItems = slides.slice(
+    carouselStartIndex,
+    carouselStartIndex + CAROUSEL_ITEMS_PER_VIEW
+  );
+
+  const canGoCarouselPrev = carouselStartIndex > 0;
+  const canGoCarouselNext =
+    carouselStartIndex + CAROUSEL_ITEMS_PER_VIEW < totalSlides;
 
   return (
     <Fragment>
@@ -379,32 +418,10 @@ const HomeHeroSlider = memo(() => {
                   </div>
                   <div>
                     <div className="iq-button">
-                      {/* <Link // REMOVED the static Link
-                        to={"/lecture-detail"}
-                        className="btn text-uppercase position-relative"
-                        style={{
-                          color: "black",
-                          fontWeight: 700,
-                          borderRadius: 8,
-                          padding: "12px 32px",
-                          fontSize: "1.1rem",
-                          boxShadow: "0 2px 12px rgba(25,118,210,0.18)",
-                        }}
-                      >
-                        <span className="button-text">
-                          {t("buttons.view_content")}{" "}
-                        </span>
-                        <i
-                          className="fa-solid fa-arrow-right"
-                          style={{ marginLeft: 10 }}
-                        ></i>
-                      </Link> */}
-                      {/* NEW: Button with dynamic onClick handler */}
                       <button
                         onClick={() =>
                           handleViewContentClick(currentSlideContent)
                         }
-                        // className="btn text-uppercase position-relative"
                         style={{
                           color: "black",
                           fontWeight: 700,
@@ -412,9 +429,9 @@ const HomeHeroSlider = memo(() => {
                           padding: "10px 12px",
                           fontSize: "1.1rem",
                           boxShadow: "0 2px 12px rgba(25,118,210,0.18)",
-                          background: "lightblue", // Ensure button background is visible
-                          border: "none", // Remove default button border
-                          cursor: "pointer", // Indicate it's clickable
+                          background: "lightblue",
+                          border: "none",
+                          cursor: "pointer",
                         }}
                       >
                         <span className="button-text">
@@ -488,128 +505,249 @@ const HomeHeroSlider = memo(() => {
           </div>
         </div>
 
-        {/* Navigation Arrows (Custom) */}
-        {totalSlides > 1 && !isMobile && (
-          <Fragment>
+        {/* Bottom Navigation - Desktop: Carousel, Mobile: Dots */}
+        {totalSlides > 1 && (
+          <>
+            {/* Desktop Carousel with Navigation - Only show 4 items */}
             <div
-              onClick={handlePrev}
+              className="hero-carousel-container d-none d-md-flex"
               style={{
                 position: "absolute",
-                left: "20px",
-                top: "50%",
-                transform: "translateY(-50%)",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
                 zIndex: 10,
-                cursor: "pointer",
-                backgroundColor: "rgba(255,255,255,0.2)",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "24px",
-                transition: "background-color 0.3s",
+                gap: "12px",
+                padding: "16px 24px",
+                background: "rgba(0,0,0,0.7)",
+                borderRadius: "16px",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                maxWidth: "90vw",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "rgba(255,255,255,0.4)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "rgba(255,255,255,0.2)")
-              }
             >
-              &#10094;
-            </div>
-            <div
-              onClick={handleNext}
-              style={{
-                position: "absolute",
-                right: "20px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 10,
-                cursor: "pointer",
-                backgroundColor: "rgba(255,255,255,0.2)",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "24px",
-                transition: "background-color 0.3s",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "rgba(255,255,255,0.4)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "rgba(255,255,255,0.2)")
-              }
-            >
-              &#10095;
-            </div>
-          </Fragment>
-        )}
+              {/* Previous Arrow */}
+              {canGoCarouselPrev && (
+                <button
+                  onClick={handleCarouselPrev}
+                  style={{
+                    background: "rgba(255, 255, 255, 0.2)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    borderRadius: "8px",
+                    padding: "8px 10px",
+                    color: "white",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 0.3s ease",
+                    fontSize: "14px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "rgba(255, 255, 255, 0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "rgba(255, 255, 255, 0.2)";
+                  }}
+                >
+                  <i className="fa-solid fa-chevron-left"></i>
+                </button>
+              )}
 
-        {/* Pagination Dots (Custom) */}
-        {/* {totalSlides > 1 && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "20px",
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              zIndex: 10,
-            }}
-          >
-            {Array.from({ length: totalSlides }).map((_, idx) => (
-              <span
-                key={idx}
-                onClick={() => handleDotClick(idx)}
+              {/* Thumbnails Container */}
+              <div
+                className="hero-carousel-thumbnails"
                 style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor:
-                    idx === currentSlideIndex
-                      ? "white"
-                      : "rgba(255,255,255,0.5)",
-                  margin: "0 5px",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
+                  display: "flex",
+                  gap: "12px",
+                  transition: "all 0.3s ease",
                 }}
-              ></span>
-            ))}
-          </div>
-        )} */}
+              >
+                {visibleCarouselItems.map((slide, visibleIndex) => {
+                  const actualIndex = carouselStartIndex + visibleIndex;
+                  const slideData = mapSlideData(slide);
+                  const isActive = actualIndex === currentSlideIndex;
+
+                  return (
+                    <div
+                      key={slide._id || actualIndex}
+                      onClick={() => handleCarouselItemClick(actualIndex)}
+                      style={{
+                        cursor: "pointer",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        border: isActive
+                          ? "rgba(0, 123, 255, 0.8)"
+                          : "3px solid transparent",
+                        transition: "all 0.3s ease",
+                        transform: isActive ? "scale(1.05)" : "scale(1)",
+                        opacity: isActive ? 1 : 0.7,
+                        minWidth: "120px",
+                        boxShadow: isActive
+                          ? "0 0 8px rgba(0, 123, 255, 0.8)"
+                          : "",
+                        width: "120px",
+                        height: "68px",
+                        position: "relative",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.opacity = "0.9";
+                          e.currentTarget.style.transform = "scale(1.02)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.opacity = "0.7";
+                          e.currentTarget.style.transform = "scale(1)";
+                        }
+                      }}
+                    >
+                      <img
+                        src={slideData.image}
+                        alt={slideData.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                        onError={(e) => {
+                          e.target.src =
+                            "https://placehold.co/120x68?text=No+Image";
+                        }}
+                      />
+
+                      {/* Active indicator */}
+                      {isActive && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: "2px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: "20px",
+                            height: "3px",
+                            background: "#fff",
+                            borderRadius: "2px",
+                          }}
+                        />
+                      )}
+
+                      {slideData.previewVideoUrl && (
+                        <div
+                        // style={{
+                        //   position: "absolute",
+                        //   top: "50%",
+                        //   left: "50%",
+                        //   transform: "translate(-50%, -50%)",
+                        //   color: "white",
+                        //   fontSize: "16px",
+                        //   opacity: 0.8,
+                        // }}
+                        >
+                          {/* ▶ */}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Next Arrow */}
+              {canGoCarouselNext && (
+                <button
+                  onClick={handleCarouselNext}
+                  style={{
+                    background: "rgba(255, 255, 255, 0.2)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    borderRadius: "8px",
+                    padding: "8px 10px",
+                    color: "white",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 0.3s ease",
+                    fontSize: "14px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "rgba(255, 255, 255, 0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "rgba(255, 255, 255, 0.2)";
+                  }}
+                >
+                  <i className="fa-solid fa-chevron-right"></i>
+                </button>
+              )}
+            </div>
+
+            {/* Mobile Pagination Dots */}
+            {/* <div
+              className="hero-pagination-dots d-flex d-md-none"
+              style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                // height: "10px",
+                gap: "6px",
+                // padding: "8px 12px",
+                background: "rgba(0, 0, 0, 0.6)",
+                borderRadius: "12px",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  style={{
+                    width: "2px",
+                    // height: "16px",
+                    borderRadius: "50%",
+                    border: "none",
+                    background:
+                      currentSlideIndex === index
+                        ? "rgba(255, 255, 255, 0.9)"
+                        : "rgba(255, 255, 255, 0.4)",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    padding: 0,
+                    // minWidth: "8px",
+                  }}
+                />
+              ))}
+            </div> */}
+          </>
+        )}
       </div>
 
       <FsLightbox toggler={toggler} sources={[currentVideoSource]} />
 
       <style>{`
-/* Desktop: default from code */
-#home-banner-carousel {
-    height: 100vh;
-    min-height: 560px;
-    padding-top: 0;
-    overflow: hidden;
-}
-.slide-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.slider-inner {
-    width: 100%;
-    max-width: 1450px;
-    margin: 0 auto;
-}
+    #home-banner-carousel {
+      height: 100vh;
+      min-height: 560px;
+      padding-top: 0;
+      overflow: hidden;
+    }
+    .slide-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-inner {
+      width: 100%;
+      max-width: 1450px;
+      margin: 0 auto;
+    }
 .row.align-items-center {
     display: flex;
     flex-wrap: wrap;
@@ -622,6 +760,26 @@ const HomeHeroSlider = memo(() => {
 .col-lg-5 {
     flex: 0 0 42%;
     max-width: 42%;
+}
+
+/* Carousel navigation button styles */
+.hero-carousel-container button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.hero-carousel-container button:active {
+    transform: scale(0.95);
+}
+
+/* Mobile pagination dots styles */
+.hero-pagination-dots button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.hero-pagination-dots button:active {
+    transform: scale(0.9);
 }
 
 /* Tablet Styles */
@@ -650,6 +808,14 @@ const HomeHeroSlider = memo(() => {
         font-size: 1rem;
         line-height: 1.3;
     }
+    .hero-carousel-container {
+        bottom: 15px;
+        padding: 12px 16px;
+        gap: 8px;
+    }
+    .hero-carousel-thumbnails {
+        gap: 8px;
+    }
 }
 
 /* Mobile Styles */
@@ -665,7 +831,6 @@ const HomeHeroSlider = memo(() => {
         min-width: 0 !important;
         width: 100% !important;
         box-sizing: border-box;
-        // display: block;
     }
     .col-lg-7, .col-lg-5 {
         flex: 0 0 100%;
@@ -703,19 +868,12 @@ const HomeHeroSlider = memo(() => {
     .trailor-video.iq-slider, .col-lg-5.d-none.d-lg-block {
         display: none !important;
     }
-    /* Navigation arrows: place at the bottom for easier thumb access */
-    .arrow-buttons {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 20px;
-        z-index: 10;
-    }
-   
     
+    /* Mobile pagination dots positioning */
+    .hero-pagination-dots {
+        bottom: 15px !important;
+        // padding: 10px 16px !important;
+    }
 }
 
 /* Extra mobile tweaks for portrait phones */
@@ -729,6 +887,11 @@ const HomeHeroSlider = memo(() => {
     }
     .slide-content {
         min-height: 210px !important;
+    }
+    .hero-pagination-dots {
+        bottom: 12px !important;
+        // padding: 8px 14px !important;
+        gap: 6px !important;
     }
 }
 
