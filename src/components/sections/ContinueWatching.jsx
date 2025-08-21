@@ -174,7 +174,7 @@ const ContinueWatching = memo(() => {
               color: "darkslategrey",
               marginBottom: 36,
               textAlign: "left",
-              paddingLeft: "15px",
+              // paddingLeft: "15px",
             }}
           >
             {t("ott_home.continue_watching")}

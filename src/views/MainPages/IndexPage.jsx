@@ -435,9 +435,9 @@ const HomePage = memo(() => {
             background: "linear-gradient(120deg, #fbf7e2 80%, #fef8df 100%)",
             padding: "10px",
             minWidth: "min(320px, 90vw)",
-            maxWidth: window.innerWidth <= 768 ? 0 : 920,
-            width: window.innerWidth <= 768 ? "0%" : "100%",
-            height: window.innerWidth <= 768 ? "50%" : "100%",
+            maxWidth: 920,
+            // width: window.innerWidth <= 768 ? "0%" : "100%",
+            // height: window.innerWidth <= 768 ? "50%" : "100%",
             overflow: "hidden",
             display: "flex",
             flexDirection: window.innerWidth <= 768 ? "column" : "row",
@@ -468,7 +468,7 @@ const HomePage = memo(() => {
               width: window.innerWidth <= 768 ? "120px" : "160px",
               height: window.innerWidth <= 768 ? "140px" : "190px",
               marginLeft: window.innerWidth <= 768 ? "0" : "100px",
-              marginBottom: window.innerWidth <= 768 ? "-20px" : "0",
+              marginBottom: window.innerWidth <= 768 ? "-10px" : "0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -646,28 +646,28 @@ const HomePage = memo(() => {
         />
         <Swiper
           modules={[Navigation, Autoplay, Pagination]}
-          navigation={window.innerWidth > 768} // Disable navigation on mobile
+          navigation={window.innerWidth > 768}
           autoplay={{ delay: 3500, disableOnInteraction: false }}
           spaceBetween={window.innerWidth <= 480 ? 24 : 24}
           slidesPerView={1}
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 10 },
+            0: { slidesPerView: 1, spaceBetween: 24 },
             480: { slidesPerView: 1, spaceBetween: 10 },
             600: { slidesPerView: 2, spaceBetween: 20 },
-            768: { slidesPerView: 4, spaceBetween: 24 },
-            900: { slidesPerView: 4, spaceBetween: 24 },
+            768: { slidesPerView: 3, spaceBetween: 24 },
+            900: { slidesPerView: 3, spaceBetween: 24 },
             1200: { slidesPerView: 4, spaceBetween: 24 },
           }}
           style={{
             maxWidth: 1200,
             margin: window.innerWidth <= 768 ? "0 auto" : "0 auto",
-            marginLeft: window.innerWidth <= 768 && "20px",
+            marginLeft: window.innerWidth <= 768 && "25px",
             position: "relative",
             zIndex: 3,
             padding: "0 clamp(10px, 2vw, 20px)",
           }}
           pagination={{
-            clickable: true, // ⬅️ enable dots
+            clickable: true,
           }}
         >
           {facultyList.map((faculty, idx) => (
@@ -836,7 +836,7 @@ const HomePage = memo(() => {
           }
 
           .swiper-pagination {
-            margin-top: 20px !important; /* space above dots */
+            bottom: 10px !important; /* space above dots */
             position: relative !important; /* ensures dots don't overlap cards */
           }
 

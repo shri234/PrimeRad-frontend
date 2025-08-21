@@ -219,7 +219,6 @@ const HomeHeroSlider = memo(() => {
     );
   }
 
-  // Get visible carousel items
   const visibleCarouselItems = slides.slice(
     carouselStartIndex,
     carouselStartIndex + CAROUSEL_ITEMS_PER_VIEW
@@ -319,7 +318,11 @@ const HomeHeroSlider = memo(() => {
                   </h1>
                   <div
                     className="d-flex flex-wrap align-items-center r-mb-23"
-                    style={{ marginTop: 16, gap: "0.5rem" }}
+                    style={{
+                      marginTop: 16,
+                      gap: "0.5rem",
+                      marginBottom: window.innerWidth <= 480 ? "5px" : "10px",
+                    }}
                   >
                     {/* CME / Assessment */}
                     {currentSlideContent.cmeCredits && (
@@ -369,21 +372,32 @@ const HomeHeroSlider = memo(() => {
                       </span>
                     )}
                   </div>
-
-                  {currentSlideContent.description && (
-                    <p
-                      className="line-count-3"
-                      style={{
-                        color: "#e3eaf2",
-                        fontSize: "1.15rem",
-                        fontWeight: 400,
-                        textShadow: "0 2px 8px rgba(0,0,0,0.25)",
-                      }}
-                    >
-                      {currentSlideContent.description}{" "}
-                    </p>
-                  )}
-                  <div className="trending-list" style={{ marginBottom: 18 }}>
+                  <div
+                    style={{
+                      marginBottom: window.innerWidth <= 480 ? "10px" : "10px",
+                    }}
+                  >
+                    {currentSlideContent.description && (
+                      <p
+                        className="line-count-3"
+                        style={{
+                          color: "#e3eaf2",
+                          fontSize: "1.15rem",
+                          fontWeight: 400,
+                          textShadow: "0 2px 8px rgba(0,0,0,0.25)",
+                        }}
+                      >
+                        {currentSlideContent.description}{" "}
+                      </p>
+                    )}
+                  </div>
+                  <div
+                    className="trending-list"
+                    style={{
+                      marginBottom: 18,
+                      marginBottom: window.innerWidth <= 480 ? "10px" : "10px",
+                    }}
+                  >
                     {currentSlideContent.category && (
                       <span
                         className="badge  text-white text-uppercase p-2 mx-2"
@@ -685,8 +699,8 @@ const HomeHeroSlider = memo(() => {
             </div>
 
             {/* Mobile Pagination Dots */}
-            {/* <div
-              className="hero-pagination-dots d-flex d-md-none"
+            <div
+              className="hero-pagination-dots d-md-none"
               style={{
                 position: "absolute",
                 bottom: "20px",
@@ -698,8 +712,8 @@ const HomeHeroSlider = memo(() => {
                 // height: "10px",
                 gap: "6px",
                 // padding: "8px 12px",
-                background: "rgba(0, 0, 0, 0.6)",
-                borderRadius: "12px",
+                // background: "rgba(0, 0, 0, 0.6)",
+                borderRadius: "50%",
                 backdropFilter: "blur(8px)",
               }}
             >
@@ -708,14 +722,14 @@ const HomeHeroSlider = memo(() => {
                   key={index}
                   onClick={() => handleDotClick(index)}
                   style={{
-                    width: "2px",
-                    // height: "16px",
+                    minWidth: "10px",
+                    minHeight: "10px",
                     borderRadius: "50%",
                     border: "none",
                     background:
                       currentSlideIndex === index
-                        ? "rgba(255, 255, 255, 0.9)"
-                        : "rgba(255, 255, 255, 0.4)",
+                        ? "lightblue"
+                        : "antiquewhite",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
                     padding: 0,
@@ -723,7 +737,7 @@ const HomeHeroSlider = memo(() => {
                   }}
                 />
               ))}
-            </div> */}
+            </div>
           </>
         )}
       </div>
@@ -786,6 +800,7 @@ const HomeHeroSlider = memo(() => {
     #home-banner-carousel {
         height: 70vh;
         min-height: 400px;
+
     }
     .slider-inner {
         max-width: 1000px;
@@ -836,7 +851,7 @@ const HomeHeroSlider = memo(() => {
         max-width: 100%;
         align-items: center !important;
         align-content: center !important;
-        text-align: center !important;
+        // text-align: center !important;
     }
     .col-lg-7 {
         margin-bottom: 0;
@@ -848,12 +863,13 @@ const HomeHeroSlider = memo(() => {
     }
     .line-count-3 {
         font-size: 0.95rem !important;
-        line-height: 1.3 !important;
+        line-height: 1.7 !important;
         margin: 0 2vw !important;
     }
     .iq-button button, .iq-button .btn {
-        font-size: 1rem !important;
-        padding: 10px 16px !important;
+        font-size: 0.8rem !important;
+        // height: 5px !important;
+        // padding: 5px 8px !important;
         border-radius: 6px !important;
     }
     .badge {
@@ -882,7 +898,7 @@ const HomeHeroSlider = memo(() => {
         min-height: 200px;
     }
     h1.texture-text {
-        font-size: 1.6rem !important;
+        font-size: 2.1rem !important;
     }
     .slide-content {
         min-height: 210px !important;
@@ -903,7 +919,7 @@ const HomeHeroSlider = memo(() => {
 .line-count-3 {
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
 }
 `}</style>
