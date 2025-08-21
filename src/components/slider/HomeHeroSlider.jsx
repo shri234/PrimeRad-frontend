@@ -727,9 +727,7 @@ const HomeHeroSlider = memo(() => {
                     borderRadius: "50%",
                     border: "none",
                     background:
-                      currentSlideIndex === index
-                        ? "lightblue"
-                        : "antiquewhite",
+                      currentSlideIndex === index ? "lightgreen" : "gray",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
                     padding: 0,
@@ -894,8 +892,9 @@ const HomeHeroSlider = memo(() => {
 /* Extra mobile tweaks for portrait phones */
 @media (max-width: 480px) {
     #home-banner-carousel {
-        height: 44vh;
-        min-height: 200px;
+        // height: 36vh;
+        min-height: 120px;
+        max-height: 800px
     }
     h1.texture-text {
         font-size: 2.1rem !important;
