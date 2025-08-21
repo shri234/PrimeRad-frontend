@@ -190,10 +190,8 @@ const HomeHeroSlider = memo(() => {
     );
   }
 
-  /** --- RENDER --- **/
   return (
     <Fragment>
-      {/* Custom Carousel Container */}
       <div
         id="home-banner-carousel"
         className="iq-main-slider banner-home-swiper overflow-hidden mb-0"
@@ -491,7 +489,7 @@ const HomeHeroSlider = memo(() => {
         </div>
 
         {/* Navigation Arrows (Custom) */}
-        {totalSlides > 1 && (
+        {totalSlides > 1 && !isMobile && (
           <Fragment>
             <div
               onClick={handlePrev}

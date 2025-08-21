@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef, useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -32,10 +32,23 @@ const SectionSlider = memo(
     const { t } = useTranslation();
     const themeSchemeDirection = useSelector(theme_scheme_direction);
     const [firstVisibleIndex, setFirstVisibleIndex] = useState(0);
+    const [isMobile, setIsMobile] = useState(false);
     const navigate = useNavigate();
 
     const slider = useRef(null);
     const uniqueId = generateUUID();
+
+    // Check if device is mobile
+    useEffect(() => {
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+
+      return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     const initSwiper = (swiper) => {
       addCustomClassToVisibleSlides(swiper);
@@ -105,39 +118,43 @@ const SectionSlider = memo(
               watchSlidesProgress
               spaceBetween={spaceBetween}
               speed={900}
-              navigation={{
-                prevEl: `.swiper-button-prev-${uniqueId}`,
-                nextEl: `.swiper-button-next-${uniqueId}`,
-              }}
+              navigation={
+                !isMobile
+                  ? {
+                      prevEl: `.swiper-button-prev-${uniqueId}`,
+                      nextEl: `.swiper-button-next-${uniqueId}`,
+                    }
+                  : false
+              }
               breakpoints={{
                 0: {
                   slidesPerView: 1,
-                  slidesPerGroup: 1, // 👈 Move 1 on mobile
+                  slidesPerGroup: 1,
                   spaceBetween: 10,
                 },
                 546: {
                   slidesPerView: 2,
-                  slidesPerGroup: 2, // 👈 Move 2 on small tablets
+                  slidesPerGroup: 2,
                   spaceBetween: 15,
                 },
                 768: {
                   slidesPerView: 3,
-                  slidesPerGroup: 3, // 👈 Move 3
+                  slidesPerGroup: 3,
                   spaceBetween: 20,
                 },
                 992: {
                   slidesPerView: 4,
-                  slidesPerGroup: 4, // 👈 Move 4
+                  slidesPerGroup: 4,
                   spaceBetween: 20,
                 },
                 1200: {
                   slidesPerView: 5,
-                  slidesPerGroup: 5, // 👈 Move 5
+                  slidesPerGroup: 5,
                   spaceBetween: 20,
                 },
                 1500: {
                   slidesPerView: slidesPerView,
-                  slidesPerGroup: slidesPerView, // keep it consistent with prop
+                  slidesPerGroup: slidesPerView,
                   spaceBetween: spaceBetween,
                 },
               }}
@@ -151,80 +168,90 @@ const SectionSlider = memo(
                 </SwiperSlide>
               ))}
 
-              {/* Custom Navigation Buttons */}
-              <div
-                className={`swiper-button-next-${uniqueId}`}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  zIndex: 10,
-                  width: "45px",
-                  height: "45px",
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)",
-                  transform: "translateY(-50%)",
-                  transition: "all 0.3s ease",
-                  border: "1px solid rgba(0, 0, 0, 0.1)",
-                  color: "#333",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
-                  e.target.style.transform = "translateY(-50%) scale(1.1)";
-                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.2)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-                  e.target.style.transform = "translateY(-50%) scale(1)";
-                  e.target.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.15)";
-                }}
-              >
-                <i className="fas fa-chevron-right"></i>
-              </div>
+              {/* Custom Navigation Buttons - Hidden on mobile */}
+              {!isMobile && (
+                <>
+                  <div
+                    className={`swiper-button-next-${uniqueId}`}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "10px",
+                      zIndex: 10,
+                      width: "45px",
+                      height: "45px",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)",
+                      transform: "translateY(-50%)",
+                      transition: "all 0.3s ease",
+                      border: "1px solid rgba(0, 0, 0, 0.1)",
+                      color: "#333",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                      e.target.style.transform = "translateY(-50%) scale(1.1)";
+                      e.target.style.boxShadow =
+                        "0 6px 20px rgba(0, 0, 0, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.9)";
+                      e.target.style.transform = "translateY(-50%) scale(1)";
+                      e.target.style.boxShadow =
+                        "0 4px 15px rgba(0, 0, 0, 0.15)";
+                    }}
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </div>
 
-              <div
-                className={`swiper-button-prev-${uniqueId}`}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "10px",
-                  zIndex: 10,
-                  width: "45px",
-                  height: "45px",
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)",
-                  transform: "translateY(-50%)",
-                  transition: "all 0.3s ease",
-                  border: "1px solid rgba(0, 0, 0, 0.1)",
-                  color: "#333",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
-                  e.target.style.transform = "translateY(-50%) scale(1.1)";
-                  e.target.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.2)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-                  e.target.style.transform = "translateY(-50%) scale(1)";
-                  e.target.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.15)";
-                }}
-              >
-                <i className="fas fa-chevron-left"></i>
-              </div>
+                  <div
+                    className={`swiper-button-prev-${uniqueId}`}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "10px",
+                      zIndex: 10,
+                      width: "45px",
+                      height: "45px",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)",
+                      transform: "translateY(-50%)",
+                      transition: "all 0.3s ease",
+                      border: "1px solid rgba(0, 0, 0, 0.1)",
+                      color: "#333",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                      e.target.style.transform = "translateY(-50%) scale(1.1)";
+                      e.target.style.boxShadow =
+                        "0 6px 20px rgba(0, 0, 0, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor =
+                        "rgba(255, 255, 255, 0.9)";
+                      e.target.style.transform = "translateY(-50%) scale(1)";
+                      e.target.style.boxShadow =
+                        "0 4px 15px rgba(0, 0, 0, 0.15)";
+                    }}
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </div>
+                </>
+              )}
             </Swiper>
           </div>
         </Container>
