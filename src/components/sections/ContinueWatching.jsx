@@ -170,11 +170,11 @@ const ContinueWatching = memo(() => {
           <h2
             style={{
               fontWeight: 600,
-              fontSize: 28,
+              fontSize: window.innerWidth <= 468 ? 20 : 28,
               color: "darkslategrey",
               marginBottom: 36,
               textAlign: "left",
-              // paddingLeft: "15px",
+              paddingLeft: window.innerWidth <= 468 ? "18px" : "15px",
             }}
           >
             {t("ott_home.continue_watching")}
@@ -182,7 +182,7 @@ const ContinueWatching = memo(() => {
 
           <div style={{ position: "relative" }}>
             {/* Prev Arrow */}
-            {totalItems > cardsPerPage && (
+            {totalItems > cardsPerPage && window.innerWidth > 468 && (
               <div
                 onClick={canGoPrev ? handlePrev : null}
                 style={{
@@ -247,7 +247,7 @@ const ContinueWatching = memo(() => {
             </div>
 
             {/* Next Arrow */}
-            {totalItems > cardsPerPage && (
+            {totalItems > cardsPerPage && window.innerWidth > 468 && (
               <div
                 onClick={canGoNext ? handleNext : null}
                 style={{
