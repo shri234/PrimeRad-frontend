@@ -2,12 +2,12 @@ import { memo, useRef, useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper";
+import { Autoplay, Navigation, Pagination } from "swiper";
 import { useSelector } from "react-redux";
 import { theme_scheme_direction } from "../../store/setting/selectors";
 import { useTranslation } from "react-i18next";
 import "./SectionSlider.css";
-const modules = [Autoplay, Navigation];
+const modules = [Autoplay, Navigation, Pagination];
 
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -81,7 +81,11 @@ const SectionSlider = memo(
         <Container fluid>
           <div
             className="overflow-hidden card-style-slider"
-            style={{ width: "100%", position: "relative" }}
+            style={{
+              width: "100%",
+              position: "relative",
+              // marginBottom: "25px",
+            }}
             ref={slider}
           >
             <div className="d-flex align-items-center justify-content-between px-3 my-4 flex-wrap">
@@ -124,6 +128,11 @@ const SectionSlider = memo(
                       prevEl: `.swiper-button-prev-${uniqueId}`,
                       nextEl: `.swiper-button-next-${uniqueId}`,
                     }
+                  : false
+              }
+              pagination={
+                isMobile
+                  ? { clickable: true, dynamicBullets: true } // ✅ enable pagination only on mobile
                   : false
               }
               breakpoints={{

@@ -15,6 +15,12 @@
   transition: all 0.2s ease;
   /* margin-right: 20px */
 }
+
+.swiper-pagination {
+  margin-top: 20px !important; /* space above dots */
+  position: relative !important; /* ensures dots don't overlap cards */
+}
+
 .swiper-button-prev {
   color: #000 !important; /* Set the color to black */
   font-size: 14px !important; /* Make the icon smaller */

@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper";
+import { Navigation, Autoplay, Pagination } from "swiper";
 import "swiper/css";
 import "./IndexPage.css";
 import "swiper/css/navigation";
@@ -34,6 +34,7 @@ const HomePage = memo(() => {
   const navigate = useNavigate();
   const [facultyList, setFacultyList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -42,6 +43,15 @@ const HomePage = memo(() => {
       once: true,
     });
   }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+    };
+
+    checkMobile();
+  }, [isMobile]);
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -425,8 +435,9 @@ const HomePage = memo(() => {
             background: "linear-gradient(120deg, #fbf7e2 80%, #fef8df 100%)",
             padding: "10px",
             minWidth: "min(320px, 90vw)",
-            maxWidth: 920,
-            width: "100%",
+            maxWidth: window.innerWidth <= 768 ? 0 : 920,
+            width: window.innerWidth <= 768 ? "0%" : "100%",
+            height: window.innerWidth <= 768 ? "50%" : "100%",
             overflow: "hidden",
             display: "flex",
             flexDirection: window.innerWidth <= 768 ? "column" : "row",
@@ -454,14 +465,14 @@ const HomePage = memo(() => {
           <div
             style={{
               flex: window.innerWidth <= 768 ? "none" : "0 0 160px",
-              width: window.innerWidth <= 768 ? "100%" : "160px",
+              width: window.innerWidth <= 768 ? "120px" : "160px",
               height: window.innerWidth <= 768 ? "140px" : "190px",
               marginLeft: window.innerWidth <= 768 ? "0" : "100px",
-              marginBottom: window.innerWidth <= 768 ? "20px" : "0",
+              marginBottom: window.innerWidth <= 768 ? "-20px" : "0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(255, 243, 128, 0.18)",
+              background: "rgba(15, 14, 1, 0.18)",
               borderRadius: window.innerWidth <= 768 ? "24px" : "24px 0 0 24px",
               zIndex: 2,
             }}
@@ -470,7 +481,7 @@ const HomePage = memo(() => {
               src="/assets/images/assessment.jpeg"
               alt="Assessment Thumbnail"
               style={{
-                width: window.innerWidth <= 768 ? "120px" : "160px",
+                width: window.innerWidth <= 768 ? "100px" : "160px",
                 height: window.innerWidth <= 768 ? "100px" : "120px",
                 objectFit: "cover",
                 borderRadius: 18,
@@ -479,12 +490,10 @@ const HomePage = memo(() => {
               loading="lazy"
             />
           </div>
-          {/* Right Content */}
           <div
             style={{
               flex: 1,
-              padding:
-                window.innerWidth <= 768 ? "20px" : "36px 36px 36px 32px",
+              padding: window.innerWidth <= 768 ? "8px" : "36px 36px 36px 32px",
               position: "relative",
               zIndex: 1,
               textAlign: window.innerWidth <= 768 ? "center" : "left",
@@ -636,25 +645,29 @@ const HomePage = memo(() => {
           }}
         />
         <Swiper
-          modules={[Navigation, Autoplay]}
+          modules={[Navigation, Autoplay, Pagination]}
           navigation={window.innerWidth > 768} // Disable navigation on mobile
           autoplay={{ delay: 3500, disableOnInteraction: false }}
-          spaceBetween={window.innerWidth <= 480 ? 16 : 24}
+          spaceBetween={window.innerWidth <= 480 ? 24 : 24}
           slidesPerView={1}
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 16 },
-            480: { slidesPerView: 1.2, spaceBetween: 20 },
+            0: { slidesPerView: 1, spaceBetween: 10 },
+            480: { slidesPerView: 1, spaceBetween: 10 },
             600: { slidesPerView: 2, spaceBetween: 20 },
-            768: { slidesPerView: 2.5, spaceBetween: 24 },
-            900: { slidesPerView: 3, spaceBetween: 24 },
+            768: { slidesPerView: 4, spaceBetween: 24 },
+            900: { slidesPerView: 4, spaceBetween: 24 },
             1200: { slidesPerView: 4, spaceBetween: 24 },
           }}
           style={{
             maxWidth: 1200,
-            margin: "0 auto",
+            margin: window.innerWidth <= 768 ? "0 auto" : "0 auto",
+            marginLeft: window.innerWidth <= 768 && "20px",
             position: "relative",
             zIndex: 3,
             padding: "0 clamp(10px, 2vw, 20px)",
+          }}
+          pagination={{
+            clickable: true, // ⬅️ enable dots
           }}
         >
           {facultyList.map((faculty, idx) => (
@@ -822,9 +835,15 @@ const HomePage = memo(() => {
             // padding: 0 5px !important;
           }
 
+          .swiper-pagination {
+            margin-top: 20px !important; /* space above dots */
+            position: relative !important; /* ensures dots don't overlap cards */
+          }
+
           /* Assessment card mobile adjustments */
           [data-aos="flip-left"] {
             flex-direction: column !important;
+            // gap: 10px !important
             text-align: center !important;
           }
 

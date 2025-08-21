@@ -32,4 +32,30 @@
   margin-right: -20px !important;
 }
 
+/* Hide pagination on larger screens */
+.swiper-pagination {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .swiper-pagination {
+    display: block;
+    /* margin-top: 10px; */
+     bottom: -20px !important; 
+    text-align: center;
+  }
+
+  .swiper-pagination-bullet {
+    background: #003366; 
+    opacity: 0.5;
+    margin-top: 25px;
+    transition: opacity 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #00cc88; 
+    opacity: 1;
+  }
+}
+
 

@@ -477,7 +477,7 @@ const CaseViewerPage = () => {
         style={{
           display: "flex",
           height: "calc(100vh - 64px)",
-          // marginTop: 64,
+          marginTop: 48,
           background: THEME.background,
           flexDirection: window.innerWidth <= 1024 ? "column" : "row",
         }}

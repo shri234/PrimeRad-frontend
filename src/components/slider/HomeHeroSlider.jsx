@@ -556,7 +556,6 @@ const HomeHeroSlider = memo(() => {
                 </button>
               )}
 
-              {/* Thumbnails Container */}
               <div
                 className="hero-carousel-thumbnails"
                 style={{
