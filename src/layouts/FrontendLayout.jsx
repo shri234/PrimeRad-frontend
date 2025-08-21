@@ -53,7 +53,6 @@ const FrontendLayout = memo((props) => {
           <Outlet></Outlet> <ScrollToTop />
         </Suspense>
       </main>
-      {/* Conditional Footer Rendering */}{" "}
       {isHomePage ? <FooterDefault /> : <FooterMinimal />}{" "}
       <div
         id="back-to-top"
@@ -62,7 +61,7 @@ const FrontendLayout = memo((props) => {
         onClick={scrollToTop}
       >
         <Link
-          className="p-0 btn bg-lightgray btn-sm position-fixed top border-0 rounded-circle"
+          className="p-0 btn bg-blue-500 btn-sm position-fixed top border-0 rounded-circle"
           id="top"
           to="#top"
         >

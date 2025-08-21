@@ -29,7 +29,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-//function
 import { generateImgPath } from "../../StaticData/data"; // Assuming this is correct for image paths
 
 //utilities
@@ -62,10 +61,9 @@ const MovieDetail = memo(() => {
   const isAuthenticated = useSelector(selectIsAuthenticated); // Auth status from Redux
   const user = useSelector(selectUser); // User object from Redux for ID and name
 
-  // Destructure props from location.state
   const {
-    id: sessionId, // ID of the current session/lecture
-    vimeoVideoId = null, // Vimeo video ID for playback
+    id: sessionId,
+    vimeoVideoId = null,
     title = "Untitled Lecture",
     description = "No description available.", // Assuming faculty is an array of objects from backend
     module = "General",
@@ -391,12 +389,11 @@ const MovieDetail = memo(() => {
         if (userIdForCleanup && sessionId && sessionModelType) {
           vimeoPlayerInstance.current
             .getCurrentTime()
-            .then((currentTime) => savePlaybackProgress(currentTime)) // Save final progress
+            .then((currentTime) => savePlaybackProgress(currentTime))
             .catch((error) =>
               console.warn("Error getting time for cleanup:", error)
             )
             .finally(() => {
-              // Always destroy player
               if (vimeoPlayerInstance.current) {
                 vimeoPlayerInstance.current.destroy();
                 vimeoPlayerInstance.current = null;
@@ -816,7 +813,7 @@ const MovieDetail = memo(() => {
                   <Row>
                     <Col md="12" className="mb-auto">
                       <div
-                        className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-4"
+                        className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-4 justify-content-between gap-3 p-3 p-md-4"
                         style={{
                           justifyContent: "space-between",
                           gap: 20,

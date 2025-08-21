@@ -262,7 +262,7 @@ const FixedBackButton = ({
   };
 
   return (
-    <div style={{ position: "fixed", zIndex: 1000, ...positions[position] }}>
+    <div style={{ position: "relative", zIndex: 1000, ...positions[position] }}>
       <BackButton
         variant={variant}
         size={size}
