@@ -1830,7 +1830,6 @@ const SubModuleView = () => {
                                   Assessment
                                 </span>
 
-                                {/* Optional Active Indicator */}
                                 {currentView === "difficulty" && (
                                   <div
                                     style={{
@@ -1844,7 +1843,6 @@ const SubModuleView = () => {
                                   />
                                 )}
                               </div>
-                              {/* Add this CSS for the pulse animation */}
                               <style jsx>{`
                                 @keyframes pulse {
                                   0%,

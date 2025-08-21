@@ -199,6 +199,20 @@ const LatestMovies = (props) => {
             ? "/recommended-lectures-view-all"
             : undefined
         }
+        breakpoints={{
+          0: {
+            slidesPerView: 1, // 📱 Mobile: show 1
+            slidesPerGroup: 1, // move 1 at a time
+          },
+          768: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+          1024: {
+            slidesPerView: 5, // 🖥 Desktop: show 5
+            slidesPerGroup: 5,
+          },
+        }}
       >
         {(data, index) => {
           console.log(data);

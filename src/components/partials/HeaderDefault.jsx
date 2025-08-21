@@ -122,11 +122,12 @@ const HeaderDefault = memo(() => {
 
   return (
     <header
-      className="header-center-home header-default header-sticky"
+      // className="header-center-home header-default"
       style={{
         position: "fixed",
         top: 0,
         left: 0,
+        overflow: "hidden",
         right: 0,
         zIndex: 1050,
         transition: "all 0.3s ease-in-out",
@@ -138,10 +139,17 @@ const HeaderDefault = memo(() => {
         className="nav navbar-light iq-navbar header-hover-menu py-xl-0"
         style={{
           backgroundColor: "white",
+          overflow: "hidden",
           transition: "all 0.3s ease-in-out",
         }}
       >
-        <Container fluid className="navbar-inner">
+        <Container
+          fluid
+          className="navbar-inner"
+          style={{
+            overflow: "hidden !important",
+          }}
+        >
           <div className="d-flex align-items-center justify-content-between w-100 landing-header">
             {/* Logo */}
             <div className="d-flex align-items-center logo-area">

@@ -84,8 +84,6 @@ const HomeHeroSlider = memo(() => {
     setToggler(true);
   };
 
-  // Helper: map each API object to the shape expected by render
-  // Add more original API fields to this mapped object if they are needed for navigation
   const mapSlideData = (apiObj) => ({
     id: apiObj._id, // <--- Crucial: Pass the _id for navigation
     title: apiObj.title,
@@ -561,7 +559,7 @@ const HomeHeroSlider = memo(() => {
         )}
 
         {/* Pagination Dots (Custom) */}
-        {totalSlides > 1 && (
+        {/* {totalSlides > 1 && (
           <div
             style={{
               position: "absolute",
@@ -591,48 +589,164 @@ const HomeHeroSlider = memo(() => {
               ></span>
             ))}
           </div>
-        )}
+        )} */}
       </div>
 
       <FsLightbox toggler={toggler} sources={[currentVideoSource]} />
 
       <style>{`
-        .line-count-1 {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .line-count-3 {
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-        @media (max-width: 768px) {
-            #home-banner-carousel {
-                height: 70vh;
-            }
-            .col-lg-7, .col-lg-5 {
-                flex: 0 0 100%;
-                max-width: 100%;
-            }
-            .col-lg-7 {
-                text-align: center;
-            }
-            .col-lg-5.d-none.d-lg-block {
-                display: none !important;
-            }
-            .container-fluid {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-        }
-        @media (max-width: 576px) {
-            .text-uppercase {
-                font-size: clamp(1.8rem, 8vw, 3.5rem) !important;
-            }
-        }
-      `}</style>
+/* Desktop: default from code */
+#home-banner-carousel {
+    height: 100vh;
+    min-height: 560px;
+    padding-top: 0;
+    overflow: hidden;
+}
+.slide-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.slider-inner {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+.row.align-items-center {
+    display: flex;
+    flex-wrap: wrap;
+}
+.col-lg-7,
+.col-lg-5 {
+    flex: 0 0 58%;
+    max-width: 58%;
+}
+.col-lg-5 {
+    flex: 0 0 42%;
+    max-width: 42%;
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) {
+    #home-banner-carousel {
+        height: 70vh;
+        min-height: 400px;
+    }
+    .slider-inner {
+        max-width: 1000px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .row.align-items-center {
+        flex-direction: column;
+    }
+    .col-lg-7,
+    .col-lg-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    h1.texture-text {
+        font-size: clamp(2rem, 7vw, 3.2rem);
+    }
+    .line-count-3 {
+        font-size: 1rem;
+        line-height: 1.3;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    #home-banner-carousel {
+        height: 52vh;
+        min-height: 320px;
+        padding-top: 45px;
+    }
+    .slide-content, .slider-inner, .row.align-items-center, .container-fluid {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        // display: block;
+    }
+    .col-lg-7, .col-lg-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        align-items: center !important;
+        align-content: center !important;
+        text-align: center !important;
+    }
+    .col-lg-7 {
+        margin-bottom: 0;
+    }
+    h1.texture-text {
+        font-size: clamp(1.7rem, 16vw, 2.6rem) !important;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+    .line-count-3 {
+        font-size: 0.95rem !important;
+        line-height: 1.3 !important;
+        margin: 0 2vw !important;
+    }
+    .iq-button button, .iq-button .btn {
+        font-size: 1rem !important;
+        padding: 10px 16px !important;
+        border-radius: 6px !important;
+    }
+    .badge {
+        font-size: 0.8rem !important;
+        padding: 6px 10px !important;
+        border-radius: 8px !important;
+        margin: 2px 4px !important;
+        display: inline-block !important;
+    }
+    /* Hide video preview area on small screens to save space */
+    .trailor-video.iq-slider, .col-lg-5.d-none.d-lg-block {
+        display: none !important;
+    }
+    /* Navigation arrows: place at the bottom for easier thumb access */
+    .arrow-buttons {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 10;
+    }
+   
+    
+}
+
+/* Extra mobile tweaks for portrait phones */
+@media (max-width: 480px) {
+    #home-banner-carousel {
+        height: 44vh;
+        min-height: 200px;
+    }
+    h1.texture-text {
+        font-size: 1.6rem !important;
+    }
+    .slide-content {
+        min-height: 210px !important;
+    }
+}
+
+/* Utility styles */
+.line-count-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.line-count-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+`}</style>
     </Fragment>
   );
 });

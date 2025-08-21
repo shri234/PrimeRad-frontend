@@ -13,7 +13,7 @@
   border: 1px solid #000 !important; 
   border-radius: 50% !important; /* Make it a circle */
   transition: all 0.2s ease;
-  margin-right: 20px
+  /* margin-right: 20px */
 }
 .swiper-button-prev {
   color: #000 !important; /* Set the color to black */
@@ -24,7 +24,7 @@
   border: 1px solid #000 !important; /* Add a thin black border */
   border-radius: 50% !important; /* Make it a circle */
   transition: all 0.2s ease;
-   margin-left: -10px
+   /* margin-left: -10px */
 }
 
 /* Optional: Add a hover effect for better user experience */

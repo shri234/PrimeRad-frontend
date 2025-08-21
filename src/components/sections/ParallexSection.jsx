@@ -8,15 +8,15 @@ const ParallexSection = memo((props) => {
     <Fragment>
       <section
         id="parallex"
-        className="parallax-window bg-attachment-fixed"
+        className="parallax-window "
         style={{
           background: "lightgray",
-          position: "relative",
-          overflow: "hidden",
-          padding: "48px 0",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
+          //   position: "relative",
+          //   overflow: "hidden",
+          //   padding: "48px 0",
+          //   display: "flex",
+          //   flexDirection: "row",
+          //   justifyContent: "center",
         }}
       >
         <div

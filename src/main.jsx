@@ -22,6 +22,7 @@ import { IndexRouters } from "./router/index";
 import { FilterProvider } from "./context/FilterContext.jsx";
 import { loginSuccess } from "./store/auth/actions.js";
 import { Buffer } from "buffer";
+import ScrollToTop from "./scrolltotop.jsx";
 window.Buffer = Buffer;
 
 AOS.init();
@@ -44,6 +45,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         {/* <App> */}
         <RouterProvider router={router} /> {/* ✅ main router */}
         {/* </App> */}
+        {/* <ScrollToTop /> */}
       </FilterProvider>
     </Provider>
   </React.StrictMode>

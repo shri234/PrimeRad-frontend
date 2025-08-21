@@ -740,7 +740,6 @@ const HomePage = memo(() => {
 
       <ParallexSection randomImage={getRandomImage()} />
 
-      {/* Upcoming Live Programs Section */}
       <div
         data-aos="slide-up"
         data-aos-duration="1000"
@@ -820,7 +819,7 @@ const HomePage = memo(() => {
           .why-choose-grid {
             grid-template-columns: 1fr !important;
             gap: 16px !important;
-            padding: 0 5px !important;
+            // padding: 0 5px !important;
           }
 
           /* Assessment card mobile adjustments */
@@ -844,14 +843,14 @@ const HomePage = memo(() => {
         @media (max-width: 480px) {
           /* Extra small screens */
           .why-choose-grid div {
-            padding: 24px 16px !important;
-            min-height: 180px !important;
+            // padding: 24px 16px !important;
+            min-height: 50px !important;
           }
 
           /* Faculty cards smaller */
           .swiper-slide > div {
             min-height: 260px !important;
-            padding: 20px !important;
+            // padding: 20px !important;
           }
 
           /* Assessment card extra small */

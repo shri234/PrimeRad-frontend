@@ -10,6 +10,7 @@ import { Row, Col, Container, Nav, Tab } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
+import { FixedBackButton } from "../../utilities/BackButton";
 import { selectUser } from "../../store/auth/selectors";
 import ReviewComponent from "../../components/ReviewComponent";
 import Sources from "../../components/Sources";
@@ -38,18 +39,16 @@ const THEME = {
   border: "#e0e0e0",
 };
 
-// Zoom SDK Configuration
 const ZOOM_CONFIG = {
-  meetingNumber: "5387499339", // Extract from your URL
-  passWord: "n2hGRVEnYTLVvvmABwhFpWxff5j8sv.1", // Extract from your URL
-  sdkKey: "X602ddj3QhO_WufAVepnbw", // You need to get this from Zoom Marketplace
-  sdkSecret: "", // You need to get this from Zoom Marketplace
+  meetingNumber: "5387499339",
+  passWord: "n2hGRVEnYTLVvvmABwhFpWxff5j8sv.1",
+  sdkKey: "X602ddj3QhO_WufAVepnbw",
+  sdkSecret: "",
   userName: "Medical Student",
   userEmail: "",
   leaveUrl: window.location.origin,
 };
 
-// Zoom Meeting Component
 const ZoomMeeting = ({ isAuthenticated, user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
@@ -79,8 +78,6 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
   }, []);
 
   const generateSignature = useCallback(async (meetingNumber, role) => {
-    // In production, this should be done on your backend for security
-    // This is a simplified example - DO NOT expose SDK secret in frontend
     try {
       const response = await fetch("/api/zoom/signature", {
         method: "POST",
@@ -107,21 +104,17 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
       setError("Zoom SDK not loaded");
       return;
     }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      // Generate signature (this should be done on backend)
       const signature = await generateSignature(ZOOM_CONFIG.meetingNumber, 0);
 
-      // Initialize Zoom meeting
       await zoomClientRef.current.init({
         leaveUrl: ZOOM_CONFIG.leaveUrl,
         success: (success) => {
           console.log("Zoom SDK initialized successfully", success);
 
-          // Join the meeting
           zoomClientRef.current.join({
             signature: signature,
             meetingNumber: ZOOM_CONFIG.meetingNumber,
@@ -204,7 +197,6 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
 
   return (
     <div style={{ position: "relative", height: "600px" }}>
-      {/* Zoom Meeting Container */}
       <div
         ref={meetingContainerRef}
         id="zmmtg-root"
@@ -218,7 +210,6 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
         }}
       />
 
-      {/* Meeting Controls */}
       {isJoined && (
         <div
           className="position-absolute bottom-0 start-50 translate-middle-x mb-3"
@@ -278,7 +269,6 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
         </div>
       )}
 
-      {/* Join Meeting Button */}
       {!isJoined && !isLoading && (
         <div
           className="position-absolute top-50 start-50 translate-middle"
@@ -309,7 +299,6 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
         </div>
       )}
 
-      {/* Loading State */}
       {isLoading && (
         <div
           className="position-absolute top-50 start-50 translate-middle"
@@ -440,7 +429,7 @@ const LivePage = memo(() => {
     rating_from: "Users",
     geners: ["home.action", "home.adventure", "ott_home.drama"],
     tags: ["ott_home.live", "ott_home.session", "ott_home.zoom"],
-    video_link: "zoom-sdk-integration", // Changed to indicate SDK integration
+    video_link: "zoom-sdk-integration",
     video_type: "zoom-sdk",
     is_restricted: false,
     cast: [
@@ -496,6 +485,7 @@ const LivePage = memo(() => {
   return (
     <Fragment>
       <div style={{ backgroundColor: THEME.background }}>
+        <FixedBackButton customPath="/main-page"></FixedBackButton>
         <div className="iq-main-slider site-video">
           <Container fluid>
             <Row>
@@ -510,7 +500,6 @@ const LivePage = memo(() => {
                       boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
                     }}
                   >
-                    {/* Replace iframe with Zoom SDK component */}
                     <ZoomMeeting
                       isAuthenticated={isAuthenticated}
                       user={user}

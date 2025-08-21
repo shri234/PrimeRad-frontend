@@ -6,6 +6,7 @@ header {
           ul {
             &.mega-menu-item {
               left: auto;
+              // overflow: hidden;
               right: 30%;
               transform: translateX(30%);
             }

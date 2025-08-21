@@ -316,7 +316,12 @@
 }
 
 .header-default, .header-center-home {
- 
+   /* position: fixed !important; */
+   /* overflow: hidden !important; */
+  /* top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; */
 }
 
 .header-collapsed {

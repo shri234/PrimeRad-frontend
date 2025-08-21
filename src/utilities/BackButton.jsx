@@ -14,7 +14,6 @@ const THEME = {
   lightGray: "#64748b",
 };
 
-// Main BackButton Component with multiple variants
 const BackButton = ({
   variant = "default",
   size = "medium",
@@ -28,14 +27,9 @@ const BackButton = ({
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (customPath) {
-      navigate(customPath);
-    } else {
-      navigate(-1); // Go back to previous page
-    }
+    navigate(-1);
   };
 
-  // Size configurations
   const sizes = {
     small: {
       padding: "8px 16px",
@@ -338,7 +332,6 @@ const BreadcrumbBack = ({
   );
 };
 
-// Usage Examples Component
 const BackButtonExamples = () => {
   return (
     <div

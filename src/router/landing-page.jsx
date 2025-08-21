@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
-// layout
 import FrontendLayout from "../layouts/FrontendLayout";
 import BlankLayout from "../layouts/BlankLayout";
 import PrivateRoute from "./PrivateRoute";
@@ -10,10 +9,7 @@ import RecommendedCasesViewAll from "../views/RecommendedCasesViewAll";
 import UpcomingLiveProgramsViewAll from "../views/UpcomingLiveProgramsViewAll";
 import RecommendedLecturesViewAll from "../views/RecommendedLecturesViewAll";
 
-// pages
 const OTTPage = lazy(() => import("../views/MainPages/OTTPage"));
-
-// tv-shows pages
 const AtlasView = lazy(() => import("../views/ListViews/AtlasView"));
 const MySpacePage = lazy(() => import("../views/MainPages/MySpacePage"));
 const SubmoduleView = lazy(() =>
@@ -28,8 +24,6 @@ const AssessmentPage = lazy(() => import("../views/Assessment/AssessmentPage"));
 // cast pages
 const CastList = lazy(() => import("../views/Cast/ListPage"));
 const DetailPage = lazy(() => import("../views/Cast/DetailPage"));
-
-// extra pages
 const AboutPage = lazy(() => import("../views/ExtraPages/AboutPage"));
 const ContactPage = lazy(() => import("../views/ExtraPages/ContactPage"));
 const FAQPage = lazy(() => import("../views/ExtraPages/FAQPage"));
@@ -84,11 +78,7 @@ export const LandingpageRouter = [
       },
       {
         path: "/lecture-detail",
-        element: (
-          // <PrivateRoute>
-          <MovieDetail />
-          // </PrivateRoute>
-        ),
+        element: <MovieDetail />,
       },
       {
         path: "/scoreboard",

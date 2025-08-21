@@ -619,8 +619,7 @@
 .level-list-view,
 .level-grid-view {
   margin-top: 10px; 
-  margin-left: 10px;
-  padding: 10px 20px; /* Indent the levels */
+  margin-left: 7px; 
   background-color: #f9f9f9; /* Subtle background for nested content */
   /* border-top: 1px solid #e0e0e0; */
   /* Adjust display for list/grid as needed, mirroring .submodule-list-right */
@@ -809,7 +808,7 @@
 .lecture-list-view,
 .lecture-grid-view {
   /* margin-top: 10px; */
-  padding: 10px 20px; /* Further indent videos */
+  /* padding: 10px 20px;  */
   background-color: #fafafa;
   /* border-top: 1px dashed #ccc; */
   /* Adjust display for list/grid as needed */
@@ -1068,17 +1067,15 @@
   font-size: 12px;
 }
 
-/* Filter Bar */
 .polished-filter-bar {
   display: flex;
+  margin-left: 10px;
   gap: 10px;
-  /* margin-bottom: 16px; */
   align-items: center;
   justify-content: flex-start;
   position: sticky;
   top: 0;
   background: #f8fafc;
-  /* padding: 10px 0; */
   z-index: 10;
 }
 
@@ -1345,3 +1342,5 @@
     display: inline-block;
     margin-top: 8px;
 }
+
+

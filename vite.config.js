@@ -23,9 +23,15 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    // Optional, usually unnecessary:
-    // optimizeDeps: {
-    //   include: ["immer"],
-    // },
+    resolve: {
+      dedupe: ["react", "react-dom", "react-router-dom"],
+    },
+    optimizeDeps: {
+      include: ["react", "react-dom", "react-router-dom", "react-redux"],
+    },
+    // Add this to prevent React version conflicts
+    define: {
+      global: "globalThis",
+    },
   };
 });

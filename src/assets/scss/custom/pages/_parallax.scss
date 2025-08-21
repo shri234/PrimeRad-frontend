@@ -1,22 +1,45 @@
 .parallax-window {
-    height: 100%;
-    padding: 6.25em 0;
-    position: relative;
-    background-size: cover;
-    background-attachment: fixed;
+  height: 100%;
+  padding: 6.25em 0;
+  position: relative;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
 
-    &::after {
-        position: absolute;
-        content: "";
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: transparent;
-    }
+  &::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+  }
+
+  .parallaxt-details {
+    z-index: 9;
+    position: relative;
+    text-align: center; // keeps content centered for mobile
+    padding: 0 1rem; // some spacing for smaller screens
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    padding: 3em 0; 
+    background-attachment: scroll; // fix iOS issue
+    background-size: cover;
+    background-position: center;
 
     .parallaxt-details {
-        z-index: 9;
-        position: relative;
+      font-size: 0.9rem; // scale down text
     }
+  }
+
+  @media (max-width: 480px) {
+    padding: 2em 0;
+    flex-direction: column;
+    .parallaxt-details {
+      font-size: 0.8rem;
+    }
+  }
 }

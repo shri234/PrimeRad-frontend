@@ -101,7 +101,6 @@ const SectionSlider = memo(
               dir={themeSchemeDirection}
               className="position-relative swiper swiper-card"
               slidesPerView={slidesPerView}
-              slidesPerGroup={slidesPerView}
               loop={loop}
               watchSlidesProgress
               spaceBetween={spaceBetween}
@@ -111,33 +110,34 @@ const SectionSlider = memo(
                 nextEl: `.swiper-button-next-${uniqueId}`,
               }}
               breakpoints={{
-                // Extra small devices (phones, 320px and up)
-                320: {
-                  slidesPerView: 1.2,
+                0: {
+                  slidesPerView: 1,
+                  slidesPerGroup: 1, // 👈 Move 1 on mobile
                   spaceBetween: 10,
                 },
-                // Small devices (landscape phones, 576px and up)
-                576: {
-                  slidesPerView: 2.2,
+                546: {
+                  slidesPerView: 2,
+                  slidesPerGroup: 2, // 👈 Move 2 on small tablets
                   spaceBetween: 15,
                 },
                 768: {
-                  slidesPerView: 3.2,
+                  slidesPerView: 3,
+                  slidesPerGroup: 3, // 👈 Move 3
                   spaceBetween: 20,
                 },
-                // Large devices (desktops, 992px and up)
                 992: {
-                  slidesPerView: 4.2,
+                  slidesPerView: 4,
+                  slidesPerGroup: 4, // 👈 Move 4
                   spaceBetween: 20,
                 },
-
                 1200: {
-                  slidesPerView: 5.2,
+                  slidesPerView: 5,
+                  slidesPerGroup: 5, // 👈 Move 5
                   spaceBetween: 20,
                 },
-                // Extra extra large devices (1500px and up)
                 1500: {
                   slidesPerView: slidesPerView,
+                  slidesPerGroup: slidesPerView, // keep it consistent with prop
                   spaceBetween: spaceBetween,
                 },
               }}

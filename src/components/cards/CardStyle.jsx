@@ -253,8 +253,8 @@ const CardStyle = memo(
             cursor: pointer;
             min-height: 350px; /* Base min-height */
             height: auto; /* Allow height to adjust */
-            transform: scale(1); /* Initial scale */
-            transition: transform 0.3s ease, box-shadow 0.3s ease,
+            // transform: scale(1); /* Initial scale */
+            // transition: transform 0.3s ease, box-shadow 0.3s ease,
               min-height 0.3s ease; /* Add min-height to transition */
           }
 
