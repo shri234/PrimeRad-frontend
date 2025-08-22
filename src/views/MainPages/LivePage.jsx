@@ -785,7 +785,10 @@ const LivePage = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "12px"
+                                      : "1.1rem",
                                 }}
                               >
                                 {t(module)}
@@ -840,7 +843,10 @@ const LivePage = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "12px"
+                                      : "1.1rem",
                                 }}
                               >
                                 {t(submodule)}

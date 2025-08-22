@@ -139,7 +139,6 @@ const ReviewComponent = memo(
           setComment(response.data.data.comment);
           setFormMode("edit");
         } else {
-          // No review found in response or data is empty/null/undefined
           setUserReview(null);
           setRating(0);
           setComment("");
@@ -197,14 +196,12 @@ const ReviewComponent = memo(
             { itemId, rating, comment },
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`, // Auth header
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             }
           );
           alert(t("Submitted successfully")); // Success message
         } else {
-          // formMode === 'edit'
-          // API call to update an existing review
           await axios.put(
             `http://localhost:5000/api/reviews/${userReview._id}`, // Use existing review's ID
             { rating, comment },
@@ -301,10 +298,10 @@ const ReviewComponent = memo(
         <div
           className="streamit-reviews"
           style={{
-            background: THEME.card,
+            // background: THEME.card,
             borderRadius: "16px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            padding: "30px",
+            // boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+            // padding: window.innerWidth <= 768 ? "15px" : "30px",
           }}
         >
           {/* Overall Reviews Summary Section */}
@@ -312,7 +309,7 @@ const ReviewComponent = memo(
             className="d-flex align-items-center mb-4"
             style={{
               borderBottom: `1px solid ${THEME.border}`, // Subtle separator
-              paddingBottom: "20px",
+              // paddingBottom: "20px",
             }}
           >
             <h3
