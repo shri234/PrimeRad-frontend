@@ -786,7 +786,7 @@ const MovieDetail = memo(() => {
                     background:
                       "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
                     borderRadius: "24px",
-                    marginTop: "-50px",
+                    marginTop: "-60px",
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
                     padding: "25px 20px",
@@ -809,7 +809,7 @@ const MovieDetail = memo(() => {
                   <Row>
                     <Col md="12" className="mb-auto">
                       <div
-                        className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-4"
+                        className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-2 mb-md-4"
                         style={{
                           justifyContent: "space-between",
                         }}
@@ -884,7 +884,7 @@ const MovieDetail = memo(() => {
                         </div>
                       </div>
 
-                      <div className="row g-4 mb-4">
+                      <div className="row g-2 mb-2">
                         <Col xs={6} md={6} lg={3}>
                           <div
                             className="p-3 d-flex flex-row align-items-center w-100 w-md-100 flex-shrink-0"
@@ -1121,7 +1121,14 @@ const MovieDetail = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             🏆
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("AMA Approved")}
                           </small>
                         </div>
@@ -1137,7 +1144,14 @@ const MovieDetail = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             📋
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Evidence-Based")}
                           </small>
                         </div>
@@ -1153,7 +1167,14 @@ const MovieDetail = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             🔬
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Peer Reviewed")}
                           </small>
                         </div>
@@ -1169,7 +1190,14 @@ const MovieDetail = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             ⚕️
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Clinical Guidelines")}
                           </small>
                         </div>
@@ -1188,7 +1216,7 @@ const MovieDetail = memo(() => {
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
                     padding: "35px",
-                    marginBottom: "30px",
+                    marginBottom: "15px",
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
                 >

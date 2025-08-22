@@ -252,7 +252,7 @@ const FixedBackButton = ({
   variant = "floating",
   size = "small",
   customPath = null,
-  topOffset = window.innerWidth >= 768 ? "70px" : "80px",
+  topOffset = window.innerWidth >= 768 ? "70px" : "0px",
 }) => {
   const positions = {
     "top-left": { top: topOffset, left: "10px" },
