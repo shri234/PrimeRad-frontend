@@ -196,15 +196,21 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
   }
 
   return (
-    <div style={{ position: "relative", height: "600px" }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: window.innerWidth <= 768 ? "260px" : "700px",
+      }}
+    >
       <div
         ref={meetingContainerRef}
         id="zmmtg-root"
         style={{
           width: "100%",
-          height: "600px",
+          height: window.innerWidth <= 768 ? "260px" : "700px",
           borderRadius: "16px",
-          position: "relative",
+          position: "absolute",
           overflow: "hidden",
           backgroundColor: "#000",
         }}
@@ -331,16 +337,17 @@ const ZoomMeeting = ({ isAuthenticated, user }) => {
             textAlign: "center",
             boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
             backdropFilter: "blur(10px)",
-            maxWidth: "400px",
+            maxWidth: window.innerWidth <= 768 ? "150px" : "400px",
+            maxHeight: window.innerWidth <= 768 ? "150px" : "200px",
           }}
         >
-          <div className="text-danger mb-3">
-            <i className="fas fa-exclamation-triangle fa-2x"></i>
+          <div className="text-danger mb-1 mb-md-2">
+            <i className="fas fa-exclamation-triangle fa-1x fa-md-2x"></i>
           </div>
           <h5 className="text-danger">Connection Error</h5>
-          <p className="text-muted mb-3">{error}</p>
+          <p className="text-muted mb-1 mb-md-3">{error}</p>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary "
             onClick={() => {
               setError(null);
               joinMeeting();
@@ -494,7 +501,8 @@ const LivePage = memo(() => {
                   <div
                     style={{
                       position: "relative",
-                      marginTop: 50,
+                      marginTop: 24,
+                      marginBottom: "50px",
                       borderRadius: 16,
                       overflow: "hidden",
                       boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
