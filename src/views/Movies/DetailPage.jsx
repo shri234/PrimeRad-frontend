@@ -815,7 +815,7 @@ const MovieDetail = memo(() => {
                         }}
                       >
                         <div className="flex-grow-1 p-2 flex-md-row">
-                          <div className="d-flex align-items-center mb-3">
+                          <div className="d-flex align-items-center mb-0  ">
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
