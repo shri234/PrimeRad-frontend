@@ -843,9 +843,7 @@ const MovieDetail = memo(() => {
                                 style={{
                                   color: "#1a202c",
                                   fontSize:
-                                    window.innerWidth <= 768
-                                      ? "1.3rem"
-                                      : "2rem",
+                                    window.innerWidth <= 768 ? "1rem" : "2rem",
                                   marginTop: "20px",
                                   marginLeft: "-10px",
                                   lineHeight: 1.2,
@@ -872,7 +870,7 @@ const MovieDetail = memo(() => {
                               color: "white",
                               fontSize:
                                 window.innerWidth <= 768
-                                  ? "0.78rem"
+                                  ? "0.70rem"
                                   : "0.85rem",
                               padding: "8px 16px",
                               borderRadius: "20px",
