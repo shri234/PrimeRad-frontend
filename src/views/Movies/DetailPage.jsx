@@ -156,7 +156,7 @@ const MovieDetail = memo(() => {
   const tabStyles = `
     .nav-pills .nav-link { transition: all 0.3s ease; position: relative; overflow: hidden; }
     .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
-    .nav-pills .nav-link.active { background: linear-gradient(135deg, ${THEME.primary} 0%, #1565c0 100%) !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
+    .nav-pills .nav-link.active { background: lavender !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
     .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
     .nav-pills .nav-link.active::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%); pointer-events: none; }
   `;
@@ -1215,7 +1215,7 @@ const MovieDetail = memo(() => {
                     borderRadius: "24px",
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                    padding: "35px",
+                    padding: window.innerWidth >= 768 ? "35px" : "20px",
                     marginBottom: "15px",
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
@@ -1366,17 +1366,20 @@ const MovieDetail = memo(() => {
                             border: "1px solid rgba(25, 118, 210, 0.1)",
                           }}
                         >
-                          <div className="d-flex align-items-center mb-4">
+                          <div className="d-flex align-items-center mb-3">
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "48px",
-                                height: "48px",
+                                width:
+                                  window.innerWidth >= 768 ? "48px" : "24px",
+                                height:
+                                  window.innerWidth >= 768 ? "48px" : "24px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "12px",
                                 color: "white",
-                                fontSize: "1.2rem",
+                                fontSize:
+                                  window.innerWidth >= 768 ? "1.2rem" : "1rem",
                               }}
                             >
                               🩺
