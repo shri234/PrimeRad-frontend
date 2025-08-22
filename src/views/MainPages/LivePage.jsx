@@ -512,20 +512,20 @@ const LivePage = memo(() => {
         </div>
 
         {/* Rest of your component remains the same */}
-        <div className="details-part pt-4 px-4 px-md-0">
+        <div className="details-part pt-4 px-md-0">
           <Container fluid>
             <Row>
               <Col lg="12">
-                {/* Enhanced Header Section with Medical Theme */}
                 <div
-                  className="trending-info pt-0 pb-4 mb-5 position-relative overflow-hidden"
+                  className="trending-info pt-0 pb-4 mb-4  position-relative overflow-hidden"
                   style={{
                     background:
                       "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
                     borderRadius: "24px",
+                    marginTop: "-60px",
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                    padding: "40px 35px",
+                    padding: "25px 20px",
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
                 >
@@ -545,37 +545,45 @@ const LivePage = memo(() => {
                   <Row>
                     <Col md="12" className="mb-auto">
                       <div
-                        className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-4"
+                        className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-2 mb-md-4"
                         style={{
                           justifyContent: "space-between",
-                          gap: 20,
                         }}
                       >
-                        <div className="flex-grow-1 p-2">
-                          <div className="d-flex align-items-center mb-3">
+                        <div className="flex-grow-1 p-2 flex-md-row">
+                          <div className="d-flex align-items-center mb-0  ">
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "48px",
-                                height: "48px",
-                                marginTop: "20px",
+                                width:
+                                  window.innerWidth <= 768 ? "24px" : "48px",
+                                height:
+                                  window.innerWidth <= 768 ? "24px" : "48px",
+                                marginTop:
+                                  window.innerWidth <= 768 ? "10px" : "20px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "12px",
                                 color: "white",
-                                fontSize: "1.2rem",
+                                fontSize:
+                                  window.innerWidth <= 768
+                                    ? "0.8rem"
+                                    : "1.2rem",
                               }}
                             >
                               🏥
                             </div>
                             <div>
                               <h1
-                                className="fw-bold mx-0"
+                                className="fw-bold mx-0 ml-md-0"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "2rem",
+                                  fontSize:
+                                    window.innerWidth <= 768 ? "1rem" : "2rem",
                                   marginTop: "20px",
+                                  marginLeft: "-10px",
                                   lineHeight: 1.2,
+                                  textTransform: "uppercase",
                                   background: "darkslategrey",
                                   WebkitBackgroundClip: "text",
                                   WebkitTextFillColor: "transparent",
@@ -589,14 +597,17 @@ const LivePage = memo(() => {
                         </div>
 
                         {/* Medical Status Badge */}
-                        <div className="d-flex flex-column gap-2">
+                        <div className="d-flex flex-column flex-md-row gap-2 gap-md-0">
                           <div
-                            className="badge d-flex align-items-center"
+                            className="badge d-flex  align-items-center"
                             style={{
                               background:
                                 "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                               color: "white",
-                              fontSize: "0.85rem",
+                              fontSize:
+                                window.innerWidth <= 768
+                                  ? "0.70rem"
+                                  : "0.85rem",
                               padding: "8px 16px",
                               borderRadius: "20px",
                               fontWeight: 600,
@@ -604,16 +615,15 @@ const LivePage = memo(() => {
                             }}
                           >
                             <span className="me-2">✓</span>
-                            {t("Live Session Active")}
+                            {t("Medically Reviewed")}
                           </div>
                         </div>
                       </div>
 
-                      {/* Enhanced Medical Information Grid */}
-                      <div className="row g-4 mb-4">
-                        <Col xs={12} md={6} lg={3}>
+                      <div className="row g-2 mb-2">
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex flex-row align-items-center w-100 w-md-100 flex-shrink-0"
                             style={{
                               background:
                                 "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
@@ -625,8 +635,10 @@ const LivePage = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "10px",
@@ -652,7 +664,10 @@ const LivePage = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth >= 768
+                                      ? "1.1rem"
+                                      : "0.85rem",
                                 }}
                               >
                                 {duration}
@@ -661,9 +676,9 @@ const LivePage = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
@@ -675,8 +690,10 @@ const LivePage = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)",
                                 borderRadius: "10px",
@@ -702,7 +719,10 @@ const LivePage = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "13px"
+                                      : "1.1rem",
                                 }}
                               >
                                 {formatDate(startDate)}
@@ -711,9 +731,9 @@ const LivePage = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
@@ -725,8 +745,10 @@ const LivePage = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                                 borderRadius: "10px",
@@ -741,7 +763,10 @@ const LivePage = memo(() => {
                                 className="small fw-semibold"
                                 style={{
                                   color: "#4caf50",
-                                  fontSize: "0.8rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "10px"
+                                      : "0.8rem",
                                   textTransform: "uppercase",
                                   letterSpacing: "0.5px",
                                 }}
@@ -761,9 +786,9 @@ const LivePage = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%)",
@@ -775,8 +800,10 @@ const LivePage = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)",
                                 borderRadius: "10px",
@@ -788,10 +815,13 @@ const LivePage = memo(() => {
                             </div>
                             <div>
                               <div
-                                className="small fw-semibold"
+                                className="small fw-bolder"
                                 style={{
-                                  color: "#ff9800",
-                                  fontSize: "0.8rem",
+                                  color: "orange",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "10px"
+                                      : "0.8rem",
                                   textTransform: "uppercase",
                                   letterSpacing: "0.5px",
                                 }}
@@ -827,7 +857,14 @@ const LivePage = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             🏆
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("AMA Approved")}
                           </small>
                         </div>
@@ -843,7 +880,14 @@ const LivePage = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             📋
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Evidence-Based")}
                           </small>
                         </div>
@@ -859,7 +903,14 @@ const LivePage = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             🔬
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Peer Reviewed")}
                           </small>
                         </div>
@@ -875,7 +926,14 @@ const LivePage = memo(() => {
                           <span className="me-2" style={{ fontSize: "1.1rem" }}>
                             ⚕️
                           </span>
-                          <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                          <small
+                            style={{
+                              color: "#4a5568",
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "auto",
+                              fontWeight: 600,
+                            }}
+                          >
                             {t("Clinical Guidelines")}
                           </small>
                         </div>
@@ -893,8 +951,8 @@ const LivePage = memo(() => {
                     borderRadius: "24px",
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                    padding: "35px",
-                    marginBottom: "30px",
+                    padding: window.innerWidth >= 768 ? "35px" : "20px",
+                    marginBottom: "15px",
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
                 >
@@ -914,7 +972,7 @@ const LivePage = memo(() => {
                     <Nav
                       className="nav-pills mb-5 position-relative"
                       style={{
-                        background: THEME.softBlue,
+                        background: THEME.softBlue, // Using a theme color
                         borderRadius: "20px",
                         padding: "8px",
                         gap: "6px",
@@ -945,6 +1003,17 @@ const LivePage = memo(() => {
                             </span>
                             {t("Overview")}
                           </div>
+                          <div
+                            className="position-absolute top-0 start-0 w-100 h-100"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                              borderRadius: "12px",
+                              opacity: 0,
+                              transition: "opacity 0.3s ease",
+                              zIndex: 1,
+                            }}
+                          />
                         </Nav.Link>
                       </Nav.Item>
 
@@ -970,6 +1039,17 @@ const LivePage = memo(() => {
                             </span>
                             {t("Medical Resources")}
                           </div>
+                          <div
+                            className="position-absolute top-0 start-0 w-100 h-100"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                              borderRadius: "12px",
+                              opacity: 0,
+                              transition: "opacity 0.3s ease",
+                              zIndex: 1,
+                            }}
+                          />
                         </Nav.Link>
                       </Nav.Item>
 
@@ -995,6 +1075,17 @@ const LivePage = memo(() => {
                             </span>
                             {t("Reviews")}
                           </div>
+                          <div
+                            className="position-absolute top-0 start-0 w-100 h-100"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                              borderRadius: "12px",
+                              opacity: 0,
+                              transition: "opacity 0.3s ease",
+                              zIndex: 1,
+                            }}
+                          />
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
@@ -1011,17 +1102,20 @@ const LivePage = memo(() => {
                             border: "1px solid rgba(25, 118, 210, 0.1)",
                           }}
                         >
-                          <div className="d-flex align-items-center mb-4">
+                          <div className="d-flex align-items-center mb-3">
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "48px",
-                                height: "48px",
+                                width:
+                                  window.innerWidth >= 768 ? "48px" : "24px",
+                                height:
+                                  window.innerWidth >= 768 ? "48px" : "24px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "12px",
                                 color: "white",
-                                fontSize: "1.2rem",
+                                fontSize:
+                                  window.innerWidth >= 768 ? "1.2rem" : "1rem",
                               }}
                             >
                               🩺
@@ -1213,14 +1307,15 @@ const LivePage = memo(() => {
                               </p>
                             </div>
                           </div>
+                          {/* Updated ReviewComponent usage */}
                           <ReviewComponent
                             itemId={sessionId}
                             isAuthenticated={isAuthenticated}
                             currentUserId={
                               user?._id || user?.id || user?.userId
-                            }
+                            } // Pass user ID to ReviewComponent
                             itemTitle={title}
-                            itemType={contentType}
+                            itemType={contentType} // Pass content type to ReviewComponent
                           />
                         </div>
                       </Tab.Pane>
@@ -1231,8 +1326,7 @@ const LivePage = memo(() => {
             </Row>
           </Container>
         </div>
-
-        {/* Faculty/Cast Section - Keeping the existing faculty section */}
+        {/* Faculty/Cast Section */}
         <div className="cast-tabs pb-5 px-4 px-md-0">
           <Container fluid>
             <div
@@ -1248,6 +1342,31 @@ const LivePage = memo(() => {
                 overflow: "hidden",
               }}
             >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-50px",
+                  right: "-50px",
+                  width: "150px",
+                  height: "150px",
+                  background: "linear-gradient(135deg, #667eea20, #764ba220)",
+                  borderRadius: "50%",
+                  opacity: 0.6,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-30px",
+                  left: "-30px",
+                  width: "100px",
+                  height: "100px",
+                  background: "linear-gradient(135deg, #f093fb20, #f5576c20)",
+                  borderRadius: "50%",
+                  opacity: 0.5,
+                }}
+              />
+
               <Tab.Container defaultActiveKey="first">
                 <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                   <div>
@@ -1279,6 +1398,7 @@ const LivePage = memo(() => {
                     </p>
                   </div>
 
+                  {/* Faculty Count Badge */}
                   <div
                     className="d-flex align-items-center mt-3 mt-md-0"
                     style={{
@@ -1299,7 +1419,10 @@ const LivePage = memo(() => {
                       ? 1
                       : 0}{" "}
                     {t("Faculty Member")}
-                    {Array.isArray(faculty) && faculty.length !== 1 ? "s" : ""}
+                    {Array.isArray(faculty) && faculty.length !== 1
+                      ? "s"
+                      : ""}{" "}
+                    {/* Corrected pluralization */}
                   </div>
                 </div>
 
@@ -1333,6 +1456,17 @@ const LivePage = memo(() => {
                         <FaUser className="me-2" size={16} />
                         {t("Faculty Information")}
                       </div>
+                      <div
+                        className="position-absolute top-0 start-0 w-100 h-100"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          borderRadius: "12px",
+                          opacity: 0,
+                          transition: "opacity 0.3s ease",
+                          zIndex: 1,
+                        }}
+                      />
                     </Nav.Link>
                   </Nav.Item>
                 </Nav>
@@ -1373,7 +1507,32 @@ const LivePage = memo(() => {
                                 transition: "all 0.3s ease",
                                 overflow: "hidden",
                               }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.transform =
+                                  "translateY(-5px)";
+                                e.currentTarget.style.boxShadow =
+                                  "0 12px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.transform =
+                                  "translateY(0)";
+                                e.currentTarget.style.boxShadow =
+                                  "0 8px 25px rgba(0,0,0,0.06), 0 3px 10px rgba(0,0,0,0.03)";
+                              }}
                             >
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  right: 0,
+                                  width: "80px",
+                                  height: "80px",
+                                  background:
+                                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                  clipPath: "polygon(100% 0, 0 0, 100% 100%)",
+                                  opacity: 0.1,
+                                }}
+                              />
                               <Row className="align-items-center">
                                 <Col
                                   xs={12}
@@ -1394,9 +1553,7 @@ const LivePage = memo(() => {
                                         src={
                                           member.image
                                             ? `https://primerad-backend.onrender.com${member.image}`
-                                            : generateImgPath(
-                                                "/assets/images/faculty1.jpg"
-                                              )
+                                            : "/assets/images/faculty1.jpg"
                                         }
                                         alt={`${member.name} profile`}
                                         className="img-fluid"
@@ -1411,21 +1568,200 @@ const LivePage = memo(() => {
                                             "0 8px 25px rgba(0,0,0,0.15)",
                                         }}
                                       />
+                                      <div
+                                        className="position-absolute"
+                                        style={{
+                                          bottom: "8px",
+                                          right: "8px",
+                                          width: "24px",
+                                          height: "24px",
+                                          backgroundColor: "#38a169",
+                                          borderRadius: "50%",
+                                          border: "3px solid white",
+                                          boxShadow:
+                                            "0 2px 8px rgba(0,0,0,0.2)",
+                                        }}
+                                      />
+                                      <div
+                                        className="position-absolute"
+                                        style={{
+                                          top: "-10px",
+                                          right: "-10px",
+                                          background:
+                                            "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+                                          borderRadius: "12px",
+                                          padding: "4px 8px",
+                                          fontSize: "0.7rem",
+                                          fontWeight: 700,
+                                          color: "white",
+                                          boxShadow:
+                                            "0 4px 15px rgba(240, 147, 251, 0.4)",
+                                        }}
+                                      >
+                                        ⭐ 4.9
+                                      </div>
                                     </div>
                                   </div>
                                 </Col>
 
                                 <Col xs={12} md={8} lg={9}>
                                   <div className="faculty-info">
-                                    <h4
-                                      className="fw-bold mb-3"
-                                      style={{
-                                        color: "#1a202c",
-                                        fontSize: "1.6rem",
-                                      }}
-                                    >
-                                      {t(member.name || "Unknown Faculty")}
-                                    </h4>
+                                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+                                      <div>
+                                        <h4
+                                          className="fw-bold mb-1"
+                                          style={{
+                                            color: "#1a202c",
+                                            fontSize: "1.6rem",
+                                          }}
+                                        >
+                                          <Link
+                                            to="/faculty-detail" // Adjust this link to pass member._id if faculty-detail page is dynamic
+                                            state={{
+                                              facultyId: member._id,
+                                              facultyName: member.name,
+                                              facultyImage: member.image,
+                                            }}
+                                            style={{
+                                              color: "inherit",
+                                              textDecoration: "none",
+                                              transition: "color 0.3s ease",
+                                            }}
+                                            onMouseEnter={(e) => {
+                                              e.target.style.color = "#667eea";
+                                            }}
+                                            onMouseLeave={(e) => {
+                                              e.target.style.color = "#1a202c";
+                                            }}
+                                          >
+                                            {t(
+                                              member.name || "Unknown Faculty"
+                                            )}
+                                          </Link>
+                                        </h4>
+                                        <div className="d-flex align-items-center mb-2">
+                                          <span
+                                            className="badge me-2"
+                                            style={{
+                                              background:
+                                                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                              fontSize: "0.8rem",
+                                              padding: "6px 12px",
+                                              borderRadius: "8px",
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            {t("Senior Lecturer")}
+                                          </span>
+                                          <span
+                                            className="badge"
+                                            style={{
+                                              background:
+                                                "linear-gradient(135deg, #38a169 0%, #2f855a 100%)",
+                                              fontSize: "0.8rem",
+                                              padding: "6px 12px",
+                                              borderRadius: "8px",
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            {t("Verified Educator")}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="row g-3 mb-3">
+                                      <div className="col-6 col-md-3">
+                                        <div
+                                          className="text-center p-3"
+                                          style={{
+                                            background:
+                                              "linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%)",
+                                            borderRadius: "12px",
+                                            border:
+                                              "1px solid rgba(102, 126, 234, 0.1)",
+                                          }}
+                                        >
+                                          <div
+                                            className="fw-bold mb-1"
+                                            style={{
+                                              fontSize: "1.3rem",
+                                              color: "#1a202c",
+                                            }}
+                                          >
+                                            156
+                                          </div>
+                                          <small
+                                            style={{
+                                              color: "#718096",
+                                              fontSize: "0.8rem",
+                                            }}
+                                          >
+                                            {t("Lectures")}
+                                          </small>
+                                        </div>
+                                      </div>
+                                      <div className="col-6 col-md-3">
+                                        <div
+                                          className="text-center p-3"
+                                          style={{
+                                            background:
+                                              "linear-gradient(135deg, #f0fff4 0%, #f0f9ff 100%)",
+                                            borderRadius: "12px",
+                                            border:
+                                              "1px solid rgba(56, 161, 105, 0.1)",
+                                          }}
+                                        >
+                                          <div
+                                            className="fw-bold mb-1"
+                                            style={{
+                                              fontSize: "1.3rem",
+                                              color: "#1a202c",
+                                            }}
+                                          >
+                                            4.9
+                                          </div>
+                                          <small
+                                            style={{
+                                              color: "#718096",
+                                              fontSize: "0.8rem",
+                                            }}
+                                          >
+                                            {t("Rating")}
+                                          </small>
+                                        </div>
+                                      </div>
+                                      <div className="col-6 col-md-3">
+                                        <div
+                                          className="text-center p-3"
+                                          style={{
+                                            background:
+                                              "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)",
+                                            borderRadius: "12px",
+                                            border:
+                                              "1px solid rgba(236, 72, 153, 0.1)",
+                                          }}
+                                        >
+                                          <div
+                                            className="fw-bold mb-1"
+                                            style={{
+                                              fontSize: "1.3rem",
+                                              color: "#1a202c",
+                                            }}
+                                          >
+                                            8+
+                                          </div>
+                                          <small
+                                            style={{
+                                              color: "#718096",
+                                              fontSize: "0.8rem",
+                                            }}
+                                          >
+                                            {t("Years Exp")}
+                                          </small>
+                                        </div>
+                                      </div>
+                                    </div>
 
                                     <p
                                       className="mb-3"
@@ -1436,8 +1772,7 @@ const LivePage = memo(() => {
                                       }}
                                     >
                                       {t(
-                                        member.description ||
-                                          "Experienced educator with expertise in medical sciences."
+                                        "Experienced educator with expertise in medical sciences and innovative teaching methodologies. Passionate about student success and industry-relevant curriculum development."
                                       )}
                                     </p>
 
@@ -1452,12 +1787,12 @@ const LivePage = memo(() => {
                                         {t("Specializations")}:
                                       </h6>
                                       <div className="d-flex flex-wrap gap-2">
-                                        {(
-                                          member.specializations || [
-                                            "Medical Imaging",
-                                            "Diagnostic Radiology",
-                                          ]
-                                        ).map((spec, index) => (
+                                        {[
+                                          "Medical Imaging",
+                                          "Diagnostic Radiology",
+                                          "Patient Care",
+                                          "Clinical Research",
+                                        ].map((spec, index) => (
                                           <span
                                             key={index}
                                             className="badge"

@@ -476,8 +476,12 @@ const CaseViewerPage = () => {
         className="case-viewer-container"
         style={{
           display: "flex",
-          height: "calc(100vh - 64px)",
-          marginTop: 48,
+          height:
+            window.innerWidth <= 768
+              ? "calc(50vh -12px)"
+              : "calc(100vh - 64px)",
+          marginTop: window.innerWidth >= 768 ? 12 : 8,
+          marginBottom: 24,
           background: THEME.background,
           flexDirection: window.innerWidth <= 1024 ? "column" : "row",
         }}
@@ -486,7 +490,8 @@ const CaseViewerPage = () => {
           className="dicom-viewer-panel" // Add a class for global styles
           style={{
             flex: window.innerWidth <= 1024 ? "none" : 2,
-            height: window.innerWidth <= 1024 ? "50vh" : "auto",
+
+            height: window.innerWidth <= 1024 ? "60vh" : "auto",
             padding: window.innerWidth <= 768 ? 16 : 32,
             display: "flex",
             flexDirection: "column",
@@ -495,11 +500,11 @@ const CaseViewerPage = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             borderRadius:
               window.innerWidth <= 1024 ? "16px 16px 0 0" : "16px 0 0 16px",
-            margin: window.innerWidth <= 768 ? 12 : 24,
+            margin: window.innerWidth <= 768 ? 0 : 24,
             marginRight:
               window.innerWidth <= 1024
                 ? window.innerWidth <= 768
-                  ? 12
+                  ? 0
                   : 24
                 : 0,
             marginBottom:
@@ -557,8 +562,9 @@ const CaseViewerPage = () => {
         <div
           className="observations-form-panel" // Add a class for global styles
           style={{
-            flex: window.innerWidth <= 1024 ? "1" : 1,
-            height: window.innerWidth <= 1024 ? "auto" : "auto",
+            flex: window.innerWidth <= 1024 ? 1 : 1,
+            height: window.innerWidth <= 1024 ? "50%" : "auto",
+            // marginTop: "4px",
             borderLeft:
               window.innerWidth <= 1024 ? "none" : `1px solid ${THEME.border}`,
             borderTop:
@@ -571,20 +577,16 @@ const CaseViewerPage = () => {
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             borderRadius:
               window.innerWidth <= 1024 ? "0 0 16px 16px" : "0 16px 16px 0",
-            margin: window.innerWidth <= 768 ? 12 : 24,
+            margin: window.innerWidth <= 768 ? 24 : 24,
             marginLeft:
               window.innerWidth <= 1024
                 ? window.innerWidth <= 768
-                  ? 12
+                  ? 0
                   : 24
                 : 0,
             marginTop:
-              window.innerWidth <= 1024
-                ? 0
-                : window.innerWidth <= 768
-                ? 12
-                : 24,
-            minWidth: window.innerWidth <= 1024 ? "auto" : 320,
+              window.innerWidth <= 1024 ? 0 : window.innerWidth <= 768 ? 1 : 24,
+            minWidth: window.innerWidth <= 1024 ? "auto" : 300,
             maxWidth: window.innerWidth <= 1024 ? "none" : 420,
             overflow: "hidden",
           }}
@@ -596,7 +598,7 @@ const CaseViewerPage = () => {
               color: "#fff",
               padding:
                 window.innerWidth <= 768
-                  ? "16px 20px 8px 20px"
+                  ? "8px 10px 4px 10px"
                   : "20px 32px 12px 32px",
               display: "flex",
               flexDirection: "column",
@@ -617,7 +619,7 @@ const CaseViewerPage = () => {
               style={{
                 fontSize: window.innerWidth <= 768 ? 12 : 14,
                 opacity: 0.9,
-                marginTop: 4,
+                marginTop: window.innerWidth <= 768 ? "4px" : 4,
               }}
             >
               (On submitting your observations, you will be able to compare your
@@ -1042,20 +1044,20 @@ const CaseViewerPage = () => {
         </div>
       </div>
 
-      <div className="details-part pt-4 px-4 px-md-0">
+      <div className="details-part pt-4 px-md-0">
         <Container fluid>
           <Row>
             <Col lg="12">
-              {/* Enhanced Header Section with Medical Theme */}
               <div
-                className="trending-info pt-0 pb-4 mb-5 position-relative overflow-hidden"
+                className="trending-info pt-0 pb-4 mb-4  position-relative overflow-hidden"
                 style={{
                   background:
                     "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
                   borderRadius: "24px",
+                  marginTop: "-60px",
                   boxShadow:
                     "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                  padding: "40px 35px",
+                  padding: "25px 20px",
                   border: "1px solid rgba(25, 118, 210, 0.1)",
                 }}
               >
@@ -1075,37 +1077,42 @@ const CaseViewerPage = () => {
                 <Row>
                   <Col md="12" className="mb-auto">
                     <div
-                      className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-4"
+                      className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-2 mb-md-4"
                       style={{
                         justifyContent: "space-between",
-                        gap: 20,
                       }}
                     >
-                      <div className="flex-grow-1 p-2">
-                        <div className="d-flex align-items-center mb-3">
+                      <div className="flex-grow-1 p-2 flex-md-row">
+                        <div className="d-flex align-items-center mb-0  ">
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "48px",
-                              height: "48px",
-                              marginTop: "20px",
+                              width: window.innerWidth <= 768 ? "24px" : "48px",
+                              height:
+                                window.innerWidth <= 768 ? "24px" : "48px",
+                              marginTop:
+                                window.innerWidth <= 768 ? "10px" : "20px",
                               background:
                                 "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                               borderRadius: "12px",
                               color: "white",
-                              fontSize: "1.2rem",
+                              fontSize:
+                                window.innerWidth <= 768 ? "0.8rem" : "1.2rem",
                             }}
                           >
                             🏥
                           </div>
                           <div>
                             <h1
-                              className="fw-bold mx-0"
+                              className="fw-bold mx-0 ml-md-0"
                               style={{
                                 color: "#1a202c",
-                                fontSize: "2rem",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "1rem" : "2rem",
                                 marginTop: "20px",
+                                marginLeft: "-10px",
                                 lineHeight: 1.2,
+                                textTransform: "uppercase",
                                 background: "darkslategrey",
                                 WebkitBackgroundClip: "text",
                                 WebkitTextFillColor: "transparent",
@@ -1119,14 +1126,15 @@ const CaseViewerPage = () => {
                       </div>
 
                       {/* Medical Status Badge */}
-                      <div className="d-flex flex-column gap-2">
+                      <div className="d-flex flex-column flex-md-row gap-2 gap-md-0">
                         <div
-                          className="badge d-flex align-items-center"
+                          className="badge d-flex  align-items-center"
                           style={{
                             background:
                               "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                             color: "white",
-                            fontSize: "0.85rem",
+                            fontSize:
+                              window.innerWidth <= 768 ? "0.70rem" : "0.85rem",
                             padding: "8px 16px",
                             borderRadius: "20px",
                             fontWeight: 600,
@@ -1139,11 +1147,10 @@ const CaseViewerPage = () => {
                       </div>
                     </div>
 
-                    {/* Enhanced Medical Information Grid */}
-                    <div className="row g-4 mb-4">
-                      <Col xs={12} md={6} lg={3}>
+                    <div className="row g-2 mb-2">
+                      <Col xs={6} md={6} lg={3}>
                         <div
-                          className="p-3 h-100 d-flex align-items-center"
+                          className="p-3 d-flex flex-row align-items-center w-100 w-md-100 flex-shrink-0"
                           style={{
                             background:
                               "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
@@ -1155,8 +1162,9 @@ const CaseViewerPage = () => {
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "40px",
-                              height: "40px",
+                              width: window.innerWidth <= 768 ? "20px" : "40px",
+                              height:
+                                window.innerWidth <= 768 ? "20px" : "40px",
                               background:
                                 "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                               borderRadius: "10px",
@@ -1182,7 +1190,10 @@ const CaseViewerPage = () => {
                               className="fw-bold"
                               style={{
                                 color: "#1a202c",
-                                fontSize: "1.1rem",
+                                fontSize:
+                                  window.innerWidth >= 768
+                                    ? "1.1rem"
+                                    : "0.85rem",
                               }}
                             >
                               {duration}
@@ -1191,9 +1202,9 @@ const CaseViewerPage = () => {
                         </div>
                       </Col>
 
-                      <Col xs={12} md={6} lg={3}>
+                      <Col xs={6} md={6} lg={3}>
                         <div
-                          className="p-3 h-100 d-flex align-items-center"
+                          className="p-3 d-flex align-items-center w-100 w-md-100"
                           style={{
                             background:
                               "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
@@ -1205,8 +1216,9 @@ const CaseViewerPage = () => {
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "40px",
-                              height: "40px",
+                              width: window.innerWidth <= 768 ? "20px" : "40px",
+                              height:
+                                window.innerWidth <= 768 ? "20px" : "40px",
                               background:
                                 "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)",
                               borderRadius: "10px",
@@ -1232,7 +1244,8 @@ const CaseViewerPage = () => {
                               className="fw-bold"
                               style={{
                                 color: "#1a202c",
-                                fontSize: "1.1rem",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "13px" : "1.1rem",
                               }}
                             >
                               {formatDate(startDate)}
@@ -1241,9 +1254,9 @@ const CaseViewerPage = () => {
                         </div>
                       </Col>
 
-                      <Col xs={12} md={6} lg={3}>
+                      <Col xs={6} md={6} lg={3}>
                         <div
-                          className="p-3 h-100 d-flex align-items-center"
+                          className="p-3 d-flex align-items-center w-100 w-md-100"
                           style={{
                             background:
                               "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
@@ -1255,8 +1268,9 @@ const CaseViewerPage = () => {
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "40px",
-                              height: "40px",
+                              width: window.innerWidth <= 768 ? "20px" : "40px",
+                              height:
+                                window.innerWidth <= 768 ? "20px" : "40px",
                               background:
                                 "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                               borderRadius: "10px",
@@ -1271,7 +1285,8 @@ const CaseViewerPage = () => {
                               className="small fw-semibold"
                               style={{
                                 color: "#4caf50",
-                                fontSize: "0.8rem",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "10px" : "0.8rem",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
                               }}
@@ -1291,9 +1306,9 @@ const CaseViewerPage = () => {
                         </div>
                       </Col>
 
-                      <Col xs={12} md={6} lg={3}>
+                      <Col xs={6} md={6} lg={3}>
                         <div
-                          className="p-3 h-100 d-flex align-items-center"
+                          className="p-3 d-flex align-items-center w-100 w-md-100"
                           style={{
                             background:
                               "linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%)",
@@ -1305,8 +1320,9 @@ const CaseViewerPage = () => {
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "40px",
-                              height: "40px",
+                              width: window.innerWidth <= 768 ? "20px" : "40px",
+                              height:
+                                window.innerWidth <= 768 ? "20px" : "40px",
                               background:
                                 "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)",
                               borderRadius: "10px",
@@ -1318,10 +1334,11 @@ const CaseViewerPage = () => {
                           </div>
                           <div>
                             <div
-                              className="small fw-semibold"
+                              className="small fw-bolder"
                               style={{
-                                color: "#ff9800",
-                                fontSize: "0.8rem",
+                                color: "orange",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "10px" : "0.8rem",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
                               }}
@@ -1357,7 +1374,14 @@ const CaseViewerPage = () => {
                         <span className="me-2" style={{ fontSize: "1.1rem" }}>
                           🏆
                         </span>
-                        <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                        <small
+                          style={{
+                            color: "#4a5568",
+                            fontSize:
+                              window.innerWidth <= 768 ? "12px" : "auto",
+                            fontWeight: 600,
+                          }}
+                        >
                           {t("AMA Approved")}
                         </small>
                       </div>
@@ -1373,7 +1397,14 @@ const CaseViewerPage = () => {
                         <span className="me-2" style={{ fontSize: "1.1rem" }}>
                           📋
                         </span>
-                        <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                        <small
+                          style={{
+                            color: "#4a5568",
+                            fontSize:
+                              window.innerWidth <= 768 ? "12px" : "auto",
+                            fontWeight: 600,
+                          }}
+                        >
                           {t("Evidence-Based")}
                         </small>
                       </div>
@@ -1389,7 +1420,14 @@ const CaseViewerPage = () => {
                         <span className="me-2" style={{ fontSize: "1.1rem" }}>
                           🔬
                         </span>
-                        <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                        <small
+                          style={{
+                            color: "#4a5568",
+                            fontSize:
+                              window.innerWidth <= 768 ? "12px" : "auto",
+                            fontWeight: 600,
+                          }}
+                        >
                           {t("Peer Reviewed")}
                         </small>
                       </div>
@@ -1405,7 +1443,14 @@ const CaseViewerPage = () => {
                         <span className="me-2" style={{ fontSize: "1.1rem" }}>
                           ⚕️
                         </span>
-                        <small style={{ color: "#4a5568", fontWeight: 600 }}>
+                        <small
+                          style={{
+                            color: "#4a5568",
+                            fontSize:
+                              window.innerWidth <= 768 ? "12px" : "auto",
+                            fontWeight: 600,
+                          }}
+                        >
                           {t("Clinical Guidelines")}
                         </small>
                       </div>
@@ -1423,8 +1468,8 @@ const CaseViewerPage = () => {
                   borderRadius: "24px",
                   boxShadow:
                     "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                  padding: "35px",
-                  marginBottom: "30px",
+                  padding: window.innerWidth >= 768 ? "35px" : "20px",
+                  marginBottom: "15px",
                   border: "1px solid rgba(25, 118, 210, 0.1)",
                 }}
               >
@@ -1565,17 +1610,19 @@ const CaseViewerPage = () => {
                           border: "1px solid rgba(25, 118, 210, 0.1)",
                         }}
                       >
-                        <div className="d-flex align-items-center mb-4">
+                        <div className="d-flex align-items-center mb-3">
                           <div
                             className="me-3 d-flex align-items-center justify-content-center"
                             style={{
-                              width: "48px",
-                              height: "48px",
+                              width: window.innerWidth >= 768 ? "48px" : "24px",
+                              height:
+                                window.innerWidth >= 768 ? "48px" : "24px",
                               background:
                                 "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                               borderRadius: "12px",
                               color: "white",
-                              fontSize: "1.2rem",
+                              fontSize:
+                                window.innerWidth >= 768 ? "1.2rem" : "1rem",
                             }}
                           >
                             🩺
@@ -1784,7 +1831,6 @@ const CaseViewerPage = () => {
           </Row>
         </Container>
       </div>
-
       {/* Faculty/Cast Section */}
       <div className="cast-tabs pb-5 px-4 px-md-0">
         <Container fluid>
@@ -2009,9 +2055,7 @@ const CaseViewerPage = () => {
                                       src={
                                         member.image
                                           ? `https://primerad-backend.onrender.com${member.image}`
-                                          : generateImgPath(
-                                              "/assets/images/faculty1.jpg"
-                                            )
+                                          : "/assets/images/faculty1.jpg"
                                       }
                                       alt={`${member.name} profile`}
                                       className="img-fluid"
@@ -2282,7 +2326,6 @@ const CaseViewerPage = () => {
                       ))}
                     </Swiper>
                   ) : (
-                    // Empty State for no faculty found
                     <div
                       className="text-center py-5"
                       style={{
