@@ -1,9 +1,5 @@
 import React, { Fragment, memo } from "react";
-
-//react-router-dom
 import { Link } from "react-router-dom";
-
-// the hook
 import { useTranslation } from "react-i18next";
 
 const Sources = memo(() => {
@@ -27,8 +23,14 @@ const Sources = memo(() => {
                   <Link
                     to="/lecture-detail"
                     className="btn text-uppercase position-relative"
+                    style={{ borderRadius: "10px !important" }}
                   >
-                    <span className="button-text">
+                    <span
+                      className="button-text"
+                      style={{
+                        color: "black",
+                      }}
+                    >
                       {" "}
                       {t("Download")}
                     </span>
@@ -48,7 +50,12 @@ const Sources = memo(() => {
                     to="/lecture-detail"
                     className="btn text-uppercase position-relative"
                   >
-                    <span className="button-text">
+                    <span
+                      className="button-text"
+                      style={{
+                        color: "black",
+                      }}
+                    >
                       {t("Download")}
                     </span>
                     {/* <i className="fa-solid fa-play"></i> */}
@@ -67,7 +74,12 @@ const Sources = memo(() => {
                     to="/lecture-detail"
                     className="btn text-uppercase position-relative"
                   >
-                    <span className="button-text">
+                    <span
+                      className="button-text"
+                      style={{
+                        color: "black",
+                      }}
+                    >
                       {" "}
                       {t("Download")}
                     </span>

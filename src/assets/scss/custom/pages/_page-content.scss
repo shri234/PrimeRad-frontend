@@ -388,6 +388,7 @@ Rtl Box & Color Customizer
 
   .iq-button {
     margin: 0.625em 0;
+    border-radius: 10px;
   }
 }
 
@@ -798,6 +799,7 @@ Rtl Box & Color Customizer
   .iq-button {
     .btn {
       color: var(--bs-black);
+      border-radius: 10px;
     }
   }
 

@@ -483,7 +483,10 @@ const ReviewComponent = memo(
             <div className="comment-respond">
               {isAuthenticated ? ( // Show form if user is authenticated
                 <Fragment>
-                  <h3 className="fw-400 mb-1" style={{ color: THEME.darkText }}>
+                  <h3
+                    className="fw-700 mb-3"
+                    style={{ color: THEME.darkText, fontSize: "24px" }}
+                  >
                     {formTitle} {/* Use the derived formTitle */}
                   </h3>
                   {error && ( // Display error message if present
