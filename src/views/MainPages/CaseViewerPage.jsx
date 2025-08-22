@@ -480,14 +480,14 @@ const CaseViewerPage = () => {
             window.innerWidth <= 768
               ? "calc(50vh -12px)"
               : "calc(100vh - 64px)",
-          marginTop: window.innerWidth >= 768 ? 12 : 8,
+          marginTop: window.innerWidth >= 768 ? 2 : 4,
           marginBottom: 24,
           background: THEME.background,
           flexDirection: window.innerWidth <= 1024 ? "column" : "row",
         }}
       >
         <div
-          className="dicom-viewer-panel" // Add a class for global styles
+          className="dicom-viewer-panel"
           style={{
             flex: window.innerWidth <= 1024 ? "none" : 2,
 

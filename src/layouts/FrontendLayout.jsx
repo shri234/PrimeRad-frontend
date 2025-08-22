@@ -42,7 +42,7 @@ const FrontendLayout = memo((props) => {
       <main
         className="main-content"
         style={{
-          marginTop: window.innerWidth >= 768 ? "0px" : "0px",
+          marginTop: window.innerWidth >= 768 ? "20px" : "0px",
         }}
       >
         {props.HeaderMega === "true" && <HeaderDefault></HeaderDefault>}{" "}
