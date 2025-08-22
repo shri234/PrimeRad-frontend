@@ -384,9 +384,8 @@ const HomePage = memo(() => {
   return (
     <>
       <HomeHeroSlider latestMovie={latestMovie} />
-      {/* Why Choose section for non-authenticated users */}
       {!isAuthenticated && whyChooseSection}
-      {/* Continue Watching Section */}
+
       {isAuthenticated && (
         <div
           data-aos="fade-left"
