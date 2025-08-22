@@ -483,8 +483,6 @@ const MovieDetail = memo(() => {
     navigate("/pricing", { state: { from: location.pathname } });
   }, [navigate, location.pathname]);
 
-  // Helper to display faculty names (if faculty is an array of objects with 'name')
-  // This helps handle if faculty comes as a string or an array of populated objects
   const displayFacultyNames = useMemo(() => {
     if (Array.isArray(faculty) && faculty.length > 0) {
       return faculty.map((f) => f.name).join(", ");
@@ -514,8 +512,8 @@ const MovieDetail = memo(() => {
                     <div
                       className="video-wrapper"
                       style={{
-                        display: "flex", // Use a flexbox layout
-                        justifyContent: "center", // Center content horizontally
+                        display: "flex",
+                        justifyContent: "center",
                         alignItems: "center", // Center content vertically
                         minHeight: "50vh", // Minimum height for mobile
                         height: "90vh", // Full height on desktop
@@ -585,14 +583,14 @@ const MovieDetail = memo(() => {
                             variant="primary"
                             onClick={handleSubscribeClick} // Handles navigation to /pricing
                             style={{
-                              backgroundColor: THEME.primary,
+                              backgroundColor: "lightblue",
                               borderColor: THEME.primary,
                               borderRadius: "10px",
                               padding: "12px 25px",
-                              fontSize: "clamp(1rem, 3vw, 1.2rem)", // Responsive font size
+                              fontSize: "clamp(1rem, 3vw, 1.2rem)",
                               fontWeight: 700,
-                              boxShadow: "0 4px 15px rgba(25,118,210,0.4)",
-                              minWidth: "200px", // Minimum button width
+                              boxShadow: "0 4px 15px rgba(25,108,210,0.4)",
+                              minWidth: "200px",
                             }}
                           >
                             Subscribe to Unlock
@@ -606,9 +604,9 @@ const MovieDetail = memo(() => {
                             className="video-container"
                             style={{
                               width: "82%", // Full width on mobile
-                              maxWidth: "95%", // Slight margin on very small screens
-                              height: "auto", // Auto height to maintain aspect ratio
-                              aspectRatio: "16/9", // Maintain 16:9 aspect ratio
+                              maxWidth: "95%", //
+                              height: "auto",
+                              aspectRatio: "16/9",
                               border: "none",
                               // Responsive width adjustments
                               // Mobile first approach
@@ -724,7 +722,7 @@ const MovieDetail = memo(() => {
             </div>
           )}
         </div>
-        {/* Add responsive CSS styles */}
+
         <style jsx>{`
           @media (max-width: 768px) {
             .video-wrapper {
@@ -779,12 +777,11 @@ const MovieDetail = memo(() => {
             }
           }
         `}</style>
-        {/* Details Part (Metadata, Tabs, Faculty) */}
-        <div className="details-part pt-4 px-4 px-md-0">
+
+        <div className="details-part pt-4 px-0 px-md-0">
           <Container fluid>
             <Row>
               <Col lg="12">
-                {/* Enhanced Header Section with Medical Theme */}
                 <div
                   className="trending-info pt-0 pb-4 mb-5 position-relative overflow-hidden"
                   style={{
@@ -813,35 +810,44 @@ const MovieDetail = memo(() => {
                   <Row>
                     <Col md="12" className="mb-auto">
                       <div
-                        className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-4 justify-content-between gap-3 p-3 p-md-4"
+                        className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-4"
                         style={{
                           justifyContent: "space-between",
-                          gap: 20,
+                          // gap: 20,
                         }}
                       >
-                        <div className="flex-grow-1 p-2">
+                        <div className="flex-grow-1 p-2 flex-md-row">
                           <div className="d-flex align-items-center mb-3">
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "48px",
-                                height: "48px",
-                                marginTop: "20px",
+                                width:
+                                  window.innerWidth <= 768 ? "24px" : "48px",
+                                height:
+                                  window.innerWidth <= 768 ? "24px" : "48px",
+                                marginTop:
+                                  window.innerWidth <= 768 ? "10px" : "20px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "12px",
                                 color: "white",
-                                fontSize: "1.2rem",
+                                fontSize:
+                                  window.innerWidth <= 768
+                                    ? "0.8rem"
+                                    : "1.2rem",
                               }}
                             >
                               🏥
                             </div>
                             <div>
                               <h1
-                                className="fw-bold mx-0"
+                                className="fw-bold mx-0 ml-n2 ml-md-0"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "2rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "1.2rem"
+                                      : "2rem",
                                   marginTop: "20px",
                                   lineHeight: 1.2,
                                   background: "darkslategrey",
@@ -857,14 +863,17 @@ const MovieDetail = memo(() => {
                         </div>
 
                         {/* Medical Status Badge */}
-                        <div className="d-flex flex-column gap-2">
+                        <div className="d-flex flex-column flex-md-row gap-2 gap-md-0">
                           <div
-                            className="badge d-flex align-items-center"
+                            className="badge d-flex  align-items-center"
                             style={{
                               background:
                                 "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                               color: "white",
-                              fontSize: "0.85rem",
+                              fontSize:
+                                window.innerWidth <= 768
+                                  ? "0.78rem"
+                                  : "0.85rem",
                               padding: "8px 16px",
                               borderRadius: "20px",
                               fontWeight: 600,
@@ -2034,7 +2043,6 @@ const MovieDetail = memo(() => {
                         ))}
                       </Swiper>
                     ) : (
-                      // Empty State for no faculty found
                       <div
                         className="text-center py-5"
                         style={{
@@ -2064,7 +2072,6 @@ const MovieDetail = memo(() => {
             </div>
           </Container>
         </div>
-        {/* Recommended Movies/Lectures Section (adjust title as needed) */}
         <LatestMovies title="Recent Items" />
       </div>
     </Fragment>

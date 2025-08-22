@@ -732,6 +732,7 @@ const PricingPage = memo(() => {
           }
         }
       `}</style>
+      <FixedBackButton customPath="/home" />
 
       <div
         className="section-padding"
@@ -740,7 +741,6 @@ const PricingPage = memo(() => {
           minHeight: "100vh",
         }}
       >
-        <FixedBackButton customPath="/home" />
         <Container>
           <Row className="justify-content-center">
             <Col lg={8} className="text-center mb-5">
