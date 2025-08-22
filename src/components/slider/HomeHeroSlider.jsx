@@ -834,7 +834,7 @@ const HomeHeroSlider = memo(() => {
 @media (max-width: 768px) {
     #home-banner-carousel {
         height: 52vh;
-        min-height: 300px;
+        min-height: 320px;
         padding-top: 45px;
     }
     .slide-content, .slider-inner, .row.align-items-center, .container-fluid {
