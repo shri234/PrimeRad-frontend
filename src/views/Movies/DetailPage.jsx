@@ -526,7 +526,7 @@ const MovieDetail = memo(() => {
                         },
                         "@media (max-width: 480px)": {
                           height: "40vh",
-                          minHeight: "35vh",
+                          minHeight: "40vh",
                         },
                       }}
                     >
@@ -778,19 +778,20 @@ const MovieDetail = memo(() => {
           }
         `}</style>
 
-        <div className="details-part pt-4 px-0 px-md-0">
+        <div className="details-part pt-4 px-md-0">
           <Container fluid>
             <Row>
               <Col lg="12">
                 <div
-                  className="trending-info pt-0 pb-4 mb-5 position-relative overflow-hidden"
+                  className="trending-info pt-0 pb-4 mb-4  position-relative overflow-hidden"
                   style={{
                     background:
                       "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
                     borderRadius: "24px",
+                    marginTop: "-50px",
                     boxShadow:
                       "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                    padding: "40px 35px",
+                    padding: "25px 20px",
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
                 >
@@ -887,7 +888,6 @@ const MovieDetail = memo(() => {
                         </div>
                       </div>
 
-                      {/* Enhanced Medical Information Grid */}
                       <div className="row g-4 mb-4">
                         <Col xs={6} md={6} lg={3}>
                           <div
