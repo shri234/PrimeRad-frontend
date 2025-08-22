@@ -813,7 +813,6 @@ const MovieDetail = memo(() => {
                         className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-4"
                         style={{
                           justifyContent: "space-between",
-                          // gap: 20,
                         }}
                       >
                         <div className="flex-grow-1 p-2 flex-md-row">
@@ -841,15 +840,17 @@ const MovieDetail = memo(() => {
                             </div>
                             <div>
                               <h1
-                                className="fw-bold mx-0 ml-n2 ml-md-0"
+                                className="fw-bold mx-0 ml-md-0"
                                 style={{
                                   color: "#1a202c",
                                   fontSize:
                                     window.innerWidth <= 768
-                                      ? "1.2rem"
+                                      ? "1.3rem"
                                       : "2rem",
                                   marginTop: "20px",
+                                  marginLeft: "-10px",
                                   lineHeight: 1.2,
+                                  textTransform: "uppercase",
                                   background: "darkslategrey",
                                   WebkitBackgroundClip: "text",
                                   WebkitTextFillColor: "transparent",
@@ -888,9 +889,9 @@ const MovieDetail = memo(() => {
 
                       {/* Enhanced Medical Information Grid */}
                       <div className="row g-4 mb-4">
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex flex-row align-items-center w-100 w-md-100 flex-shrink-0"
                             style={{
                               background:
                                 "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
@@ -902,8 +903,10 @@ const MovieDetail = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                                 borderRadius: "10px",
@@ -938,9 +941,9 @@ const MovieDetail = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
@@ -952,8 +955,10 @@ const MovieDetail = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)",
                                 borderRadius: "10px",
@@ -979,7 +984,10 @@ const MovieDetail = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "13px"
+                                      : "1.1rem",
                                 }}
                               >
                                 {formatDate(startDate)}
@@ -988,9 +996,9 @@ const MovieDetail = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
@@ -1002,8 +1010,10 @@ const MovieDetail = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
                                 borderRadius: "10px",
@@ -1018,7 +1028,10 @@ const MovieDetail = memo(() => {
                                 className="small fw-semibold"
                                 style={{
                                   color: "#4caf50",
-                                  fontSize: "0.8rem",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "10px"
+                                      : "0.8rem",
                                   textTransform: "uppercase",
                                   letterSpacing: "0.5px",
                                 }}
@@ -1038,9 +1051,9 @@ const MovieDetail = memo(() => {
                           </div>
                         </Col>
 
-                        <Col xs={12} md={6} lg={3}>
+                        <Col xs={6} md={6} lg={3}>
                           <div
-                            className="p-3 h-100 d-flex align-items-center"
+                            className="p-3 d-flex align-items-center w-100 w-md-100"
                             style={{
                               background:
                                 "linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%)",
@@ -1052,8 +1065,10 @@ const MovieDetail = memo(() => {
                             <div
                               className="me-3 d-flex align-items-center justify-content-center"
                               style={{
-                                width: "40px",
-                                height: "40px",
+                                width:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
+                                height:
+                                  window.innerWidth <= 768 ? "20px" : "40px",
                                 background:
                                   "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)",
                                 borderRadius: "10px",
@@ -1065,10 +1080,13 @@ const MovieDetail = memo(() => {
                             </div>
                             <div>
                               <div
-                                className="small fw-semibold"
+                                className="small fw-bolder"
                                 style={{
-                                  color: "#ff9800",
-                                  fontSize: "0.8rem",
+                                  color: "orange",
+                                  fontSize:
+                                    window.innerWidth <= 768
+                                      ? "10px"
+                                      : "0.8rem",
                                   textTransform: "uppercase",
                                   letterSpacing: "0.5px",
                                 }}
