@@ -492,9 +492,9 @@ const MovieDetail = memo(() => {
 
   return (
     <Fragment>
-      <FixedBackButton customPath="/main-page"></FixedBackButton>
       <style>{tabStyles}</style>
       <div style={{ backgroundColor: THEME.background }}>
+        <FixedBackButton customPath="/main-page"></FixedBackButton>
         <div
           className="iq-main-slider site-video mb-5"
           style={{
@@ -514,19 +514,18 @@ const MovieDetail = memo(() => {
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        alignItems: "center", // Center content vertically
-                        minHeight: "50vh", // Minimum height for mobile
-                        height: "90vh", // Full height on desktop
+                        alignItems: "center",
+                        minHeight: "50vh",
+                        height: "90vh",
                         width: "100%",
-                        padding: "0 15px", // Add padding for mobile
-                        // Responsive height adjustments
+                        padding: "0 15px",
                         "@media (max-width: 768px)": {
                           height: "50vh",
                           minHeight: "40vh",
                         },
                         "@media (max-width: 480px)": {
                           height: "40vh",
-                          minHeight: "40vh",
+                          minHeight: "35vh",
                         },
                       }}
                     >
@@ -683,7 +682,6 @@ const MovieDetail = memo(() => {
               </Row>
             </Container>
           ) : (
-            // Not Authenticated Section (Login Prompt)
             <div
               className="d-flex justify-content-center align-items-center login-prompt"
               style={{
@@ -745,7 +743,7 @@ const MovieDetail = memo(() => {
           @media (max-width: 480px) {
             .video-wrapper {
               height: 25vh !important;
-              min-height: 35vh !important;
+              min-height: 30vh !important;
               padding: 0 0px !important;
             }
 
@@ -932,7 +930,10 @@ const MovieDetail = memo(() => {
                                 className="fw-bold"
                                 style={{
                                   color: "#1a202c",
-                                  fontSize: "1.1rem",
+                                  fontSize:
+                                    window.innerWidth >= 768
+                                      ? "1.1rem"
+                                      : "0.85rem",
                                 }}
                               >
                                 {duration}
