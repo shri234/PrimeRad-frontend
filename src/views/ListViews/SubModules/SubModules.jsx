@@ -2816,7 +2816,17 @@ const SubModuleView = () => {
                                                   handleFilterChange("dicom")
                                                 }
                                               />
-                                              <span className="polished-custom-checkbox" />{" "}
+                                              <span
+                                                className="polished-custom-checkbox"
+                                                style={{
+                                                  width: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                  height: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                }}
+                                              />{" "}
                                               DICOM
                                             </label>
                                             <label className="polished-filter-checkbox">
@@ -2827,7 +2837,17 @@ const SubModuleView = () => {
                                                   handleFilterChange("lecture")
                                                 }
                                               />
-                                              <span className="polished-custom-checkbox" />{" "}
+                                              <span
+                                                className="polished-custom-checkbox"
+                                                style={{
+                                                  width: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                  height: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                }}
+                                              />{" "}
                                               Lectures
                                             </label>
                                             <label className="polished-filter-checkbox live">
@@ -2838,8 +2858,18 @@ const SubModuleView = () => {
                                                   handleFilterChange("live")
                                                 }
                                               />
-                                              <span className="polished-custom-checkbox" />{" "}
-                                              Live Programs
+                                              <span
+                                                className="polished-custom-checkbox"
+                                                style={{
+                                                  width: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                  height: isMobile
+                                                    ? "14px"
+                                                    : "18px",
+                                                }}
+                                              />{" "}
+                                              Live
                                             </label>
                                           </div>
                                           <div className="polished-grid-container">
@@ -2910,6 +2940,14 @@ const SubModuleView = () => {
                                                         session
                                                       )
                                                     }
+                                                    style={{
+                                                      width: isMobile
+                                                        ? "150px"
+                                                        : "",
+                                                      height: isMobile
+                                                        ? "100px"
+                                                        : "",
+                                                    }}
                                                   >
                                                     <div
                                                       className={
@@ -3219,6 +3257,14 @@ const SubModuleView = () => {
                                                         session
                                                       )
                                                     }
+                                                    style={{
+                                                      width: isMobile
+                                                        ? "150px"
+                                                        : "",
+                                                      height: isMobile
+                                                        ? "100px"
+                                                        : "",
+                                                    }}
                                                   >
                                                     <div
                                                       className={
