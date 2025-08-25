@@ -64,7 +64,6 @@ function getCardData(area, level) {
 }
 
 export default function ScoreBoard() {
-  // Mock authentication state for demo
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [userId] = useState(localStorage.getItem("userId"));
   const [username] = useState(localStorage.getItem("username"));
