@@ -448,6 +448,7 @@ export default function ScoreBoard() {
                   padding: "24px",
                   position: isMobile ? "relative" : "sticky",
                   top: "24px",
+                  marginBottom: "18px",
                 }}
               >
                 <div
@@ -567,6 +568,7 @@ export default function ScoreBoard() {
                   display: "grid",
                   gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
                   gap: "24px",
+                  gridAutoRows: "120px",
                 }}
               >
                 <div

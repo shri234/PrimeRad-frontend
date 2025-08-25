@@ -411,27 +411,35 @@ const HeaderDefault = memo(() => {
               </Button>
 
               {isAuthenticated ? (
-                <div className="mobile-user-section">
-                  <div className="mobile-user-info">
+                <Dropdown className="mobile-user-section">
+                  <Dropdown.Toggle
+                    variant="link"
+                    id="dropdown-basic"
+                    className="mobile-user-info"
+                  >
                     <i className="fas fa-user-circle mobile-user-avatar"></i>
-                    <div className="mobile-user-details">
-                      <h6 className="mb-0">{user?.name}</h6>
-                      <p className="mb-0 text-muted">{user?.email}</p>
-                    </div>
-                  </div>
-                  <div className="mobile-user-actions">
-                    <Button
-                      variant="outline-danger"
-                      className="w-100"
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu className="sub-drop dropdown-menu-end">
+                    <Dropdown.Item>
+                      <div className="d-flex align-items-center">
+                        <div className="ms-3">
+                          <h6 className="mb-0">{user?.name}</h6>
+                          <p className="mb-0 font-size-12">{user?.email}</p>
+                        </div>
+                      </div>
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item
                       onClick={() => {
                         dispatch(logout());
                         navigate("/");
                       }}
                     >
                       Logout
-                    </Button>
-                  </div>
-                </div>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               ) : (
                 <Button
                   variant="primary"

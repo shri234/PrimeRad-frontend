@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import NavCategories from "../../MainPages/NavCategories";
-import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight, FaArrowLeft, FaFilter } from "react-icons/fa";
 import {
   selectIsAuthenticated,
   selectUser,
 } from "../../../store/auth/selectors";
 import { useSelector } from "react-redux";
 import { GiAtlas } from "react-icons/gi";
-import { FaTh } from "react-icons/fa";
+import { FaTh, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import "./SubModules.css";
 
@@ -905,7 +905,6 @@ const SubModuleView = () => {
         ).toFixed(2),
         finalMessage: "Assessment completed successfully!",
       });
-
       setUserProgress((prev) => ({
         ...prev,
         totalPoints,
@@ -935,7 +934,6 @@ const SubModuleView = () => {
       alert("Please answer all questions in this section before proceeding.");
       return;
     }
-
     setCurrentBatch((prev) => prev + 1);
   };
 
@@ -1601,8 +1599,11 @@ const SubModuleView = () => {
                   <button
                     className={`arrow-toggle ${sidebarOpen ? "open" : ""}`}
                     onClick={() => setSidebarOpen(!sidebarOpen)}
+                    style={{
+                      marginLeft: isMobile ? "-10px" : "",
+                    }}
                   >
-                    {sidebarOpen ? <FaArrowLeft /> : <FaArrowRight />}
+                    {sidebarOpen ? <FaTimes /> : <FaFilter />}
                   </button>
                   <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
                     <h3 style={{ marginTop: "20px" }}>Modules</h3>
@@ -1760,13 +1761,11 @@ const SubModuleView = () => {
                                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                                   },
 
-                                  // Focus States
                                   "&:focus": {
                                     outline: "2px solid #6366f1",
                                     outlineOffset: "2px",
                                   },
 
-                                  // Active State
                                   "&:active": {
                                     transform: "translateX(1px)",
                                     backgroundColor:
@@ -2373,8 +2372,6 @@ const SubModuleView = () => {
                     Start Advanced Assessment
                   </button>
                 </div>
-
-                {/* Quick Stats */}
               </div>
             ) : (
               <>
@@ -2392,6 +2389,9 @@ const SubModuleView = () => {
                       }
                     }}
                     className="back-link"
+                    style={{
+                      marginLeft: isMobile ? "10px" : "",
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -2407,7 +2407,17 @@ const SubModuleView = () => {
                     </svg>
                     Back
                   </button>
-                  <h2 style={{ color: "darkslategray", fontWeight: "bold" }}>
+                  <h2
+                    style={{
+                      color: "darkslategray",
+                      fontWeight: "bold",
+                      fontSize: isMobile
+                        ? "24px"
+                        : isMobile && activeModuleName
+                        ? "20px"
+                        : "28px",
+                    }}
+                  >
                     {activeModuleName
                       ? `${activeModuleName} Pathologies`
                       : "Select a Module"}
@@ -2602,14 +2612,16 @@ const SubModuleView = () => {
                                     display: "flex",
                                     flexDirection: "row",
                                     fontWeight: "600",
-                                    fontSize: "18px",
+                                    fontSize: isMobile ? "12px" : "18px",
                                   }}
                                 >
                                   <i
                                     className={`fas fa-angle-right icon-indicator ${
                                       isSelected ? "rotated-down" : ""
                                     }`}
-                                    style={{ marginRight: "10px" }}
+                                    style={{
+                                      marginRight: isMobile ? "5px" : "10px",
+                                    }}
                                   ></i>{" "}
                                   {pathologyItem.pathologyName}{" "}
                                 </div>
@@ -2619,13 +2631,28 @@ const SubModuleView = () => {
                                     marginLeft: "10px",
                                   }}
                                 >
-                                  <span className="type-badge badge-lecture">
+                                  <span
+                                    className="type-badge badge-lecture"
+                                    style={{
+                                      fontSize: isMobile ? "8px" : "",
+                                    }}
+                                  >
                                     Lectures: {counts.lecture}
                                   </span>
-                                  <span className="type-badge badge-case">
+                                  <span
+                                    className="type-badge badge-case"
+                                    style={{
+                                      fontSize: isMobile ? "8px" : "",
+                                    }}
+                                  >
                                     Cases: {counts.case}
                                   </span>
-                                  <span className="type-badge badge-live">
+                                  <span
+                                    className="type-badge badge-live"
+                                    style={{
+                                      fontSize: isMobile ? "8px" : "",
+                                    }}
+                                  >
                                     Live Programs: {counts.live}
                                   </span>
                                 </div>
@@ -2727,7 +2754,12 @@ const SubModuleView = () => {
                                           }
                                           style={{}}
                                         >
-                                          <div className="polished-filter-bar">
+                                          <div
+                                            className="polished-filter-bar"
+                                            style={{
+                                              gap: isMobile ? "1px" : "",
+                                            }}
+                                          >
                                             <label className="polished-filter-checkbox">
                                               <input
                                                 type="checkbox"

@@ -105,7 +105,7 @@ const videoCardStyles = `
     width: 100%;
     padding-top: 56.25%; /* 16:9 aspect ratio */
     border-radius: 18px;
-    overflow: auto;
+    overflow: hidden;
     background: #000;
     margin-bottom: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -1246,6 +1246,7 @@ const MySpacePage = memo(() => {
           height: "100vh",
           width: "100vw",
           background: "#f4f8fb",
+          // overflowY: "auto",
           display: "flex",
         }}
       >
@@ -1330,7 +1331,7 @@ const MySpacePage = memo(() => {
             // minHeight: "100vh",
             background: "transparent",
             flex: 1,
-            overflowY: "scroll",
+            overflowY: "auto",
             paddingTop: isMobile ? "100px" : "70px",
             paddingRight: isMobile ? "12px" : "18px",
             paddingLeft: isMobile ? "12px" : "0",
@@ -1363,7 +1364,7 @@ const MySpacePage = memo(() => {
                   display: "flex",
                   alignItems: "center",
                   gap: isProgressBarMobile ? 16 : 24,
-                  marginTop: "-20px",
+                  marginTop: isMobile ? "10px" : "-20px",
                   maxWidth: 900,
                   width: "100%",
                   minWidth: isProgressBarMobile ? 280 : 320,
@@ -1479,6 +1480,7 @@ const MySpacePage = memo(() => {
                       top: 0,
                       left: 0,
                       right: 0,
+                      // marginTop: "10px",
                       bottom: 0,
                       background: subscription.isSubscribed
                         ? "linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)"
@@ -1514,7 +1516,7 @@ const MySpacePage = memo(() => {
                   <div
                     style={{
                       width: "100%",
-                      height: 16,
+                      height: isMobile ? 6 : 16,
                       background: "ghostwhite",
                       borderRadius: 8,
                       overflow: "hidden",

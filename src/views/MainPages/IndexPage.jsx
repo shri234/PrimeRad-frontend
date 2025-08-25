@@ -445,7 +445,6 @@ const HomePage = memo(() => {
             animation: "assessmentCardPop 1s cubic-bezier(.4,2,.6,1)",
           }}
         >
-          {/* Overlay */}
           <div
             style={{
               position: "absolute",

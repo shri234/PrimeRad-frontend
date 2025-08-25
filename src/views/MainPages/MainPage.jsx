@@ -12,6 +12,7 @@ import {
   FaChalkboardTeacher,
   FaBroadcastTower,
   FaBars,
+  FaFilter,
   FaTimes,
   FaList,
 } from "react-icons/fa";
@@ -40,7 +41,7 @@ const videoCardStyles = `
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    // transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     box-shadow: 0 4px 32px rgba(0,0,0,0.07);
     boxshadow: 
     max-width: 200px;
@@ -375,7 +376,6 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
     >
       {view === "list" ? (
         <>
-          {/* Left: Thumbnail */}
           <div
             className="video-container"
             style={{
@@ -394,10 +394,9 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               src={card.thumbnail}
               alt={card.type + " thumbnail"}
               style={{
-                // CORRECTED: Set width and height to 100% to fill the container
                 width: "100%",
                 height: "100%",
-                objectFit: "cover", // Ensures the image covers the container without distortion
+                objectFit: "cover",
                 borderRadius: "14px",
                 opacity: imgLoaded ? 1 : 0,
                 transition: "opacity 0.3s",
@@ -429,7 +428,6 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               src={card.thumbnail}
               alt={card.type + " thumbnail"}
               style={{
-                // CORRECTED: Apply object-fit to ensure proper scaling
                 objectFit: "cover",
                 width: "100%",
                 height: "100%",
@@ -473,7 +471,6 @@ const MainPage = memo(() => {
 
   const LIMIT = 12;
 
-  // Static live video cards
   const staticLiveCards = [
     {
       id: "live-1",
@@ -596,7 +593,6 @@ const MainPage = memo(() => {
         }
       };
 
-      // Function to reduce duration for lecture videos
       const reduceDuration = (duration, contentType) => {
         if (contentType === "Lecture" && duration) {
           // Extract minutes from duration string (assuming format like "45 min" or "1h 30min")
@@ -674,7 +670,6 @@ const MainPage = memo(() => {
     }
   }, [fetchSessions, isFirstRender]);
 
-  // Effect for mobile view and scroll detection
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth <= 768;
@@ -794,27 +789,23 @@ const MainPage = memo(() => {
         <button
           style={{
             position: "fixed",
-            top: "80px",
-            left: "20px",
+            top: "60px",
+            left: "0px",
             zIndex: 1001,
-            background: THEME.primary,
-            color: "white",
+            color: "black",
             border: "none",
-            borderRadius: "50%",
-            width: "50px",
-            height: "50px",
+            width: "40px",
+            height: "40px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             cursor: "pointer",
           }}
           onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
         >
-          {isMobileNavOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          {isMobileNavOpen ? <FaTimes size={18} /> : <FaFilter size={18} />}
         </button>
       )}
-      {/* <FloatingActionButton setView={"Atlas"} /> */}
       <div className={!isMobile ? "main-page-desktop-layout" : ""}>
         <div
           className={!isMobile ? "desktop-sidebar" : ""}
@@ -860,9 +851,9 @@ const MainPage = memo(() => {
                   fontWeight: "600",
                   cursor: "pointer",
                   transition: "all 0.2s",
-                  display: "flex", // Add this
-                  alignItems: "center", // Add this
-                  justifyContent: "center", // Optional: to center content horizontally
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onClick={() => {
                   setView("atlas");
@@ -893,7 +884,6 @@ const MainPage = memo(() => {
               </button>
             </div>
           </div>
-          {/* Toggle Button Above NavCategories */}
 
           <NavCategories view="atlas" />
         </div>
@@ -946,7 +936,7 @@ const MainPage = memo(() => {
                     background: "antiquewhite",
                     marginLeft: isMobile ? "8px" : isTablet ? "12px" : "18px",
                     marginBottom: "20px",
-                    marginTop: "-20px",
+                    marginTop: isMobile ? " -18px" : "-20px",
                     borderRadius: isMobile ? 12 : isTablet ? 14 : 16,
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     padding: isMobile
@@ -1000,7 +990,7 @@ const MainPage = memo(() => {
                     <div
                       style={{
                         width: "100%",
-                        height: isMobile ? 12 : isTablet ? 14 : 16,
+                        height: isMobile ? 8 : isTablet ? 14 : 16,
                         background: "ghostwhite",
                         borderRadius: isMobile ? 6 : isTablet ? 7 : 8,
                         overflow: "hidden",

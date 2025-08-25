@@ -35,7 +35,6 @@ const ContinueWatching = memo(() => {
   const cardGap = 20;
   const totalItems = watching.length;
 
-  // Fetch watched sessions
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -246,7 +245,6 @@ const ContinueWatching = memo(() => {
               ))}
             </div>
 
-            {/* Next Arrow */}
             {totalItems > cardsPerPage && window.innerWidth > 468 && (
               <div
                 onClick={canGoNext ? handleNext : null}
