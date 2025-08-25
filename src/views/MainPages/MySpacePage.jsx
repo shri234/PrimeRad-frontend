@@ -1295,7 +1295,7 @@ const MySpacePage = memo(() => {
               width: "250px",
               flexShrink: 0,
               position: isResponsiveRange ? "fixed" : "sticky",
-              marginTop: "50px",
+              marginTop: isMobile ? "80px" : "50px",
               left: isResponsiveRange && !sidebarOpen ? "-250px" : "0",
               height: "100vh",
               overflowY: "hidden",

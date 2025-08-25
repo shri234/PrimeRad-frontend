@@ -1498,27 +1498,52 @@ const SubModuleView = () => {
     activeModuleId === null &&
     currentView === "submodules";
 
+  console.log(currentView, sidebarOpen, view);
+
   return (
     <>
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
-          height: "100vh",
-          overflow: "hidden",
+          marginLeft: isMobile ? "10px" : "",
+          // flexDirection: "row",
+          // height: "100vh",
+          // overflow: "hidden",
         }}
       >
+        {isMobile && (
+          <button
+            style={{
+              position: "fixed",
+              top: "60px",
+              left: "0px",
+              zIndex: 1001,
+              color: "black",
+              border: "none",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? <FaTimes size={18} /> : <FaFilter size={18} />}
+          </button>
+        )}
+
         {currentView !== "assessment" && (
           <div
             className={!isMobile ? "desktop-sidebar" : ""}
             style={{
-              width: isMobile ? (isMobileNavOpen ? "250px" : "0") : undefined,
+              width: isMobile ? (sidebarOpen ? "250px" : "0") : undefined,
               position: isMobile ? "fixed" : undefined,
               top: isMobile ? 0 : undefined,
               height: isMobile ? "100vh" : undefined,
               overflowY: isMobile ? "auto" : "hidden",
               background: isMobile ? THEME.card : undefined,
-              zIndex: isMobile ? 1000 : 990,
+              zIndex: isMobile ? 1000 : undefined,
               transition: isMobile ? "width 0.3s ease" : undefined,
             }}
           >
@@ -1571,7 +1596,7 @@ const SubModuleView = () => {
                     padding: "8px 8px",
                     backgroundColor:
                       view === "atlas" ? "	#B0E0E6" : "transparent",
-                    color: "black",
+                    color: view === "atlas" ? "black" : "black",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "14px",
@@ -1588,287 +1613,286 @@ const SubModuleView = () => {
                 </button>
               </div>
             </div>
-            <>
-              <div className="nav-categories-wrapper">
-                <div
-                  className="nav-categories-container"
-                  style={{
-                    borderRadius: "10px",
-                  }}
-                >
-                  <button
-                    className={`arrow-toggle ${sidebarOpen ? "open" : ""}`}
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    style={{
-                      marginLeft: isMobile ? "-10px" : "",
-                    }}
-                  >
-                    {sidebarOpen ? <FaTimes /> : <FaFilter />}
-                  </button>
-                  <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
-                    <h3 style={{ marginTop: "20px" }}>Modules</h3>
-                    {loadingModules ? (
-                      <div className="sidebar-loading">Loading modules...</div>
-                    ) : modulesError ? (
-                      <div className="sidebar-error">Error: {modulesError}</div>
-                    ) : allModules.length === 0 ? (
-                      <div className="sidebar-empty">No modules found.</div>
-                    ) : (
-                      allModules.map((mod, modIdx) => (
-                        <div key={mod._id}>
-                          <div
-                            className={`sidebar-item ${
-                              mod.moduleName === activeModuleName
-                                ? "active"
-                                : ""
-                            }`}
-                            onClick={() => handleModuleClick(mod)}
-                          >
-                            <span className="sidebar-number">
-                              {modIdx + 1}.
-                            </span>
-                            <span className="sidebar-icon">
-                              {moduleIcons[mod.moduleName]}
-                            </span>
-                            <span>{mod.moduleName}</span>
-                            <span className="count">
-                              {mod.totalPathologiesCount || 0}
-                            </span>
-                          </div>
-                          {mod.moduleName === activeModuleName && (
-                            <div className="submodule-list">
-                              {loadingPathologies ? (
-                                <div className="sidebar-loading">
-                                  Loading pathologies...
-                                </div>
-                              ) : pathologiesError ? (
-                                <div className="sidebar-error">
-                                  Error: {pathologiesError}
-                                </div>
-                              ) : (
-                                modulePathologiesData.map((pathology) => (
-                                  <div key={pathology._id}>
-                                    <div
-                                      className={`sidebar-subitem ${
+
+            <div className="nav-categories-wrapper">
+              <div
+                className="nav-categories-container"
+                style={{
+                  borderRadius: "10px",
+                }}
+              >
+                <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
+                  <h3 style={{ marginTop: "20px" }}>Modules</h3>
+                  {loadingModules ? (
+                    <div className="sidebar-loading">Loading modules...</div>
+                  ) : modulesError ? (
+                    <div className="sidebar-error">Error: {modulesError}</div>
+                  ) : allModules.length === 0 ? (
+                    <div className="sidebar-empty">No modules found.</div>
+                  ) : (
+                    allModules.map((mod, modIdx) => (
+                      <div key={mod._id}>
+                        <div
+                          className={`sidebar-item ${
+                            mod.moduleName === activeModuleName ? "active" : ""
+                          }`}
+                          onClick={() => handleModuleClick(mod)}
+                        >
+                          <span className="sidebar-number">{modIdx + 1}.</span>
+                          <span className="sidebar-icon">
+                            {moduleIcons[mod.moduleName]}
+                          </span>
+                          <span>{mod.moduleName}</span>
+                          <span className="count">
+                            {mod.totalPathologiesCount || 0}
+                          </span>
+                        </div>
+                        {mod.moduleName === activeModuleName && (
+                          <div className="submodule-list">
+                            {loadingPathologies ? (
+                              <div className="sidebar-loading">
+                                Loading pathologies...
+                              </div>
+                            ) : pathologiesError ? (
+                              <div className="sidebar-error">
+                                Error: {pathologiesError}
+                              </div>
+                            ) : (
+                              modulePathologiesData.map((pathology) => (
+                                <div key={pathology._id}>
+                                  <div
+                                    className={`sidebar-subitem ${
+                                      selectedSubModuleId === pathology._id
+                                        ? "open"
+                                        : ""
+                                    }`}
+                                    onClick={() =>
+                                      handleSubModuleClick(pathology)
+                                    }
+                                  >
+                                    <span
+                                      className={`chevron ${
                                         selectedSubModuleId === pathology._id
-                                          ? "open"
+                                          ? "rotated"
                                           : ""
                                       }`}
-                                      onClick={() =>
-                                        handleSubModuleClick(pathology)
-                                      }
                                     >
-                                      <span
-                                        className={`chevron ${
-                                          selectedSubModuleId === pathology._id
-                                            ? "rotated"
+                                      ▶
+                                    </span>
+                                    {pathology.pathologyName}
+                                  </div>
+                                  {selectedSubModuleId === pathology._id && (
+                                    <div className="sidebar-level-dropdown">
+                                      <div
+                                        className={`sidebar-level-item ${
+                                          selectedLevel === "beginner"
+                                            ? "active"
                                             : ""
                                         }`}
+                                        onClick={() =>
+                                          handleLevelClick("beginner")
+                                        }
+                                        style={{
+                                          marginLeft: "30px",
+                                          cursor: "pointer",
+                                        }}
                                       >
-                                        ▶
-                                      </span>
-                                      {pathology.pathologyName}
-                                    </div>
-                                    {selectedSubModuleId === pathology._id && (
-                                      <div className="sidebar-level-dropdown">
-                                        <div
-                                          className={`sidebar-level-item ${
-                                            selectedLevel === "beginner"
-                                              ? "active"
-                                              : ""
-                                          }`}
-                                          onClick={() =>
-                                            handleLevelClick("beginner")
-                                          }
-                                          style={{
-                                            marginLeft: "30px",
-                                            cursor: "pointer",
-                                          }}
-                                        >
-                                          {" "}
-                                          Beginner
-                                        </div>
-                                        <div
-                                          className={`sidebar-level-item ${
-                                            selectedLevel === "advanced"
-                                              ? "active"
-                                              : ""
-                                          }`}
-                                          onClick={() =>
-                                            handleLevelClick("advanced")
-                                          }
-                                          style={{
-                                            marginLeft: "30px",
-                                            cursor: "pointer",
-                                          }}
-                                        >
-                                          {" "}
-                                          Advanced
-                                        </div>
+                                        {" "}
+                                        Beginner
                                       </div>
-                                    )}
-                                  </div>
-                                ))
-                              )}
+                                      <div
+                                        className={`sidebar-level-item ${
+                                          selectedLevel === "advanced"
+                                            ? "active"
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          handleLevelClick("advanced")
+                                        }
+                                        style={{
+                                          marginLeft: "30px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        {" "}
+                                        Advanced
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ))
+                            )}
 
-                              <div
-                                className={`sidebar-subitem assessment-item ${
-                                  currentView === "difficulty" ? "open" : ""
-                                }`}
-                                style={{
-                                  // Layout & Sizing
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                  padding: "12px 16px",
-                                  minHeight: "48px",
-                                  width: "100%",
+                            <div
+                              className={`sidebar-subitem assessment-item ${
+                                currentView === "difficulty" ? "open" : ""
+                              }`}
+                              style={{
+                                // Layout & Sizing
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "12px",
+                                padding: "12px 16px",
+                                minHeight: "48px",
+                                width: "100%",
 
-                                  // Background & Colors
+                                // Background & Colors
+                                backgroundColor:
+                                  currentView === "difficulty"
+                                    ? "#e6e6fa"
+                                    : "#f8f9fa",
+                                borderLeft:
+                                  currentView === "difficulty"
+                                    ? "4px solid #6366f1"
+                                    : "4px solid transparent",
+
+                                // Typography
+                                fontSize: "14px",
+                                fontWeight:
+                                  currentView === "difficulty" ? "600" : "500",
+                                color:
+                                  currentView === "difficulty"
+                                    ? "#4338ca"
+                                    : "#374151",
+
+                                // Interactive States
+                                cursor: "pointer",
+                                transition: "all 0.2s ease-in-out",
+                                borderRadius: "8px",
+                                margin: "2px 8px",
+
+                                // Hover Effects
+                                "&:hover": {
                                   backgroundColor:
                                     currentView === "difficulty"
                                       ? "#e6e6fa"
-                                      : "#f8f9fa",
-                                  borderLeft:
-                                    currentView === "difficulty"
-                                      ? "4px solid #6366f1"
-                                      : "4px solid transparent",
+                                      : "#f3f4f6",
+                                  transform: "translateX(2px)",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                },
 
-                                  // Typography
-                                  fontSize: "14px",
-                                  fontWeight:
-                                    currentView === "difficulty"
-                                      ? "600"
-                                      : "500",
-                                  color:
-                                    currentView === "difficulty"
-                                      ? "#4338ca"
-                                      : "#374151",
+                                "&:focus": {
+                                  outline: "2px solid #6366f1",
+                                  outlineOffset: "2px",
+                                },
 
-                                  // Interactive States
-                                  cursor: "pointer",
+                                "&:active": {
+                                  transform: "translateX(1px)",
+                                  backgroundColor:
+                                    currentView === "difficulty"
+                                      ? "#ddd6fe"
+                                      : "#e5e7eb",
+                                },
+                              }}
+                              onClick={() => handleAssessmentClick()}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  handleAssessmentClick();
+                                }
+                              }}
+                              tabIndex={0}
+                              role="button"
+                              aria-pressed={currentView === "difficulty"}
+                              aria-label="Assessment menu item"
+                            >
+                              {/* Icon Container */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "24px",
+                                  height: "24px",
+                                  flexShrink: 0,
+                                  borderRadius: "4px",
+                                  backgroundColor:
+                                    currentView === "difficulty"
+                                      ? "#6366f1"
+                                      : "#9ca3af",
+                                  padding: "2px",
                                   transition: "all 0.2s ease-in-out",
-                                  borderRadius: "8px",
-                                  margin: "2px 8px",
-
-                                  // Hover Effects
-                                  "&:hover": {
-                                    backgroundColor:
-                                      currentView === "difficulty"
-                                        ? "#e6e6fa"
-                                        : "#f3f4f6",
-                                    transform: "translateX(2px)",
-                                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                  },
-
-                                  "&:focus": {
-                                    outline: "2px solid #6366f1",
-                                    outlineOffset: "2px",
-                                  },
-
-                                  "&:active": {
-                                    transform: "translateX(1px)",
-                                    backgroundColor:
-                                      currentView === "difficulty"
-                                        ? "#ddd6fe"
-                                        : "#e5e7eb",
-                                  },
                                 }}
-                                onClick={() => handleAssessmentClick()}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
-                                    handleAssessmentClick();
-                                  }
-                                }}
-                                tabIndex={0}
-                                role="button"
-                                aria-pressed={currentView === "difficulty"}
-                                aria-label="Assessment menu item"
                               >
-                                {/* Icon Container */}
+                                <img
+                                  src="/assets/images/assessment.jpeg"
+                                  alt="Assessment icon"
+                                  style={{
+                                    width: "16px",
+                                    height: "16px",
+                                    objectFit: "contain",
+                                    filter:
+                                      currentView === "difficulty"
+                                        ? "brightness(0) invert(1)"
+                                        : "brightness(0.8)",
+                                  }}
+                                />
+                              </div>
+
+                              {/* Text Label */}
+                              <span
+                                style={{
+                                  flex: 1,
+                                  lineHeight: "1.4",
+                                  letterSpacing: "0.025em",
+                                }}
+                              >
+                                Assessment
+                              </span>
+
+                              {currentView === "difficulty" && (
                                 <div
                                   style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "24px",
-                                    height: "24px",
+                                    width: "6px",
+                                    height: "6px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "#6366f1",
                                     flexShrink: 0,
-                                    borderRadius: "4px",
-                                    backgroundColor:
-                                      currentView === "difficulty"
-                                        ? "#6366f1"
-                                        : "#9ca3af",
-                                    padding: "2px",
-                                    transition: "all 0.2s ease-in-out",
+                                    animation: "pulse 2s infinite",
                                   }}
-                                >
-                                  <img
-                                    src="/assets/images/assessment.jpeg"
-                                    alt="Assessment icon"
-                                    style={{
-                                      width: "16px",
-                                      height: "16px",
-                                      objectFit: "contain",
-                                      filter:
-                                        currentView === "difficulty"
-                                          ? "brightness(0) invert(1)"
-                                          : "brightness(0.8)",
-                                    }}
-                                  />
-                                </div>
-
-                                {/* Text Label */}
-                                <span
-                                  style={{
-                                    flex: 1,
-                                    lineHeight: "1.4",
-                                    letterSpacing: "0.025em",
-                                  }}
-                                >
-                                  Assessment
-                                </span>
-
-                                {currentView === "difficulty" && (
-                                  <div
-                                    style={{
-                                      width: "6px",
-                                      height: "6px",
-                                      borderRadius: "50%",
-                                      backgroundColor: "#6366f1",
-                                      flexShrink: 0,
-                                      animation: "pulse 2s infinite",
-                                    }}
-                                  />
-                                )}
-                              </div>
-                              <style jsx>{`
-                                @keyframes pulse {
-                                  0%,
-                                  100% {
-                                    opacity: 1;
-                                  }
-                                  50% {
-                                    opacity: 0.5;
-                                  }
-                                }
-                              `}</style>
+                                />
+                              )}
                             </div>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  {sidebarOpen && (
-                    <div
-                      className="overlay"
-                      onClick={() => setSidebarOpen(false)}
-                    ></div>
+                            <style jsx>{`
+                              @keyframes pulse {
+                                0%,
+                                100% {
+                                  opacity: 1;
+                                }
+                                50% {
+                                  opacity: 0.5;
+                                }
+                              }
+                            `}</style>
+                          </div>
+                        )}
+                      </div>
+                    ))
                   )}
                 </div>
+                {/* {sidebarOpen && (
+                  <div
+                    className="overlay"
+                    onClick={() => setSidebarOpen(false)}
+                  ></div>
+                )} */}
               </div>
-            </>
+            </div>
           </div>
+        )}
+
+        {isMobile && sidebarOpen && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 999,
+            }}
+            onClick={() => setSidebarOpen(false)}
+          />
         )}
 
         <div
@@ -2411,11 +2435,12 @@ const SubModuleView = () => {
                     style={{
                       color: "darkslategray",
                       fontWeight: "bold",
-                      fontSize: isMobile
-                        ? "24px"
-                        : isMobile && activeModuleName
-                        ? "20px"
-                        : "28px",
+                      fontSize:
+                        isMobile && activeModuleName
+                          ? "20px"
+                          : isMobile
+                          ? "24px"
+                          : "28px",
                     }}
                   >
                     {activeModuleName
@@ -2442,6 +2467,9 @@ const SubModuleView = () => {
                           key={mod._id}
                           className={`module-card ${viewMode}`}
                           onClick={() => handleModuleClick(mod)}
+                          style={{
+                            padding: isMobile ? "8px 8px" : "",
+                          }}
                         >
                           <img
                             src={mod.imageUrl || getRandomImage()}
@@ -2450,10 +2478,12 @@ const SubModuleView = () => {
                           />
                           <div className="module-info">
                             <h4 className="module-title">{mod.moduleName}</h4>
-                            <p className="module-description">
-                              {mod.description ||
-                                `Explore pathologies of the ${mod.moduleName} joint.`}
-                            </p>
+                            {isMobile ? null : (
+                              <p className="module-description" style={{}}>
+                                {mod.description ||
+                                  `Explore pathologies of the ${mod.moduleName} joint.`}
+                              </p>
+                            )}
                             <span className="module-pathologies-count">
                               {mod.totalPathologiesCount || 0} pathologies
                             </span>
@@ -2464,7 +2494,13 @@ const SubModuleView = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="breadcrumb">
+                    <div
+                      className="breadcrumb"
+                      style={{
+                        margin: isMobile ? "5px 0 4px 0" : "",
+                        fontSize: "11px",
+                      }}
+                    >
                       <span
                         onClick={() => {
                           setActiveModuleId(null);
@@ -2942,10 +2978,10 @@ const SubModuleView = () => {
                                                     }
                                                     style={{
                                                       width: isMobile
-                                                        ? "150px"
+                                                        ? "120px"
                                                         : "",
                                                       height: isMobile
-                                                        ? "100px"
+                                                        ? "78px"
                                                         : "",
                                                     }}
                                                   >
@@ -3180,7 +3216,7 @@ const SubModuleView = () => {
                                                 }
                                               />
                                               <span className="polished-custom-checkbox" />
-                                              Live Programs
+                                              Live
                                             </label>
                                           </div>
                                           <div
@@ -3259,10 +3295,10 @@ const SubModuleView = () => {
                                                     }
                                                     style={{
                                                       width: isMobile
-                                                        ? "150px"
+                                                        ? "120px"
                                                         : "",
                                                       height: isMobile
-                                                        ? "100px"
+                                                        ? "78px"
                                                         : "",
                                                     }}
                                                   >
