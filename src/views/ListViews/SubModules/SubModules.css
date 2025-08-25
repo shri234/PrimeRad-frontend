@@ -1077,14 +1077,14 @@
 }
 
 .polished-grid-title {
-  font-weight: 600;
+   font-weight: 600; 
   color: #1e293b;
-  /* margin-bottom: 4px; */
+  
   display: -webkit-box;
   -webkit-line-clamp: 2;
   text-align: center;
   -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow: hidden; 
 }
 
 .polished-grid-badge {

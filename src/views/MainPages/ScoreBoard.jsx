@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
-import { useSelector } from "react-redux";
 const AREAS = [
   "All",
   "Knee",
@@ -67,18 +64,22 @@ function getCardData(area, level) {
 }
 
 export default function ScoreBoard() {
-  // Simulate localStorage for demo (in real app, this would work normally)
-  const userId = localStorage.getItem("userId");
-  const username = localStorage.getItem("username");
+  // Mock authentication state for demo
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [userId] = useState(localStorage.getItem("userId"));
+  const [username] = useState(localStorage.getItem("username"));
   const [apiUserPoints, setApiUserPoints] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeArea, setActiveArea] = useState("All");
   const [activeLevel, setActiveLevel] = useState("All");
   const [isMobile, setIsMobile] = useState(false);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // Simulate navigate function
-  const navigate = useNavigate();
+  // Mock navigate function
+  const navigate = (path) => {
+    console.log(`Would navigate to: ${path}`);
+    // In a real app, this would handle navigation
+  };
 
   const cardData = getCardData(activeArea, activeLevel);
 
@@ -86,18 +87,9 @@ export default function ScoreBoard() {
     async function fetchPoints() {
       setIsLoading(true);
       try {
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // In real app, this would be:
-        const res = await fetch(
-          `http://localhost:5000/api/assessments/getUserPoints?userId=${userId}`
-        );
-        const data = await res.json();
-        setApiUserPoints(data.totalPoints);
-
-        // Simulated response
-        // setApiUserPoints(1250);
+        setApiUserPoints(1250);
       } catch (err) {
         console.error("Failed to fetch points", err);
       } finally {
@@ -134,6 +126,16 @@ export default function ScoreBoard() {
       50% { transform: scale(1.05); }
     }
     
+    @keyframes slideInFromLeft {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutToLeft {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(-100%); opacity: 0; }
+    }
+    
     // @keyframes shimmer {
     //   0% { background-position: -200px 0; }
     //   100% { background-position: calc(200px + 100%) 0; }
@@ -141,6 +143,8 @@ export default function ScoreBoard() {
     
     .animate-slide-up { animation: slideInUp 0.6s ease-out; }
     .animate-pulse-gentle { animation: pulse 2s ease-in-out infinite; }
+    .slide-in-left { animation: slideInFromLeft 0.3s ease-out; }
+    .slide-out-left { animation: slideOutToLeft 0.3s ease-out; }
     
     .shimmer-effect {
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -199,12 +203,60 @@ export default function ScoreBoard() {
       background: #f8fafc !important;
       transform: translateX(4px);
     }
+
+    .mobile-filter-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    .mobile-filter-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 280px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      z-index: 1000;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .filter-toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(59,130,246,0.3);
+      transition: all 0.2s ease;
+    }
+
+    .filter-toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+    }
   `;
 
   if (!isAuthenticated) {
     return (
       <div>
-        {/* <style>{styles}</style> */}
         <div
           style={{
             minHeight: "100vh",
@@ -269,9 +321,192 @@ export default function ScoreBoard() {
     );
   }
 
+  const FilterContent = () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+      }}
+    >
+      {/* Area Filters */}
+      <div>
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            color: "#374151",
+            marginBottom: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <span
+            style={{
+              width: "8px",
+              height: "8px",
+              background: "#3b82f6",
+              borderRadius: "50%",
+            }}
+          ></span>
+          Areas
+        </h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              isMobile && showMobileFilters
+                ? "repeat(2, 1fr)"
+                : isMobile
+                ? "repeat(2, 1fr)"
+                : "1fr",
+            gap: "8px",
+          }}
+        >
+          {AREAS.map((area) => (
+            <button
+              key={area}
+              className={`filter-btn ${activeArea === area ? "active" : ""}`}
+              onClick={() => {
+                setActiveArea(area);
+                if (isMobile) setShowMobileFilters(false);
+              }}
+              style={{
+                fontSize: "14px",
+                padding: "8px 12px",
+              }}
+            >
+              {area}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Level Filters */}
+      <div>
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: "600",
+            color: "#374151",
+            marginBottom: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <span
+            style={{
+              width: "8px",
+              height: "8px",
+              background: "#10b981",
+              borderRadius: "50%",
+            }}
+          ></span>
+          Levels
+        </h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr",
+            gap: "8px",
+          }}
+        >
+          {LEVELS.map((level) => (
+            <button
+              key={level}
+              className={`filter-btn ${activeLevel === level ? "active" : ""}`}
+              onClick={() => {
+                setActiveLevel(level);
+                if (isMobile) setShowMobileFilters(false);
+              }}
+              style={{
+                fontSize: "14px",
+                padding: "8px 12px",
+              }}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <style>{styles}</style>
+
+      {/* Mobile Filter Button */}
+      {isMobile && !showMobileFilters ? (
+        <button
+          className="filter-toggle-btn"
+          style={{
+            marginTop: "35px",
+            marginLeft: "-10px",
+          }}
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z" />
+          </svg>
+        </button>
+      ) : showMobileFilters ? null : (
+        ""
+      )}
+
+      {/* Mobile Filter Overlay and Sidebar */}
+      {isMobile && showMobileFilters && (
+        <>
+          <div
+            className="mobile-filter-overlay"
+            onClick={() => setShowMobileFilters(false)}
+          />
+          <div
+            className={`mobile-filter-sidebar ${
+              showMobileFilters ? "slide-in-left" : "slide-out-left"
+            }`}
+            style={{
+              marginTop: "25px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "18px",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  color: "#374151",
+                }}
+              >
+                Filters
+              </h2>
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "24px",
+                  color: "#6b7280",
+                  cursor: "pointer",
+                  padding: "4px",
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <FilterContent />
+          </div>
+        </>
+      )}
+
       <div
         style={{
           minHeight: "800px",
@@ -437,127 +672,25 @@ export default function ScoreBoard() {
               gap: "24px",
             }}
           >
-            {/* Sidebar Filters */}
-            <div>
-              <div
-                className="glass-effect"
-                style={{
-                  background: "rgba(255, 255, 255, 0.95)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: "12px",
-                  padding: "24px",
-                  position: isMobile ? "relative" : "sticky",
-                  top: "24px",
-                  marginBottom: "18px",
-                }}
-              >
+            {/* Desktop Filters */}
+            {!isMobile && (
+              <div>
                 <div
+                  className="glass-effect"
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "24px",
+                    background: "rgba(255, 255, 255, 0.95)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: "12px",
+                    padding: "24px",
+                    position: "sticky",
+                    top: "24px",
+                    marginBottom: "18px",
                   }}
                 >
-                  {/* Area Filters */}
-                  <div>
-                    <h3
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#374151",
-                        marginBottom: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          background: "#3b82f6",
-                          borderRadius: "50%",
-                        }}
-                      ></span>
-                      Areas
-                    </h3>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: isMobile
-                          ? "repeat(2, 1fr)"
-                          : "1fr",
-                        gap: "8px",
-                      }}
-                    >
-                      {AREAS.map((area) => (
-                        <button
-                          key={area}
-                          className={`filter-btn ${
-                            activeArea === area ? "active" : ""
-                          }`}
-                          onClick={() => setActiveArea(area)}
-                          style={{
-                            fontSize: "14px",
-                            padding: "8px 12px",
-                          }}
-                        >
-                          {area}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Level Filters */}
-                  <div>
-                    <h3
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#374151",
-                        marginBottom: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          background: "#10b981",
-                          borderRadius: "50%",
-                        }}
-                      ></span>
-                      Levels
-                    </h3>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr",
-                        gap: "8px",
-                      }}
-                    >
-                      {LEVELS.map((level) => (
-                        <button
-                          key={level}
-                          className={`filter-btn ${
-                            activeLevel === level ? "active" : ""
-                          }`}
-                          onClick={() => setActiveLevel(level)}
-                          style={{
-                            fontSize: "14px",
-                            padding: "8px 12px",
-                          }}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <FilterContent />
                 </div>
               </div>
-            </div>
+            )}
 
             <div
               style={{ display: "flex", flexDirection: "column", gap: "24px" }}

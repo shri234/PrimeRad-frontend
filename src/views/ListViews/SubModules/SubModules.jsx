@@ -1179,7 +1179,11 @@ const SubModuleView = () => {
               {startIndex + index + 1}. {question.question}
             </h3>
 
-            <div style={{ marginLeft: "8px" }}>
+            <div
+              style={{
+                marginLeft: "8px",
+              }}
+            >
               {Object.entries(question.options).map(([key, value]) => (
                 <label
                   key={key}
@@ -1505,7 +1509,7 @@ const SubModuleView = () => {
       <div
         style={{
           display: "flex",
-          marginLeft: isMobile ? "10px" : "",
+
           // flexDirection: "row",
           // height: "100vh",
           // overflow: "hidden",
@@ -1515,21 +1519,38 @@ const SubModuleView = () => {
           <button
             style={{
               position: "fixed",
-              top: "60px",
-              left: "0px",
+              top: "20px",
+              left: "20px",
+              marginTop: "35px",
+              marginLeft: "-10px",
               zIndex: 1001,
-              color: "black",
+              width: "32px",
+              height: "32px",
+              background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
               border: "none",
-              width: "40px",
-              height: "40px",
+              borderRadius: "12px",
+              color: "white",
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(59,130,246,0.3)",
+              transition: "all 0.2s ease",
             }}
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {sidebarOpen ? <FaTimes size={18} /> : <FaFilter size={18} />}
+            {sidebarOpen ? (
+              <FaTimes size={18} />
+            ) : (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z" />
+              </svg>
+            )}
           </button>
         )}
 
@@ -1901,6 +1922,7 @@ const SubModuleView = () => {
             boxSizing: "border-box",
             overflowX: "hidden",
             marginTop: 0,
+
             display: "flex",
             flexDirection: "column",
             flex: 1,
@@ -2414,7 +2436,7 @@ const SubModuleView = () => {
                     }}
                     className="back-link"
                     style={{
-                      marginLeft: isMobile ? "10px" : "",
+                      marginLeft: isMobile ? "25px" : "",
                     }}
                   >
                     <svg
@@ -2429,7 +2451,7 @@ const SubModuleView = () => {
                         d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
                       />
                     </svg>
-                    Back
+                    {isMobile ? null : "Back"}
                   </button>
                   <h2
                     style={{
@@ -2498,7 +2520,7 @@ const SubModuleView = () => {
                       className="breadcrumb"
                       style={{
                         margin: isMobile ? "5px 0 4px 0" : "",
-                        fontSize: "11px",
+                        fontSize: isMobile ? "11px" : "",
                       }}
                     >
                       <span
@@ -2991,6 +3013,14 @@ const SubModuleView = () => {
                                                           ? "polished-grid-thumbnail"
                                                           : "polished-grid-thumbnail"
                                                       }
+                                                      style={{
+                                                        width: isMobile
+                                                          ? "100%"
+                                                          : "",
+                                                        height: isMobile
+                                                          ? "100%"
+                                                          : "",
+                                                      }}
                                                     >
                                                       <img
                                                         src={`https://primerad-backend.onrender.com${
@@ -3021,6 +3051,9 @@ const SubModuleView = () => {
                                                             overflow: "hidden",
                                                             textOverflow:
                                                               "ellipsis",
+                                                            fontSize: isMobile
+                                                              ? "11px"
+                                                              : "",
                                                           }}
                                                         >
                                                           {session.title}

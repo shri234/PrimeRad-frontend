@@ -789,21 +789,33 @@ const MainPage = memo(() => {
         <button
           style={{
             position: "fixed",
-            top: "60px",
-            left: "0px",
+            top: "20px",
+            left: "20px",
+            marginTop: "35px",
+            marginLeft: "-10px",
             zIndex: 1001,
-            color: "black",
+            width: "32px",
+            height: "32px",
+            background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
             border: "none",
-            width: "40px",
-            height: "40px",
+            borderRadius: "12px",
+            color: "white",
+            cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: "pointer",
+            boxShadow: "0 4px 16px rgba(59,130,246,0.3)",
+            transition: "all 0.2s ease",
           }}
           onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
         >
-          {isMobileNavOpen ? <FaTimes size={18} /> : <FaFilter size={18} />}
+          {isMobileNavOpen ? (
+            <FaTimes size={18} />
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z" />
+            </svg>
+          )}
         </button>
       )}
       <div className={!isMobile ? "main-page-desktop-layout" : ""}>
