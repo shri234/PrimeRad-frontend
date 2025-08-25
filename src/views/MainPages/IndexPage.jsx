@@ -470,7 +470,7 @@ const HomePage = memo(() => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(15, 14, 1, 0.18)",
+
               borderRadius: window.innerWidth <= 768 ? "24px" : "24px 0 0 24px",
               zIndex: 2,
             }}
@@ -587,7 +587,6 @@ const HomePage = memo(() => {
         <LatestMovies title="Recent Items" />
       </div>
 
-      {/* Faculty Carousel Section - Enhanced Responsiveness */}
       <div
         style={{
           background: "#e3f2fd",
@@ -648,6 +647,8 @@ const HomePage = memo(() => {
           autoplay={{ delay: 3500, disableOnInteraction: false }}
           spaceBetween={window.innerWidth <= 480 ? 24 : 24}
           slidesPerView={1}
+          grabCursor={true}
+          freeMode={false}
           breakpoints={{
             0: { slidesPerView: 1, spaceBetween: 24 },
             480: { slidesPerView: 1, spaceBetween: 10 },

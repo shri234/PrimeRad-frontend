@@ -131,9 +131,7 @@ const SectionSlider = memo(
                   : false
               }
               pagination={
-                isMobile
-                  ? { clickable: true, dynamicBullets: true } // ✅ enable pagination only on mobile
-                  : false
+                isMobile ? { clickable: true, dynamicBullets: true } : false
               }
               breakpoints={{
                 0: {
@@ -177,7 +175,6 @@ const SectionSlider = memo(
                 </SwiperSlide>
               ))}
 
-              {/* Custom Navigation Buttons - Hidden on mobile */}
               {!isMobile && (
                 <>
                   <div
