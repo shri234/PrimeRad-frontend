@@ -2682,6 +2682,7 @@ const SubModuleView = () => {
                                           ? "level-list-view"
                                           : "level-grid-view lecture-grid-view"
                                       }
+                                      style={{}}
                                     >
                                       <div
                                         ref={
@@ -2697,9 +2698,22 @@ const SubModuleView = () => {
                                         onClick={() =>
                                           handleLevelClick("beginner")
                                         }
+                                        style={{
+                                          padding: "8px 10px",
+                                          width: isMobile ? "90%" : "100%",
+                                        }}
                                       >
                                         <div className="level-thumbnail">
-                                          <div className="level-icon">🎓</div>
+                                          <div
+                                            className="level-icon"
+                                            style={{
+                                              fontSize: isMobile
+                                                ? "18px"
+                                                : "48px",
+                                            }}
+                                          >
+                                            🎓
+                                          </div>
                                         </div>
                                         <i
                                           className={`fas fa-angle-right icon-indicator ${
@@ -2707,10 +2721,21 @@ const SubModuleView = () => {
                                               ? "rotated-down"
                                               : ""
                                           }`}
-                                          style={{ marginRight: "10px" }}
+                                          style={{
+                                            marginRight: isMobile
+                                              ? "7px"
+                                              : "10px",
+                                          }}
                                         ></i>
                                         <div className="level-info">
-                                          <h4 className="level-title">
+                                          <h4
+                                            className="level-title"
+                                            style={{
+                                              fontSize: isMobile
+                                                ? "16px"
+                                                : "20px",
+                                            }}
+                                          >
                                             Beginner
                                           </h4>
                                           <div className="level-full-badges">
@@ -2731,16 +2756,36 @@ const SubModuleView = () => {
                                                 countTypes(combinedBeginner);
                                               return (
                                                 <>
-                                                  <span className="type-badge badge-lecture">
+                                                  <span
+                                                    className="type-badge badge-lecture"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
                                                     Lectures:{" "}
                                                     {levelCounts.lecture}
                                                   </span>
-                                                  <span className="type-badge badge-case">
+                                                  <span
+                                                    className="type-badge badge-case"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
                                                     Cases: {levelCounts.case}
                                                   </span>
-                                                  <span className="type-badge badge-live">
-                                                    Live Programs:{" "}
-                                                    {levelCounts.live}
+                                                  <span
+                                                    className="type-badge badge-live"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
+                                                    Live: {levelCounts.live}
                                                   </span>
                                                 </>
                                               );
@@ -2964,9 +3009,22 @@ const SubModuleView = () => {
                                             handleScroll();
                                           }, 0);
                                         }}
+                                        style={{
+                                          padding: "8px 10px",
+                                          width: isMobile ? "90%" : "100%",
+                                        }}
                                       >
                                         <div className="level-thumbnail">
-                                          <div className="level-icon">⚡</div>
+                                          <div
+                                            className="level-icon"
+                                            style={{
+                                              fontSize: isMobile
+                                                ? "18px"
+                                                : "48px",
+                                            }}
+                                          >
+                                            ⚡
+                                          </div>
                                         </div>
                                         <i
                                           className={`fas fa-angle-right icon-indicator ${
@@ -2977,7 +3035,14 @@ const SubModuleView = () => {
                                           style={{ marginRight: "10px" }}
                                         ></i>
                                         <div className="level-info">
-                                          <h4 className="level-title">
+                                          <h4
+                                            className="level-title"
+                                            style={{
+                                              fontSize: isMobile
+                                                ? "16px"
+                                                : "20px",
+                                            }}
+                                          >
                                             Advanced
                                           </h4>
                                           <div className="level-full-badges">
@@ -2998,16 +3063,36 @@ const SubModuleView = () => {
                                                 countTypes(combinedAdvanced);
                                               return (
                                                 <>
-                                                  <span className="type-badge badge-lecture">
+                                                  <span
+                                                    className="type-badge badge-lecture"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
                                                     Lectures:{" "}
                                                     {levelCounts.lecture}
                                                   </span>
-                                                  <span className="type-badge badge-case">
+                                                  <span
+                                                    className="type-badge badge-case"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
                                                     Cases: {levelCounts.case}
                                                   </span>
-                                                  <span className="type-badge badge-live">
-                                                    Live Programs:{" "}
-                                                    {levelCounts.live}
+                                                  <span
+                                                    className="type-badge badge-live"
+                                                    style={{
+                                                      fontSize: isMobile
+                                                        ? "8px"
+                                                        : "",
+                                                    }}
+                                                  >
+                                                    Live: {levelCounts.live}
                                                   </span>
                                                 </>
                                               );
