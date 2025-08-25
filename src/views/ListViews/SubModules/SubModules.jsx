@@ -2605,6 +2605,9 @@ const SubModuleView = () => {
                                   }
                                   alt={pathologyItem.pathologyName}
                                   className="submodule-thumbnail"
+                                  style={{
+                                    width: isMobile ? "35px" : "",
+                                  }}
                                 />
                                 <div
                                   className="submodule-title"
@@ -2628,7 +2631,7 @@ const SubModuleView = () => {
                                 <div
                                   className="submodule-type-badges"
                                   style={{
-                                    marginLeft: "10px",
+                                    marginLeft: isMobile ? "5px" : "10px",
                                   }}
                                 >
                                   <span
@@ -2653,7 +2656,7 @@ const SubModuleView = () => {
                                       fontSize: isMobile ? "8px" : "",
                                     }}
                                   >
-                                    Live Programs: {counts.live}
+                                    Live: {counts.live}
                                   </span>
                                 </div>
                               </div>
