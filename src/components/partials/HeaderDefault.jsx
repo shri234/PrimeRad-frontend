@@ -41,7 +41,7 @@ import user from "/assets/images/user/user1.webp";
 import { AiFillHome } from "react-icons/ai";
 import { RiNewspaperFill } from "react-icons/ri";
 import { GiAtlas } from "react-icons/gi";
-import { FaUserAstronaut } from "react-icons/fa";
+import { FaUserAstronaut, FaTimes } from "react-icons/fa";
 import { MdLeaderboard } from "react-icons/md";
 
 const HeaderDefault = memo(() => {
@@ -349,14 +349,26 @@ const HeaderDefault = memo(() => {
 
             {/* Mobile Menu Toggle */}
             <div className="d-lg-none">
-              <Button
-                variant="outline-secondary"
-                onClick={handleShowMobileMenu}
-                className="mobile-menu-toggle"
-                aria-label="Toggle navigation"
-              >
-                <i className="fas fa-bars"></i>
-              </Button>
+              {showMobileMenu ? (
+                <FaTimes
+                  style={{
+                    marginRight: "15px",
+                    // marginBottom: "20px",
+                  }}
+                  // className="mobile-menu-toggle"
+                  size={18}
+                  onClick={handleCloseMobileMenu}
+                />
+              ) : (
+                <Button
+                  variant="outline-secondary"
+                  onClick={handleShowMobileMenu}
+                  className="mobile-menu-toggle"
+                  aria-label="Toggle navigation"
+                >
+                  <i className="fas fa-bars"></i>
+                </Button>
+              )}
             </div>
           </div>
         </Container>
@@ -368,7 +380,12 @@ const HeaderDefault = memo(() => {
         placement="end"
         className="mobile-nav-offcanvas"
       >
-        <Offcanvas.Header closeButton>
+        <Offcanvas.Header
+          closeButton
+          style={{
+            marginTop: "40px",
+          }}
+        >
           <Offcanvas.Title>Main Navigation</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
