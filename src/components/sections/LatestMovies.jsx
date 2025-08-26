@@ -97,7 +97,6 @@ const LatestMovies = (props) => {
     }
   }, []);
 
-  // --- useEffect to call fetch functions based on props.title ---
   useEffect(() => {
     setLoading(true);
     if (props.title?.toLowerCase().includes("trending")) {
@@ -218,7 +217,6 @@ const LatestMovies = (props) => {
       >
         {(data, index) => {
           console.log(data);
-          // Map API data to a consistent 'card' format for CardStyle and navigation
           const card = {
             id: data._id,
             title: data.title,
@@ -231,23 +229,20 @@ const LatestMovies = (props) => {
             difficulty: data.difficulty,
             moduleName: data.moduleName,
             isAssessment: data.isAssessment,
-            isFree: data.isFree, // Assuming status comes from this field
+            isFree: data.isFree,
             startDate: data.startDate,
             vimeoVideoId: data.vimeoVideoId || null,
-            faculty: data.faculty || "Unknown Faculty", // Assuming 'faculty' field might exist
-            subCategoryId: data.subCategoryId, // Assuming 'subCategoryId' for submodule
-            sessionType: data.sessionType, // Direct sessionType from API
-
-            // Mapped properties for CardStyle and handleCardClick consistency
-            image: data.imageUrl || getRandomImage(), // Using the direct imageUrl for CardStyle's image prop
-            movieTime: data.sessionDuration || "", // For CardStyle's movieTime prop
-            level: data.difficulty, // For CardStyle's level prop
-            category: data.moduleName, // For CardStyle's category prop
-            status: data.isFree ? "Free" : "Locked", // For CardStyle's status prop
+            faculty: data.faculty || "Unknown Faculty",
+            subCategoryId: data.subCategoryId,
+            sessionType: data.sessionType,
+            image: data.imageUrl || getRandomImage(),
+            movieTime: data.sessionDuration || "",
+            level: data.difficulty,
+            category: data.moduleName,
+            status: data.isFree ? "Free" : "Locked",
             tags: data.tags || [], // Assuming tags might be present
             instructor: data.instructor, // Assuming instructor might be present
 
-            // Explicitly map content type for navigation logic
             contentType:
               data.sessionType === "Dicom"
                 ? "Case"

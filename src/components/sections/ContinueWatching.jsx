@@ -126,7 +126,6 @@ const ContinueWatching = memo(() => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Scroll when index changes
   useEffect(() => {
     if (carouselRef.current && totalItems > 0) {
       const firstCard = carouselRef.current.children[0];
@@ -180,7 +179,6 @@ const ContinueWatching = memo(() => {
           </h2>
 
           <div style={{ position: "relative" }}>
-            {/* Prev Arrow */}
             {totalItems > cardsPerPage && window.innerWidth > 468 && (
               <div
                 onClick={canGoPrev ? handlePrev : null}
@@ -207,7 +205,6 @@ const ContinueWatching = memo(() => {
               </div>
             )}
 
-            {/* Cards */}
             <div
               ref={carouselRef}
               style={{
@@ -244,7 +241,6 @@ const ContinueWatching = memo(() => {
                 </div>
               ))}
             </div>
-
             {totalItems > cardsPerPage && window.innerWidth > 468 && (
               <div
                 onClick={canGoNext ? handleNext : null}

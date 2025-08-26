@@ -347,14 +347,15 @@ const HeaderDefault = memo(() => {
               </Navbar.Collapse>
             </div>
 
-            {/* Mobile Menu Toggle */}
             <div className="d-lg-none">
               {showMobileMenu ? (
                 <FaTimes
-                  style={{
-                    marginRight: "15px",
-                    // marginBottom: "20px",
-                  }}
+                  style={
+                    {
+                      // marginRight: "10px",
+                      // marginBottom: "20px",
+                    }
+                  }
                   // className="mobile-menu-toggle"
                   size={18}
                   onClick={handleCloseMobileMenu}
@@ -390,7 +391,6 @@ const HeaderDefault = memo(() => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <div className="mobile-nav-container">
-            {/* Mobile Navigation Items */}
             <div className="mobile-nav-items">
               {navigationItems.map((item, index) => (
                 <div
@@ -410,7 +410,6 @@ const HeaderDefault = memo(() => {
               ))}
             </div>
 
-            {/* Mobile Action Buttons */}
             <div className="mobile-action-buttons">
               <Button
                 variant="primary"

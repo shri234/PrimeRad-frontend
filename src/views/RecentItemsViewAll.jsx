@@ -46,7 +46,7 @@ const RecentItemsViewAll = memo(() => {
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
           padding: "60px 0 40px 0",
-          marginTop: "20px",
+          // marginTop: "20px",
           position: "relative",
           overflow: "hidden",
         }}
@@ -65,10 +65,10 @@ const RecentItemsViewAll = memo(() => {
         <Container fluid style={{ position: "relative", zIndex: 2 }}>
           <Row className="justify-content-center">
             <Col lg={8} className="text-center">
-              <h1
+              <h2
                 style={{
                   color: "white",
-                  fontSize: "3.5rem",
+                  fontSize: "3rem",
                   fontWeight: "700",
                   marginBottom: "15px",
                   textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
@@ -76,7 +76,7 @@ const RecentItemsViewAll = memo(() => {
                 }}
               >
                 Recent Items
-              </h1>
+              </h2>
               <p
                 style={{
                   color: "rgba(255,255,255,0.9)",
@@ -105,8 +105,7 @@ const RecentItemsViewAll = memo(() => {
         }}
       >
         <Container fluid>
-          {/* Stats Bar */}
-          <Row className="mb-4">
+          {/* <Row className="mb-4">
             <Col>
               <div
                 style={{
@@ -173,7 +172,7 @@ const RecentItemsViewAll = memo(() => {
                 </div>
               </div>
             </Col>
-          </Row>
+          </Row> */}
 
           <div
             style={{

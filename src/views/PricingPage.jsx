@@ -222,13 +222,13 @@ const PricingCard = ({ pkg, navigate, billingPeriod, userType }) => {
       </h4>
 
       <div style={{ marginBottom: 8 }}>
-        <h2 style={{ color: THEME.text, fontWeight: 700, marginBottom: 4 }}>
-          {adjustedPrice === 0 ? "Free" : `$${adjustedPrice.toFixed(2)}`}
+        <h5 style={{ color: THEME.text, fontWeight: 700, marginBottom: 4 }}>
+          {adjustedPrice === 0 ? "$0" : `$${adjustedPrice.toFixed(2)}`}
           <span style={{ fontSize: 16, color: THEME.text, fontWeight: 400 }}>
             {adjustedPrice > 0 ? getPeriodLabel() : ""}
           </span>
-        </h2>
-        {billingPeriod === "annually" && adjustedPrice > 0 && (
+        </h5>
+        {/* {billingPeriod === "annually" && adjustedPrice > 0 && (
           <p
             style={{
               fontSize: 14,
@@ -239,7 +239,7 @@ const PricingCard = ({ pkg, navigate, billingPeriod, userType }) => {
           >
             ${(originalMonthlyPrice * 12).toFixed(2)}/year
           </p>
-        )}
+        )} */}
       </div>
 
       <ul style={{ listStyle: "none", padding: 0, margin: "24px 0" }}>
@@ -859,7 +859,7 @@ const PricingPage = memo(() => {
           ) : (
             <Row className="justify-content-center">
               {pricingPlans.map((pkg, idx) => (
-                <Col key={pkg._id || idx} lg="4" md="6" className="mb-4">
+                <Col key={pkg._id || idx} lg="3" md="3" className="mb-4">
                   <div className="pricing-card">
                     <PricingCard
                       pkg={pkg}

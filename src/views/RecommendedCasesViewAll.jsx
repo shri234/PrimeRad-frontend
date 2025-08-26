@@ -77,7 +77,7 @@ const RecommendedCasesViewAll = memo(() => {
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
           padding: "60px 0 40px 0",
-          marginTop: "20px",
+          // marginTop: "20px",
           position: "relative",
           overflow: "hidden",
         }}
@@ -96,18 +96,18 @@ const RecommendedCasesViewAll = memo(() => {
         <Container fluid style={{ position: "relative", zIndex: 2 }}>
           <Row className="justify-content-center">
             <Col lg={8} className="text-center">
-              <h1
+              <h2
                 style={{
                   color: "white",
-                  fontSize: "3.5rem",
+                  fontSize: "3rem",
                   fontWeight: "700",
                   marginBottom: "15px",
                   textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
                   letterSpacing: "-1px",
                 }}
               >
-                Recommended Cases
-              </h1>
+                Dicom Cases
+              </h2>
               <p
                 style={{
                   color: "rgba(255,255,255,0.9)",
