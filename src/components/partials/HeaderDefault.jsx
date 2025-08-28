@@ -346,12 +346,10 @@ const HeaderDefault = memo(() => {
             <div className="d-lg-none">
               {showMobileMenu ? (
                 <FaTimes
-                  style={
-                    {
-                      // marginRight: "10px",
-                      // marginBottom: "20px",
-                    }
-                  }
+                  style={{
+                    marginRight: "10px",
+                    // marginBottom: "20px",
+                  }}
                   // className="mobile-menu-toggle"
                   size={18}
                   onClick={handleCloseMobileMenu}
@@ -376,15 +374,18 @@ const HeaderDefault = memo(() => {
         onHide={handleCloseMobileMenu}
         placement="end"
         className="mobile-nav-offcanvas"
+        style={{
+          marginTop: "30px",
+        }}
       >
-        <Offcanvas.Header
+        {/* <Offcanvas.Header
           closeButton
           style={{
             marginTop: "40px",
           }}
         >
-          <Offcanvas.Title>Main Navigation</Offcanvas.Title>
-        </Offcanvas.Header>
+          {/* <Offcanvas.Title>Main Navigation</Offcanvas.Title> */}
+        {/* </Offcanvas.Header>  */}
         <Offcanvas.Body>
           <div className="mobile-nav-container">
             <div className="mobile-nav-items">
@@ -409,7 +410,7 @@ const HeaderDefault = memo(() => {
             <div className="mobile-action-buttons">
               <Button
                 variant="primary"
-                className="mobile-subscribe-btn w-100 mb-3"
+                className="mobile-subscribe-btn w-100 mb-3 text-white"
                 onClick={() => {
                   navigate("/pricing");
                   handleCloseMobileMenu();

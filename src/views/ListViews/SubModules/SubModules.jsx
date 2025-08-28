@@ -1562,7 +1562,8 @@ const SubModuleView = () => {
               position: isMobile ? "fixed" : undefined,
               top: isMobile ? 0 : undefined,
               height: isMobile ? "100vh" : undefined,
-              overflowY: isMobile ? "auto" : "hidden",
+              overflowY: isMobile ? "auto" : "auto",
+              scrollbarWidth: isMobile ? "2px" : "4px",
               background: isMobile ? THEME.card : undefined,
               zIndex: isMobile ? 1000 : undefined,
               transition: isMobile ? "width 0.3s ease" : undefined,
@@ -2757,7 +2758,9 @@ const SubModuleView = () => {
                                           handleLevelClick("beginner")
                                         }
                                         style={{
-                                          padding: "8px 10px",
+                                          // padding: isMobile
+                                          //   ? "4px 6px"
+                                          //   : "8px 10px",
                                           width: isMobile ? "90%" : "100%",
                                         }}
                                       >
@@ -3118,7 +3121,7 @@ const SubModuleView = () => {
                                         }}
                                         style={{
                                           padding: isMobile
-                                            ? "2px 4px"
+                                            ? "4px 6px"
                                             : "8px 10px",
                                           width: isMobile ? "90%" : "100%",
                                         }}

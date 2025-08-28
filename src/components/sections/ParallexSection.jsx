@@ -142,7 +142,7 @@ const ParallexSection = memo((props) => {
                   className="btn text-uppercase position-relative"
                   style={{
                     background: "#e0f7e9",
-                    color: "#2e7d32",
+                    color: "black",
                     fontWeight: 700,
                     borderRadius: 8,
                     padding: "12px 32px",
@@ -154,14 +154,14 @@ const ParallexSection = memo((props) => {
                     textDecoration: "none",
                   }}
                 >
-                  <span
+                  {/* <
                     className="button-text"
                     style={{
                       cursor: "pointer",
                     }}
-                  >
-                    {t("ott_home.play_now")}
-                  </span>
+                  > */}
+                  {t("ott_home.play_now")}
+                  {/* </button> */}
                   <i
                     className="fa-solid fa-play"
                     style={{ marginLeft: 10 }}

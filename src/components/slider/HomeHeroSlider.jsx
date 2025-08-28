@@ -126,7 +126,11 @@ const HomeHeroSlider = memo(() => {
     level: apiObj.difficulty,
     category: apiObj.moduleName,
     tags: [],
-    image: apiObj.imageUrl_1920x1080
+    image: isMobile
+      ? apiObj.imageUrl_522x760
+        ? `https://primerad-backend.onrender.com${apiObj.imageUrl_522x760}`
+        : "https://placehold.co/522x760?text=No+Image"
+      : apiObj.imageUrl_1920x1080
       ? `https://primerad-backend.onrender.com${apiObj.imageUrl_1920x1080}`
       : "https://placehold.co/1920x1080?text=No+Image",
     previewVideoUrl: apiObj.vimeoVideoId
@@ -893,8 +897,8 @@ const HomeHeroSlider = memo(() => {
 @media (max-width: 480px) {
     #home-banner-carousel {
         // height: 36vh;
-        min-height: 100px;
-        max-height: 700px
+        min-height: 110px;
+        max-height: 730px
     }
     h1.texture-text {
         font-size: 2.1rem !important;
