@@ -215,7 +215,6 @@ const CardStyle = memo(
                 {title}
               </h5>
               {/* Tags for Mobile (initially hidden on desktop, always shown on mobile) */}
-              {/* Tags for Mobile (initially hidden on desktop, always shown on mobile) */}
               <div
                 className="card-tags-mobile"
                 style={{
@@ -224,8 +223,6 @@ const CardStyle = memo(
                   flexWrap: "wrap",
                   gap: "4px",
                   // marginTop: "6px",
-                  // minHeight: "7px",
-                  visibility: "hidden", // Use visibility instead of display for desktop
                 }}
               >
                 {Array.isArray(tags) &&
@@ -247,6 +244,8 @@ const CardStyle = memo(
                   ))}
               </div>
             </div>
+
+            {/* Faculty Info (initially hidden, shown on hover) */}
           </div>
         </div>
         <style jsx>{`
@@ -260,7 +259,7 @@ const CardStyle = memo(
           }
 
           .medical-case-card:hover {
-            // transform: translateY(-5px); /* Lift slightly */
+            transform: translateY(-5px); /* Lift slightly */
             // min-height: 400px; /* Expand downward, assuming content fits */
             // box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             // z-index: 2; /* Bring to front on hover */
@@ -277,23 +276,6 @@ const CardStyle = memo(
           .medical-case-card .content-container {
             opacity: 1; /* Always visible */
             transition: opacity 0.3s ease;
-          }
-
-          .medical-case-card .card-tags-mobile {
-            visibility: hidden !important; /* Use visibility instead of display */
-          }
-
-          /* Hover state for desktop */
-          .medical-case-card:hover .card-tags-mobile {
-            visibility: visible !important; /* Show tags on hover */
-          }
-
-          /* Mobile Responsive */
-          @media (max-width: 768px) {
-            .medical-case-card .content-container .card-tags-mobile {
-              display: flex !important;
-              visibility: visible !important;
-            }
           }
 
           /* Default desktop state */
