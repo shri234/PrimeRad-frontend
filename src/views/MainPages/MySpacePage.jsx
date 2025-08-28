@@ -207,6 +207,7 @@ const videoCardStyles = `
     flex-direction: column;
     align-items: stretch;
   }
+
   .video-cards-outer-card .video-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1246,8 +1247,9 @@ const MySpacePage = memo(() => {
           height: "100vh",
           width: "100vw",
           background: "#f4f8fb",
-          // overflowY: "auto",
+          overflowY: "auto",
           display: "flex",
+          // marginBottom: "20px",
         }}
       >
         <style>{videoCardStyles}</style>
@@ -1322,6 +1324,7 @@ const MySpacePage = memo(() => {
             <NavCategories />
           </div>
         )}
+
         {isResponsiveRange && sidebarOpen && (
           <div
             className="sidebar-overlay"
@@ -1341,21 +1344,21 @@ const MySpacePage = memo(() => {
         <div
           style={{
             display: "flex",
-            // minHeight: "100vh",
             background: "transparent",
             flex: 1,
-            overflowY: "auto",
             paddingTop: isMobile ? "100px" : "70px",
-            paddingRight: isMobile ? "12px" : "18px",
-            paddingLeft: isMobile ? "12px" : "0",
+            paddingRight: isMobile ? "12px" : "10px",
+            paddingLeft: isMobile ? "12px" : "0px",
+            // marginBottom: "30px",
           }}
         >
           <div
             style={{
               flex: 1,
-              // padding: isMobile ? "4px" : "8px",
+              padding: isMobile ? "4px" : "8px",
+              // paddingRight: isMobile ? "4px" : "18px",
               backgroundColor: "transparent",
-              // overflowY: "auto",
+              // overflowY: "hidden",
             }}
           >
             <div
@@ -1670,7 +1673,6 @@ const MySpacePage = memo(() => {
               </button>
             </div>
 
-            {/* NEW: Module Progress Section */}
             {moduleProgress.length > 0 &&
               view !== "saved" &&
               viewMode === "grid" && (

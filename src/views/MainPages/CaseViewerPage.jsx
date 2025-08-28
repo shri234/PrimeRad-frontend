@@ -491,7 +491,7 @@ const CaseViewerPage = () => {
           style={{
             flex: window.innerWidth <= 1024 ? "none" : 2,
 
-            height: window.innerWidth <= 1024 ? "60vh" : "auto",
+            height: window.innerWidth <= 1024 ? "30vh" : "auto",
             padding: window.innerWidth <= 768 ? 16 : 32,
             display: "flex",
             flexDirection: "column",

@@ -148,23 +148,20 @@ const MovieDetail = memo(() => {
     if (type && type.toLowerCase() === "lecture") return "RecordedLecture";
     if (type && type.toLowerCase() === "live") return "LiveProgram";
     return null;
-  }, []); // Memoize this helper for stability
+  }, []);
 
-  const sessionModelType = getSessionModelType(contentType); // Derived model type
+  const sessionModelType = getSessionModelType(contentType);
 
-  // Inline CSS for Bootstrap Nav Tabs
   const tabStyles = `
     .nav-pills .nav-link { transition: all 0.3s ease; position: relative; overflow: hidden; }
     .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
-    .nav-pills .nav-link.active { background: lavender !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
+    .nav-pills .nav-link.active { background: lightblue !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
     .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
     .nav-pills .nav-link.active::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%); pointer-events: none; }
   `;
 
-  // Function to save playback progress to backend
   const savePlaybackProgress = useCallback(
     async (currentTime) => {
-      // Prioritize Redux user ID, then localStorage, then direct ID if available
       const userId = user?._id || user?.id || localStorage.getItem("userId");
 
       if (!userId || !sessionId || !sessionModelType) {
@@ -196,16 +193,13 @@ const MovieDetail = memo(() => {
         console.error("Error saving playback progress:", error);
       }
     },
-    [user, sessionId, sessionModelType] // Dependencies: ensure function stability
+    [user, sessionId, sessionModelType]
   );
 
-  // Effect to fetch initial playback progress on component mount
   useEffect(() => {
     const fetchInitialProgress = async () => {
       const userId = user?._id || user?.id || localStorage.getItem("userId");
 
-      // Only fetch if authenticated, all IDs are present, and it's a content type that tracks progress
-      // Also, only fetch if the video is free and a vimeoVideoId exists (i.e., it's playable)
       if (
         !isAuthenticated ||
         !userId ||
@@ -244,11 +238,9 @@ const MovieDetail = memo(() => {
     sessionModelType,
     isFree,
     vimeoVideoId,
-  ]); // Dependencies for this effect
+  ]);
 
-  // Main Vimeo Player Effect: Initializes, controls, and cleans up the Vimeo player
   useEffect(() => {
-    // 1. Cleanup any existing player and interval
     if (vimeoPlayerInstance.current) {
       vimeoPlayerInstance.current.destroy();
       vimeoPlayerInstance.current = null;
@@ -259,16 +251,14 @@ const MovieDetail = memo(() => {
       progressSaveIntervalRef.current = null;
     }
 
-    // 2. Conditional Player Initialization: Only initialize if video is free and has ID
     if (!isFree || !vimeoVideoId || !videoContainerRef.current) {
       console.log(
         "Vimeo Player initialization skipped: Content not free, Vimeo ID missing, or container not ready."
       );
-      setPlayerReady(false); // Ensure player is not marked ready
-      return; // Exit early if prerequisites are not met
+      setPlayerReady(false);
+      return;
     }
 
-    // 3. Check for full prerequisites for progress saving (user context required)
     const userId = user?._id || user?.id || localStorage.getItem("userId");
     const fullPrerequisitesMet =
       isAuthenticated && userId && sessionId && sessionModelType;
@@ -278,24 +268,22 @@ const MovieDetail = memo(() => {
       );
     }
 
-    // 4. Initialize the Vimeo Player
     const initializePlayer = async () => {
       try {
         const player = new Player(videoContainerRef.current, {
           url: `https://vimeo.com/${vimeoVideoId}`,
           controls: true,
           responsive: true,
-          color: THEME.primary.substring(1), // Set player color
+          color: THEME.primary.substring(1),
           title: false,
           byline: false,
-          portrait: false, // Hide Vimeo UI elements
+          portrait: false,
         });
 
         vimeoPlayerInstance.current = player;
         await player.ready();
         setPlayerReady(true);
 
-        // Seek to initial time if available
         if (initialPlaybackTime > 0) {
           await player.setCurrentTime(initialPlaybackTime);
           console.log(
@@ -303,7 +291,6 @@ const MovieDetail = memo(() => {
           );
         }
 
-        // 5. Attach Player Event Listeners
         const onPlay = async () => {
           if (!fullPrerequisitesMet) {
             console.log(
@@ -311,7 +298,6 @@ const MovieDetail = memo(() => {
             );
             return;
           }
-          // Track session view on backend
           try {
             await axios.post(
               `https://primerad-backend.onrender.com/api/sessions/track?userId=${userId}&sessionId=${sessionId}`
@@ -321,7 +307,6 @@ const MovieDetail = memo(() => {
             console.error("❌ Failed to track session view:", error);
           }
 
-          // Clear any old intervals and set up new periodic progress saving
           if (progressSaveIntervalRef.current) {
             clearInterval(progressSaveIntervalRef.current);
           }
@@ -1528,7 +1513,6 @@ const MovieDetail = memo(() => {
                         </div>
                       </Tab.Pane>
 
-                      {/* Clinical Reviews Tab */}
                       <Tab.Pane className="fade" eventKey="third">
                         <div
                           className="p-4"
@@ -1571,15 +1555,14 @@ const MovieDetail = memo(() => {
                               </p>
                             </div>
                           </div>
-                          {/* Updated ReviewComponent usage */}
                           <ReviewComponent
                             itemId={sessionId}
                             isAuthenticated={isAuthenticated}
                             currentUserId={
                               user?._id || user?.id || user?.userId
-                            } // Pass user ID to ReviewComponent
+                            }
                             itemTitle={title}
-                            itemType={contentType} // Pass content type to ReviewComponent
+                            itemType={contentType}
                           />
                         </div>
                       </Tab.Pane>

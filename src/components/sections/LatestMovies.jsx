@@ -251,8 +251,6 @@ const LatestMovies = (props) => {
                 : "live" || "Other", // Default to "Other" if type is unknown
           };
 
-          // The 'link' prop to CardStyle will now just be a placeholder or empty,
-          // as the navigation is handled by onCardClick
           return (
             <CardStyle
               image={card.imageUrl}

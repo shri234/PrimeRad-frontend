@@ -8,15 +8,10 @@ const ParallexSection = memo((props) => {
     <Fragment>
       <section
         id="parallex"
-        className="parallax-window "
+        className="parallax-window"
         style={{
           background: "lightgray",
-          //   position: "relative",
-          //   overflow: "hidden",
-          //   padding: "48px 0",
-          //   display: "flex",
-          //   flexDirection: "row",
-          //   justifyContent: "center",
+          padding: "20px 16px",
         }}
       >
         <div
@@ -26,7 +21,14 @@ const ParallexSection = memo((props) => {
             width: "100%",
             maxWidth: 1400,
             margin: "0 auto",
+            gap: "24px",
+            // Mobile responsive styles
+            "@media (max-width: 768px)": {
+              flexDirection: "column",
+              gap: "16px",
+            },
           }}
+          className="parallex-container"
         >
           <div
             style={{
@@ -35,12 +37,12 @@ const ParallexSection = memo((props) => {
               borderRadius: 24,
               boxShadow: "0 4px 32px rgba(76,175,80,0.08)",
               padding: "40px 32px",
-              marginRight: 24,
               minHeight: 420,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
             }}
+            className="content-section"
           >
             <div className="text-start">
               <h2
@@ -49,12 +51,18 @@ const ParallexSection = memo((props) => {
                   color: "#2e7d32",
                   fontWeight: 800,
                   textShadow: "0 2px 8px rgba(76,175,80,0.08)",
-                  fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
+                  fontSize: "clamp(1.3rem, 4vw, 2.5rem)",
+                  marginBottom: "16px",
                 }}
               >
                 KNEE MRI CASE
               </h2>
-              <div className="d-flex flex-wrap align-items-center r-mb-23 my-4">
+              <div
+                className="d-flex flex-wrap align-items-center r-mb-23 my-4"
+                style={{
+                  gap: "8px",
+                }}
+              >
                 <div className="slider-ratting d-flex align-items-center">
                   <ul className="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left">
                     <li>
@@ -96,7 +104,7 @@ const ParallexSection = memo((props) => {
                   </span>
                 </div>
                 <span
-                  className="badge rounded-0 text-white text-uppercase p-2 mx-3"
+                  className="badge rounded-0 text-white text-uppercase p-2"
                   style={{
                     background: "#43a047",
                     fontWeight: 600,
@@ -114,11 +122,13 @@ const ParallexSection = memo((props) => {
                 Case Overview
               </h4>
               <p
-                className="line-count-2 w-75 mb-5"
+                className="line-count-2 mb-md-4 mb-2"
                 style={{
                   color: "#333",
-                  fontSize: "1.15rem",
+                  fontSize: "1.1rem",
                   fontWeight: 400,
+                  width: "100%",
+                  maxWidth: "90%",
                 }}
               >
                 A 32-year-old male presents with knee pain and swelling after a
@@ -139,6 +149,9 @@ const ParallexSection = memo((props) => {
                     cursor: "pointer",
                     fontSize: "1.1rem",
                     boxShadow: "0 2px 12px rgba(76,175,80,0.08)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    textDecoration: "none",
                   }}
                 >
                   <span
@@ -167,12 +180,13 @@ const ParallexSection = memo((props) => {
               borderRadius: 24,
               minHeight: 420,
             }}
+            className="image-section"
             data-aos="fade-up"
             data-aos-duration="900"
           >
             <div
               className="parallax-img"
-              style={{ width: "100%", maxWidth: 600 }}
+              style={{ width: "100%", maxWidth: 600, padding: "20px" }}
             >
               <Link to="">
                 <img
@@ -183,6 +197,8 @@ const ParallexSection = memo((props) => {
                   style={{
                     borderRadius: 16,
                     boxShadow: "0 4px 32px rgba(76,175,80,0.10)",
+                    objectFit: "cover",
+                    height: "auto",
                   }}
                 />
               </Link>
@@ -190,6 +206,87 @@ const ParallexSection = memo((props) => {
           </div>
         </div>
       </section>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .parallex-container {
+            flex-direction: column !important;
+            gap: 16px !important;
+          }
+
+          .content-section {
+            padding: 24px 20px !important;
+            min-height: auto !important;
+            order: 2;
+          }
+
+          .image-section {
+            min-height: 280px !important;
+            order: 1;
+          }
+
+          .content-section h2 {
+            font-size: clamp(1.5rem, 6vw, 2rem) !important;
+            text-align: center;
+            margin-bottom: 20px !important;
+          }
+
+          .content-section .d-flex.flex-wrap {
+            justify-content: center !important;
+            text-align: center;
+            margin: 16px 0 !important;
+          }
+
+          .content-section h4 {
+            text-align: center;
+            margin-top: 20px !important;
+          }
+
+          .content-section p {
+            text-align: center;
+            max-width: 100% !important;
+            font-size: 1rem !important;
+          }
+
+          .iq-button {
+            text-align: center;
+            margin-top: 24px;
+          }
+
+          .parallax-img {
+            padding: 16px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          #parallex {
+            padding: 16px 12px !important;
+          }
+
+          .content-section {
+            padding: 20px 16px !important;
+            border-radius: 16px !important;
+          }
+
+          .image-section {
+            border-radius: 16px !important;
+            min-height: 240px !important;
+          }
+
+          .content-section .btn {
+            padding: 10px 24px !important;
+            font-size: 1rem !important;
+          }
+
+          .slider-ratting {
+            scale: 0.9;
+          }
+
+          .badge {
+            font-size: 0.8rem !important;
+          }
+        }
+      `}</style>
     </Fragment>
   );
 });

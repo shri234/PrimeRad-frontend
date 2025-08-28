@@ -151,13 +151,11 @@ const HeaderDefault = memo(() => {
           }}
         >
           <div className="d-flex align-items-center justify-content-between w-100 landing-header">
-            {/* Logo */}
             <div className="d-flex align-items-center logo-area">
               <div
                 style={{
                   transition: "transform 0.3s ease-in-out",
                   transformOrigin: "left center",
-                  // width: windowWidth < 1200 ? "50%" : "100%",
                 }}
               >
                 <Logo />
@@ -195,7 +193,6 @@ const HeaderDefault = memo(() => {
                           alignItems: "center",
                         }}
                       >
-                        {/* Icon */}
                         <span
                           style={{
                             marginRight: windowWidth < 1200 ? 3 : 6,
@@ -225,7 +222,6 @@ const HeaderDefault = memo(() => {
                       </Nav.Link>
                     </Nav.Item>
                   ))}
-                  {/* Subscribe Button */}
                   <Nav.Item
                     as="li"
                     className="mx-1 polished-nav"
@@ -277,7 +273,7 @@ const HeaderDefault = memo(() => {
                       <span>Subscribe</span>
                     </Button>
                   </Nav.Item>
-                  {/* User Dropdown / Login Button */}
+
                   {isAuthenticated ? (
                     <Dropdown
                       as="li"
