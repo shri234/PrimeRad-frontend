@@ -2520,7 +2520,7 @@ const SubModuleView = () => {
                       className="breadcrumb"
                       style={{
                         margin: isMobile ? "5px 0 4px 0" : "",
-                        fontSize: isMobile ? "11px" : "",
+                        fontSize: isMobile ? "12px" : "",
                       }}
                     >
                       <span
@@ -2673,7 +2673,7 @@ const SubModuleView = () => {
                                     display: "flex",
                                     flexDirection: "row",
                                     fontWeight: "600",
-                                    fontSize: isMobile ? "12px" : "18px",
+                                    fontSize: isMobile ? "14px" : "18px",
                                   }}
                                 >
                                   <i
@@ -2695,7 +2695,7 @@ const SubModuleView = () => {
                                   <span
                                     className="type-badge badge-lecture"
                                     style={{
-                                      fontSize: isMobile ? "8px" : "",
+                                      fontSize: isMobile ? "9px" : "",
                                     }}
                                   >
                                     Lectures: {counts.lecture}
@@ -2703,7 +2703,7 @@ const SubModuleView = () => {
                                   <span
                                     className="type-badge badge-case"
                                     style={{
-                                      fontSize: isMobile ? "8px" : "",
+                                      fontSize: isMobile ? "9px" : "",
                                     }}
                                   >
                                     Cases: {counts.case}
@@ -2711,7 +2711,7 @@ const SubModuleView = () => {
                                   <span
                                     className="type-badge badge-live"
                                     style={{
-                                      fontSize: isMobile ? "8px" : "",
+                                      fontSize: isMobile ? "9px" : "",
                                     }}
                                   >
                                     Live: {counts.live}
@@ -2790,7 +2790,7 @@ const SubModuleView = () => {
                                             className="level-title"
                                             style={{
                                               fontSize: isMobile
-                                                ? "16px"
+                                                ? "13px"
                                                 : "20px",
                                             }}
                                           >
@@ -3052,7 +3052,7 @@ const SubModuleView = () => {
                                                             textOverflow:
                                                               "ellipsis",
                                                             fontSize: isMobile
-                                                              ? "11px"
+                                                              ? "12px"
                                                               : "",
                                                           }}
                                                         >
@@ -3117,7 +3117,9 @@ const SubModuleView = () => {
                                           }, 0);
                                         }}
                                         style={{
-                                          padding: "8px 10px",
+                                          padding: isMobile
+                                            ? "2px 4px"
+                                            : "8px 10px",
                                           width: isMobile ? "90%" : "100%",
                                         }}
                                       >
@@ -3146,7 +3148,7 @@ const SubModuleView = () => {
                                             className="level-title"
                                             style={{
                                               fontSize: isMobile
-                                                ? "16px"
+                                                ? "13px"
                                                 : "20px",
                                             }}
                                           >
@@ -3371,6 +3373,9 @@ const SubModuleView = () => {
                                                             overflow: "hidden",
                                                             textOverflow:
                                                               "ellipsis",
+                                                            fontSize: isMobile
+                                                              ? "12px"
+                                                              : "",
                                                           }}
                                                         >
                                                           {session.title}
