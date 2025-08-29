@@ -86,9 +86,14 @@ export default function ScoreBoard() {
     async function fetchPoints() {
       setIsLoading(true);
       try {
+        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        setApiUserPoints(1250);
+        const res = await fetch(
+          `http://localhost:5000/api/assessments/getUserPoints?userId=${userId}`
+        );
+        const data = await res.json();
+        setApiUserPoints(data.totalPoints);
       } catch (err) {
         console.error("Failed to fetch points", err);
       } finally {
@@ -97,7 +102,6 @@ export default function ScoreBoard() {
     }
     fetchPoints();
   }, [userId]);
-
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
@@ -437,7 +441,6 @@ export default function ScoreBoard() {
     <div>
       <style>{styles}</style>
 
-      {/* Mobile Filter Button */}
       {isMobile && !showMobileFilters ? (
         <button
           className="filter-toggle-btn"
@@ -455,7 +458,6 @@ export default function ScoreBoard() {
         ""
       )}
 
-      {/* Mobile Filter Overlay and Sidebar */}
       {isMobile && showMobileFilters && (
         <>
           <div

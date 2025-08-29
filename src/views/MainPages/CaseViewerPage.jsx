@@ -1831,7 +1831,7 @@ const CaseViewerPage = () => {
           </Row>
         </Container>
       </div>
-      {/* Faculty/Cast Section */}
+
       <div className="cast-tabs pb-5 px-0 px-md-0">
         <Container fluid>
           <div
@@ -2798,7 +2798,6 @@ const CaseViewerPage = () => {
         </div>
       )}
 
-      {/* CSS Animations and Responsive Styles */}
       <style>
         {`
           @keyframes fadeIn {
