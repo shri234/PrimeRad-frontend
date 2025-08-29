@@ -1572,7 +1572,7 @@ const MovieDetail = memo(() => {
           </Container>
         </div>
         {/* Faculty/Cast Section */}
-        <div className="cast-tabs pb-5 px-4 px-md-0">
+        <div className="cast-tabs pb-5 px-0 px-md-0">
           <Container fluid>
             <div
               className="content-details trending-info position-relative overflow-hidden"

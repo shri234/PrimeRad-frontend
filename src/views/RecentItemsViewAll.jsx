@@ -1,18 +1,18 @@
 import { Fragment, memo } from "react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import CardStyle from "../components/cards/CardStyle";
 import BreadCrumbWidget from "../components/BreadcrumbWidget";
 import { latestMovie } from "../StaticData/data";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FixedBackButton } from "../utilities/BackButton";
-import { useNavigate } from "react-router-dom";
 
 const RecentItemsViewAll = memo(() => {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("Cases");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -48,6 +48,44 @@ const RecentItemsViewAll = memo(() => {
 
     fetchTopRatedCases();
   }, []);
+
+  const handleCardClick = useCallback(
+    (cardData) => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (
+        cardData.sessionType &&
+        cardData.sessionType.toLowerCase() === "dicom"
+      ) {
+        navigate(`/case/${cardData.id}`);
+      } else if (
+        cardData.sessionType &&
+        cardData.sessionType.toLowerCase() === "vimeo"
+      ) {
+        navigate("/lecture-detail", {
+          state: {
+            id: cardData.id,
+            vimeoVideoId: cardData.vimeoVideoId,
+            title: cardData.title,
+            description: cardData.description,
+            faculty: cardData.faculty,
+            isFree: cardData.isFree,
+            module: cardData.module,
+            submodule: cardData.submodule,
+            duration: cardData.duration,
+            startDate: cardData.startDate,
+            contentType: cardData.contentType,
+          },
+        });
+      } else if (
+        cardData.contentType &&
+        cardData.contentType.toLowerCase() === "live"
+      ) {
+        navigate("/live", { state: cardData });
+      }
+    },
+    [navigate]
+  );
 
   const IMAGE_BASE_URL = "http://localhost:5000";
 
@@ -565,7 +603,6 @@ const RecentItemsViewAll = memo(() => {
         </Container>
       </div>
 
-      {/* Desktop Main Content Section */}
       <div
         style={{
           backgroundColor: "#f8f9fa",
@@ -729,7 +766,8 @@ const RecentItemsViewAll = memo(() => {
                             category={item.moduleName}
                             sectionType={item.sessionType}
                             watchlistLink={`/playlist?caseId=${item._id}`}
-                            link={`/lecture-detail`}
+                            link=""
+                            onCardClick={() => handleCardClick(item)}
                           />
                         </div>
                       </Col>
