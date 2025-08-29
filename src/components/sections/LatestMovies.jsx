@@ -124,6 +124,9 @@ const LatestMovies = (props) => {
 
   const handleCardClick = useCallback(
     (cardData) => {
+      // Scroll to top before navigation
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
       if (
         cardData.contentType &&
         cardData.contentType.toLowerCase() === "case"
@@ -240,15 +243,15 @@ const LatestMovies = (props) => {
             level: data.difficulty,
             category: data.moduleName,
             status: data.isFree ? "Free" : "Locked",
-            tags: data.tags || [], // Assuming tags might be present
-            instructor: data.instructor, // Assuming instructor might be present
+            tags: data.tags || [],
+            instructor: data.instructor,
 
             contentType:
               data.sessionType === "Dicom"
                 ? "Case"
                 : data.sessionType === "Vimeo"
                 ? "Lecture"
-                : "live" || "Other", // Default to "Other" if type is unknown
+                : "live" || "Other",
           };
 
           return (

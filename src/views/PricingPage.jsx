@@ -664,6 +664,7 @@ const PricingPage = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/home" />
       {/* Add responsive styles */}
       <style>{`
         @media (max-width: 768px) {
@@ -732,7 +733,6 @@ const PricingPage = memo(() => {
           }
         }
       `}</style>
-      <FixedBackButton customPath="/home" />
 
       <div
         className="section-padding"

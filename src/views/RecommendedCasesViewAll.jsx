@@ -378,8 +378,10 @@ const RecommendedCasesViewAll = memo(() => {
                             image={fullImageUrl}
                             title={item.title}
                             movieTime={caseInfo}
+                            category={item.moduleName}
+                            sectionType={item.sessionType}
                             watchlistLink={`/playlist?caseId=${item._id}`}
-                            link={navigationPath} // Use dynamic navigation path
+                            link={`/lecture-detail`}
                           />
                         </div>
                       </Col>

@@ -119,7 +119,8 @@ const ContinueWatchCard = memo(
                   </span>
                 )}
               </div>
-              {isHovered && (
+              {(window.innerWidth <= 768 ||
+                (isHovered && window.innerWidth > 768)) && (
                 <div
                   style={{
                     position: "absolute",

@@ -1715,7 +1715,7 @@ const SubModuleView = () => {
                                           handleLevelClick("beginner")
                                         }
                                         style={{
-                                          marginLeft: "30px",
+                                          marginLeft: "50px",
                                           cursor: "pointer",
                                         }}
                                       >
@@ -1732,7 +1732,7 @@ const SubModuleView = () => {
                                           handleLevelClick("advanced")
                                         }
                                         style={{
-                                          marginLeft: "30px",
+                                          marginLeft: "50px",
                                           cursor: "pointer",
                                         }}
                                       >
@@ -1923,7 +1923,6 @@ const SubModuleView = () => {
             boxSizing: "border-box",
             overflowX: "hidden",
             marginTop: 0,
-
             display: "flex",
             flexDirection: "column",
             flex: 1,
@@ -1936,6 +1935,9 @@ const SubModuleView = () => {
               background: "#f8fafc",
               height: "100%",
               boxSizing: "border-box",
+              borderRadius: "10px",
+              marginLeft: "0px",
+              // boxShadow: "0 4px 32px rgba(0,0,0,0.07)",
               flex: 1,
               overflowY: "auto",
             }}
@@ -2023,8 +2025,7 @@ const SubModuleView = () => {
                   </div>
                 </div>
               </div>
-            ) : /* Difficulty Assessment Cards View */
-            currentView === "difficulty" ? (
+            ) : currentView === "difficulty" ? (
               <div
                 style={{
                   display: "flex",

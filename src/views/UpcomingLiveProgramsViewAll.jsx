@@ -15,11 +15,13 @@ const UpcomingLiveProgramsViewAll = memo(() => {
               {viewAll.map((item, index) => (
                 <Col key={index} className="mb-4">
                   <CardStyle
-                    image={item.image}
+                    image={fullImageUrl}
                     title={item.title}
-                    movieTime={item.movieTime}
-                    watchlistLink="/playlist"
-                    link="/lecture-detail"
+                    movieTime={caseInfo}
+                    category={item.moduleName}
+                    sectionType={item.sessionType}
+                    watchlistLink={`/playlist?caseId=${item._id}`}
+                    link={`/lecture-detail`}
                   />
                 </Col>
               ))}

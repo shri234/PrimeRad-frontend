@@ -310,6 +310,7 @@ const MovieDetail = memo(() => {
           if (progressSaveIntervalRef.current) {
             clearInterval(progressSaveIntervalRef.current);
           }
+
           const intervalId = setInterval(async () => {
             try {
               const currentTime = await player.getCurrentTime();
@@ -317,7 +318,7 @@ const MovieDetail = memo(() => {
             } catch (error) {
               console.warn("Error during periodic progress save:", error);
             }
-          }, 10000); // Save every 10 seconds
+          }, 10000);
           progressSaveIntervalRef.current = intervalId;
         };
 
@@ -403,11 +404,9 @@ const MovieDetail = memo(() => {
     sessionModelType, // Core dependencies
     initialPlaybackTime,
     savePlaybackProgress,
-    isFree, // Specific playback/content dependencies
-    // Removed progressSaveInterval from dependencies as it's a ref
+    isFree,
   ]);
 
-  // Window beforeunload handler: Use navigator.sendBeacon for reliable last-minute save
   useEffect(() => {
     const handleWindowBeforeUnload = async () => {
       if (vimeoPlayerInstance.current) {
@@ -423,7 +422,6 @@ const MovieDetail = memo(() => {
               currentTime: currentTime,
               sessionModelType: sessionModelType,
             });
-            // Send as Blob with correct Content-Type for the backend
             navigator.sendBeacon(
               "https://primerad-backend.onrender.com/api/playback-progress/save",
               new Blob([data], { type: "application/json" })

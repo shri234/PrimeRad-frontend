@@ -530,12 +530,12 @@
 
 /* Breadcrumb */
 .breadcrumb {
-  margin: 18px 0 10px 0;
+  margin: 0px 0 0px 0;
   font-size: 15px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   color: #6366f1;
 }
 
@@ -561,21 +561,17 @@
   color: #888;
 }
 
-/* Submodule Grid/List Views */
 .submodule-list-right,
 .submodule-grid-right {
   margin-top: 20px;
 }
 
 .submodule-container {
-  /* This new class wraps each submodule card and its expanded content */
-  /* width: 100%; Important for list view to make levels/videos appear below */
-  display: flex; /* or block, depending on desired layout of children */
+  display: flex; 
   flex-direction: column;
-  /* Add any styling for the overall submodule unit here */
-  margin-bottom: 10px; /* Space between each complete submodule block */
+  margin-bottom: 10px;
   border-radius: 8px;
-  overflow: hidden; /* Helps contain children */
+  overflow: hidden; 
 }
 
 

@@ -342,6 +342,8 @@ const RecentItemsViewAll = memo(() => {
                             image={fullImageUrl}
                             title={item.title}
                             movieTime={caseInfo}
+                            category={item.moduleName}
+                            sectionType={item.sessionType}
                             watchlistLink={`/playlist?caseId=${item._id}`}
                             link={`/lecture-detail`}
                           />

@@ -10,8 +10,8 @@ const CardStyle = memo(
   ({
     title,
     movieTime,
-    watchlistLink, // Keep if still used for a specific watchlist icon/button
-    link, // This prop can now be considered redundant for direct navigation
+    watchlistLink,
+    link,
     image,
     level,
     category,
@@ -104,7 +104,6 @@ const CardStyle = memo(
                 // transition: "transform 0.3s ease",
               }}
             />
-            {/* Module and section labels stacked at top right (unchanged) */}
             <div
               style={{
                 position: "absolute",

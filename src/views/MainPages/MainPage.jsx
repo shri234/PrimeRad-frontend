@@ -311,7 +311,7 @@ const videoCardStyles = `
       min-height: 100vh;
       overflow-y: auto; /* This is the key for the scrollable area */
       padding-top: 70px;
-      padding-right: 18px;
+      // padding-right: 18px;
     }
   }
 `;
@@ -1002,7 +1002,7 @@ const MainPage = memo(() => {
                     <div
                       style={{
                         width: "100%",
-                        height: isMobile ? 8 : isTablet ? 14 : 16,
+                        height: isMobile ? 8 : isTablet ? 9 : 11,
                         background: "ghostwhite",
                         borderRadius: isMobile ? 6 : isTablet ? 7 : 8,
                         overflow: "hidden",
