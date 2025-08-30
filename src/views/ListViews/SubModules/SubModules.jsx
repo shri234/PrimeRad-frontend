@@ -1937,7 +1937,6 @@ const SubModuleView = () => {
               boxSizing: "border-box",
               borderRadius: "10px",
               marginLeft: "0px",
-              // boxShadow: "0 4px 32px rgba(0,0,0,0.07)",
               flex: 1,
               overflowY: "auto",
             }}
@@ -1954,48 +1953,34 @@ const SubModuleView = () => {
                 <div
                   style={{
                     display: "flex",
-                    height: "calc(100vh - 64px)",
+                    flexDirection: window.innerWidth <= 768 ? "column" : "row",
+                    height:
+                      window.innerWidth <= 768 ? "auto" : "calc(100vh - 64px)",
                     background: "#f4f8fb",
                     borderRadius: 16,
-                    overflowY: "hidden",
+                    overflowY: window.innerWidth <= 768 ? "visible" : "hidden",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     position: "relative",
+                    gap: window.innerWidth <= 768 ? 16 : 0,
                   }}
                 >
+                  {/* DICOM Viewer - Now on the LEFT */}
                   <div
                     style={{
-                      flex: 1,
-                      borderRight: "1px solid #e0e0e0",
-                      padding: 0,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "stretch",
-                      background: "#fff",
-                      borderRadius: "16px 0 0 16px",
-                      margin: 24,
-                      marginRight: 0,
-                      minWidth: 320,
-                      maxWidth: 420,
-                      overflowY: "hidden",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                    }}
-                  >
-                    {renderAssessmentHeader()}
-                    <div style={{ padding: 32, flex: 1, overflowY: "auto" }}>
-                      {renderAssessmentContent()}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      flex: 2,
+                      flex: window.innerWidth <= 768 ? "none" : 2,
+                      width: window.innerWidth <= 768 ? "100%" : "auto",
                       background: "#f4f8fb",
-                      borderRadius: "0 16px 16px 0",
-                      margin: 24,
-                      marginLeft: 0,
-                      padding: 32,
+                      borderRadius:
+                        window.innerWidth <= 768 ? 16 : "16px 0 0 16px",
+                      margin:
+                        window.innerWidth <= 768
+                          ? "0 16px 16px 16px"
+                          : "24px 0 24px 24px",
+                      padding: window.innerWidth <= 768 ? 20 : 32,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
+                      minHeight: window.innerWidth <= 768 ? "500px" : "auto",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     }}
                   >
@@ -2003,8 +1988,8 @@ const SubModuleView = () => {
                       style={{
                         color: "#1976d2",
                         fontWeight: 700,
-                        fontSize: 22,
-                        marginBottom: 1,
+                        fontSize: window.innerWidth <= 768 ? 20 : 22,
+                        marginBottom: 16,
                       }}
                     >
                       DICOM Viewer
@@ -2013,15 +1998,55 @@ const SubModuleView = () => {
                       className="dicomview sessioniframe"
                       src="https://app.medicai.io/public-study/5e8c1f7e2f8fbf0017b2b1a1"
                       width="100%"
-                      height="650px"
+                      height={window.innerWidth <= 768 ? "400px" : "650px"}
                       style={{
                         width: "100%",
                         borderRadius: 12,
                         border: "1px solid #e0e0e0",
                         background: "#fff",
+                        minHeight: window.innerWidth <= 768 ? "400px" : "650px",
                       }}
                       title="DICOM Viewer"
                     />
+                  </div>
+
+                  {/* Assessment Section - Now on the RIGHT */}
+                  <div
+                    style={{
+                      flex: window.innerWidth <= 768 ? "none" : 1,
+                      width: window.innerWidth <= 768 ? "100%" : "auto",
+                      borderLeft:
+                        window.innerWidth <= 768 ? "none" : "1px solid #e0e0e0",
+                      borderBottom:
+                        window.innerWidth <= 768 ? "1px solid #e0e0e0" : "none",
+                      padding: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      background: "#fff",
+                      borderRadius:
+                        window.innerWidth <= 768 ? 16 : "0 16px 16px 0",
+                      margin:
+                        window.innerWidth <= 768
+                          ? "16px 16px 0 16px"
+                          : "24px 24px 24px 0",
+                      minWidth: window.innerWidth <= 768 ? "auto" : 320,
+                      maxWidth: window.innerWidth <= 768 ? "none" : 420,
+                      minHeight: window.innerWidth <= 768 ? "auto" : "auto",
+                      overflowY: "auto",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    {renderAssessmentHeader()}
+                    <div
+                      style={{
+                        padding: window.innerWidth <= 768 ? 20 : 32,
+                        flex: 1,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {renderAssessmentContent()}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2249,7 +2274,7 @@ const SubModuleView = () => {
                     }}
                     onClick={() => handleDifficultyCardClick("Beginner")}
                   >
-                    Start Beginner Assessment
+                    Start Assessment
                   </button>
                 </div>
 
@@ -2417,7 +2442,7 @@ const SubModuleView = () => {
                     }}
                     onClick={() => handleDifficultyCardClick("Advanced")}
                   >
-                    Start Advanced Assessment
+                    Start Assessment
                   </button>
                 </div>
               </div>

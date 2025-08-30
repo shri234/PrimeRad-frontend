@@ -1,4 +1,4 @@
-import React from "react";
+// import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -247,13 +247,31 @@ const BackButton = ({
   );
 };
 
+import { useEffect, useState } from "react";
+
 const FixedBackButton = ({
   position = "top-left",
   variant = "floating",
   size = "small",
   customPath = null,
-  topOffset = window.innerWidth >= 768 ? "70px" : "0px",
 }) => {
+  const [isDesktopOrTablet, setIsDesktopOrTablet] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktopOrTablet(window.innerWidth >= 768); // show only tablet & desktop
+    };
+
+    handleResize(); // run on mount
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // if (!isDesktopOrTablet) return null; // hide on mobile
+
+  const topOffset = window.innerWidth >= 768 ? "70px" : "0px";
+
   const positions = {
     "top-left": { top: topOffset, left: "10px" },
     "top-right": { top: topOffset, right: "24px" },
@@ -262,7 +280,14 @@ const FixedBackButton = ({
   };
 
   return (
-    <div style={{ position: "relative", zIndex: 1000, ...positions[position] }}>
+    <div
+      style={{
+        position: "relative",
+        zIndex: 1000,
+        ...positions[position],
+        // marginTop: isDesktopOrTablet ? "0px" : "70px",
+      }}
+    >
       <BackButton
         variant={variant}
         size={size}
@@ -274,7 +299,6 @@ const FixedBackButton = ({
   );
 };
 
-// Breadcrumb-style Back Button
 const BreadcrumbBack = ({
   currentPage = "Current Page",
   previousPage = "Previous Page",

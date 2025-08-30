@@ -2052,11 +2052,7 @@ const CaseViewerPage = () => {
                                     }}
                                   >
                                     <img
-                                      src={
-                                        member.image
-                                          ? `https://primerad-backend.onrender.com${member.image}`
-                                          : "/assets/images/faculty1.jpg"
-                                      }
+                                      src={member.image}
                                       alt={`${member.name} profile`}
                                       className="img-fluid"
                                       loading="lazy"

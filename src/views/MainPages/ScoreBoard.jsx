@@ -74,10 +74,8 @@ export default function ScoreBoard() {
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // Mock navigate function
   const navigate = (path) => {
     console.log(`Would navigate to: ${path}`);
-    // In a real app, this would handle navigation
   };
 
   const cardData = getCardData(activeArea, activeLevel);
@@ -86,7 +84,6 @@ export default function ScoreBoard() {
     async function fetchPoints() {
       setIsLoading(true);
       try {
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const res = await fetch(

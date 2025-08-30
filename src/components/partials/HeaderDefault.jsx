@@ -275,26 +275,21 @@ const HeaderDefault = memo(() => {
                   </Nav.Item>
 
                   {isAuthenticated ? (
-                    <Dropdown
-                      as="li"
-                      className="nav-item"
-                      style={{ flexShrink: 0 }}
-                    >
+                    <Dropdown align="end" className="user-dropdown">
                       <Dropdown.Toggle
-                        as="div"
-                        className="user-icon-button"
+                        as="button"
+                        variant="link"
+                        id="user-dropdown"
+                        className="user-icon-button p-0 border-0 bg-transparent"
                         style={{
-                          transition: "transform 0.3s ease-in-out",
+                          cursor: "pointer",
                           fontSize: windowWidth < 1200 ? "1.2rem" : "1.4rem",
                         }}
                       >
                         <i className="fas fa-user-circle"></i>
                       </Dropdown.Toggle>
 
-                      <Dropdown.Menu
-                        className="sub-drop dropdown-menu-end"
-                        aria-labelledby="dropdown-basic"
-                      >
+                      <Dropdown.Menu className="sub-drop dropdown-menu-end">
                         <Dropdown.Item>
                           <div className="d-flex align-items-center">
                             <div className="ms-3">
@@ -304,7 +299,6 @@ const HeaderDefault = memo(() => {
                           </div>
                         </Dropdown.Item>
                         <Dropdown.Divider />
-
                         <Dropdown.Item
                           onClick={() => {
                             dispatch(logout());

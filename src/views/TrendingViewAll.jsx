@@ -550,7 +550,7 @@ const RecentItemsViewAll = memo(() => {
   return (
     <Fragment>
       <FixedBackButton customPath="/home" />
-
+      {/* 
       <div
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -558,8 +558,8 @@ const RecentItemsViewAll = memo(() => {
           position: "relative",
           overflow: "hidden",
         }}
-      >
-        <div
+      > */}
+      {/* <div
           style={{
             position: "absolute",
             top: 0,
@@ -601,7 +601,7 @@ const RecentItemsViewAll = memo(() => {
             </Col>
           </Row>
         </Container>
-      </div>
+      </div> */}
 
       {/* Desktop Main Content Section */}
       <div
@@ -738,7 +738,7 @@ const RecentItemsViewAll = memo(() => {
                         xxl={3}
                         xl={2}
                         lg={3}
-                        md={4}
+                        md={12}
                         sm={6}
                         xs={6}
                         className="d-flex"
@@ -752,8 +752,8 @@ const RecentItemsViewAll = memo(() => {
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "scale(1.02)";
-                            e.currentTarget.style.boxShadow =
-                              "0 10px 30px rgba(0,0,0,0.15)";
+                            // e.currentTarget.style.boxShadow =
+                            //   "0 10px 30px rgba(0,0,0,0.15)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "scale(1)";
