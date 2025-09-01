@@ -131,7 +131,7 @@ const FacultyDetailPage = memo(() => {
     .faculty-detail-bg {
       background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
       min-height: 100vh;
-      margin-top: 80px;
+      margin-top: 50px;
     }
     
     .profile-card {
@@ -405,7 +405,7 @@ const FacultyDetailPage = memo(() => {
 
                       {/* Social Links */}
                       <div className="d-flex justify-content-center gap-3">
-                        <a href="#" className="social-icon">
+                        {/* <a href="#" className="social-icon">
                           <svg
                             width="20"
                             height="20"
@@ -414,7 +414,7 @@ const FacultyDetailPage = memo(() => {
                           >
                             <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                           </svg>
-                        </a>
+                        </a> */}
                         <a href="#" className="social-icon">
                           <svg
                             width="20"
@@ -429,21 +429,17 @@ const FacultyDetailPage = memo(() => {
                     </div>
                   </div>
 
-                  {/* Right Column - Detailed Information */}
                   <div className="col-lg-8">
-                    {/* About Section */}
                     <div className="content-card p-4 mb-4">
-                      <h2 className="h3 fw-bold text-dark mb-3">
+                      <h5 className="h4 fw-bold mb-3">
                         About Dr. {faculty.name.split(" ").pop()}
-                      </h2>
+                      </h5>
                       <p className="text-muted lh-lg fs-5">
                         {faculty.description}
                       </p>
                     </div>
 
-                    {/* Tabbed Content */}
                     <div className="content-card p-4">
-                      {/* Tab Navigation */}
                       <ul
                         className="nav nav-tabs nav-tabs-custom mb-4"
                         role="tablist"

@@ -10,19 +10,13 @@
   font-weight: 500;
 }
 
-/* HeaderDefault.css */
 
-/* Base styles for the <header> element */
-
-
-/* Styles for the sticky header when scrolled */
 .header-sticky.sticky {
   /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
   /* background-color: white; Solid white background when sticky */
   height: 90px;
 }
 
-/* Collapsed state for the <header> element */
 .header-default.header-minimized {
   height: 60px; /* Minimized height */
 }
@@ -78,13 +72,24 @@
 
 .polished-nav .nav-link.active-link {
   background-color: lightblue;
-  /* padding: 18px; */
   color: white;
 }
 
+/* .polished-nav .nav-link,
+.polished-nav .nav-link.active-link {
+  font-weight: 500;        /* keep consistent */
+  /* padding: 0.25rem 0.5rem; keep consistent */
+/* } */ */
+
+.polished-nav .btn-subscribe {
+  width: 130px; /* fixed width */
+  flex-shrink: 0; /* prevent squeezing */
+}
+
+
 .polished-nav .btn {
   border-radius: 10px;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   background-color: darkslategray;
   transition: all 0.3s ease-in-out;
   color: white;
@@ -157,6 +162,8 @@
   flex-direction: column;
   height: 100%;
 }
+
+
 
 /* Mobile Navigation Items */
 .mobile-nav-items {

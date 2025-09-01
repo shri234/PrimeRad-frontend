@@ -481,205 +481,118 @@ const MovieDetail = memo(() => {
         <div
           className="iq-main-slider site-video mb-5"
           style={{
-            borderRadius: "0 0 28px 28px",
+            borderRadius:
+              window.innerWidth <= 768
+                ? "10px 10px 10px 10px"
+                : "28px 28px 28px 28px",
+            width: window.innerWidth <= 768 ? "100%" : "85%",
+            marginTop: "10px",
+            height: "55%",
             overflow: "hidden",
+            marginLeft: window.innerWidth <= 768 ? "" : "130px",
             boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
             position: "relative",
           }}
         >
           {isAuthenticated ? (
-            <Container fluid className="p-0">
-              <Row className="g-0">
-                <Col>
-                  <div className="pt-0">
+            <div>
+              {vimeoVideoId ? (
+                <>
+                  <div
+                    ref={videoContainerRef}
+                    className="video-container"
+                    style={{
+                      borderRadius: "10px",
+                      maxHeight: "60%",
+                      // width: "100%",
+                      // maxWidth: "100%",
+
+                      aspectRatio: "16/9",
+                      // border: "none",
+                    }}
+                  />
+                  {/* Loading overlay for video player */}
+                  {!playerReady && (
                     <div
-                      className="video-wrapper"
+                      className="loading-overlay"
                       style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: "rgba(0,0,0,0.8)",
+                        color: "#fff",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        minHeight: "50vh",
-                        height: "90vh",
-                        width: "100%",
-                        padding: "0 15px",
-                        "@media (max-width: 768px)": {
-                          height: "50vh",
-                          minHeight: "40vh",
-                        },
-                        "@media (max-width: 480px)": {
-                          height: "40vh",
-                          minHeight: "35vh",
-                        },
+                        fontSize: "clamp(1rem, 3vw, 1.1rem)",
+                        zIndex: 90,
                       }}
                     >
-                      {/* --- Conditional Video Playback / Subscribe Button --- */}
-                      {!isFree ? ( // If the content is NOT free (i.e., locked)
-                        <div
-                          className="locked-content-overlay"
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: "rgba(0,0,0,0.85)", // Dark overlay
-                            color: "#fff",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            fontSize: "1.5rem",
-                            textAlign: "center",
-                            zIndex: 100, // Ensure this overlay is highest
-                            padding: "20px",
-                          }}
-                        >
-                          <FaExclamationCircle
-                            size={50}
-                            style={{
-                              marginBottom: "20px",
-                              // Responsive icon size
-                              fontSize: "clamp(40px, 8vw, 50px)",
-                            }}
-                          />
-                          <p
-                            style={{
-                              marginBottom: "15px",
-                              fontSize: "clamp(1.2rem, 4vw, 1.8rem)", // Responsive font size
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Content Locked
-                          </p>
-                          <p
-                            style={{
-                              marginBottom: "30px",
-                              fontSize: "clamp(0.9rem, 3vw, 1.1rem)", // Responsive font size
-                              maxWidth: "300px", // Limit width for readability
-                              textAlign: "center",
-                            }}
-                          >
-                            This exclusive content requires a subscription.
-                          </p>
-                          <Button
-                            variant="primary"
-                            onClick={handleSubscribeClick} // Handles navigation to /pricing
-                            style={{
-                              backgroundColor: "lightblue",
-                              borderColor: THEME.primary,
-                              borderRadius: "10px",
-                              padding: "12px 25px",
-                              fontSize: "clamp(1rem, 3vw, 1.2rem)",
-                              fontWeight: 700,
-                              boxShadow: "0 4px 15px rgba(25,108,210,0.4)",
-                              minWidth: "200px",
-                            }}
-                          >
-                            Subscribe to Unlock
-                          </Button>
-                        </div>
-                      ) : // If isFree is true, attempt to render the video player or "Video not available" message
-                      vimeoVideoId ? (
-                        <>
-                          <div
-                            ref={videoContainerRef}
-                            className="video-container"
-                            style={{
-                              width: "82%", // Full width on mobile
-                              maxWidth: "95%", //
-                              height: "auto",
-                              aspectRatio: "16/9",
-                              border: "none",
-                              // Responsive width adjustments
-                              // Mobile first approach
-                            }}
-                          />
-                          {/* Loading overlay for video player (appears on top of video, under subscribe button overlay) */}
-                          {!playerReady && (
-                            <div
-                              className="loading-overlay"
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: "rgba(0,0,0,0.8)",
-                                color: "#fff",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                fontSize: "clamp(1rem, 3vw, 1.1rem)", // Responsive font size
-                                zIndex: 90, // Higher than video, lower than subscribe overlay
-                              }}
-                            >
-                              Loading video...
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        // Display message if vimeoVideoId is missing
-                        <div
-                          className="video-unavailable"
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: "#333",
-                            color: "#fff",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            fontSize: "clamp(1rem, 3vw, 1.2rem)", // Responsive font size
-                            flexDirection: "column",
-                            textAlign: "center",
-                            zIndex: 10,
-                            padding: "20px",
-                          }}
-                        >
-                          <FaExclamationCircle
-                            size={40}
-                            style={{
-                              marginBottom: "10px",
-                              fontSize: "clamp(30px, 6vw, 40px)", // Responsive icon size
-                            }}
-                          />
-                          <p>Video not available.</p>
-                          <small
-                            style={{
-                              fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)", // Responsive small text
-                              textAlign: "center",
-                              maxWidth: "280px",
-                            }}
-                          >
-                            Please check if the video ID is correct or
-                            available.
-                          </small>
-                        </div>
-                      )}
+                      Loading video...
                     </div>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
+                  )}
+                </>
+              ) : (
+                // Display message if vimeoVideoId is missing
+                <div
+                  className="video-unavailable"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: "#333",
+                    color: "#fff",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "clamp(1rem, 3vw, 1.2rem)",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    zIndex: 10,
+                    padding: "20px",
+                  }}
+                >
+                  <FaExclamationCircle
+                    size={40}
+                    style={{
+                      marginBottom: "10px",
+                      fontSize: "clamp(30px, 6vw, 40px)",
+                    }}
+                  />
+                  <p>Video not available.</p>
+                  <small
+                    style={{
+                      fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)",
+                      textAlign: "center",
+                      maxWidth: "280px",
+                    }}
+                  >
+                    Please check if the video ID is correct or available.
+                  </small>
+                </div>
+              )}
+            </div>
           ) : (
+            // Login prompt when not authenticated
             <div
               className="d-flex justify-content-center align-items-center login-prompt"
               style={{
                 height: "50vh",
-                minHeight: "300px", // Minimum height for mobile
+                minHeight: "300px",
                 background: "#333",
                 borderRadius: "0 0 28px 28px",
-                padding: "20px", // Add padding for mobile
+                padding: "20px",
               }}
             >
               <div className="text-center text-white">
                 <h2
                   className="mb-3"
                   style={{
-                    fontSize: "clamp(1.5rem, 5vw, 2rem)", // Responsive heading
+                    fontSize: "clamp(1.5rem, 5vw, 2rem)",
                   }}
                 >
                   {t("Login to watch unlimited content")}
@@ -692,9 +605,9 @@ const MovieDetail = memo(() => {
                     backgroundColor: THEME.primary,
                     borderColor: THEME.primary,
                     borderRadius: "8px",
-                    fontSize: "clamp(1rem, 3vw, 1.1rem)", // Responsive button text
+                    fontSize: "clamp(1rem, 3vw, 1.1rem)",
                     fontWeight: 600,
-                    minWidth: "150px", // Minimum button width
+                    minWidth: "150px",
                   }}
                 >
                   {t("Login")}

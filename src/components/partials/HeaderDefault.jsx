@@ -23,12 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import { logout } from "../../store/auth/actions";
 import { theme_scheme_direction } from "../../store/setting/actions";
-
+import { createPortal } from "react-dom";
 // components
 import Logo from "../logo";
 import CustomToggle from "../CustomToggle";
-
-// the hook
 import { useTranslation } from "react-i18next";
 
 import "./HeaderDefault.css";
@@ -49,6 +47,8 @@ const HeaderDefault = memo(() => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectUser);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const userDropdownRef = useRef(null);
   const location = useLocation();
 
   const { t, i18n } = useTranslation();
@@ -67,6 +67,24 @@ const HeaderDefault = memo(() => {
   const handleCloseMobileMenu = () => setShowMobileMenu(false);
   const handleShowMobileMenu = () => setShowMobileMenu(true);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target)
+      ) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    if (showUserDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserDropdown]);
   useEffect(() => {
     const handleScroll = () => {
       const headerSticky = document.querySelector(".header-sticky");
@@ -175,7 +193,7 @@ const HeaderDefault = memo(() => {
                     <Nav.Item
                       key={index}
                       className="mx-0 px-0 py-0 polished-nav-item"
-                      style={{ flexShrink: 0 }}
+                      style={{ flexBasis: "auto", flexShrink: 0 }}
                     >
                       <Nav.Link
                         className={`nav-link text-sm px-1 py-1 ${
@@ -188,7 +206,7 @@ const HeaderDefault = memo(() => {
                         onClick={() => handleNavigation(item.path)}
                         style={{
                           transition: "all 0.3s ease-in-out",
-                          fontSize: windowWidth < 1200 ? "12px" : "14px",
+                          fontSize: "14px",
                           display: "flex",
                           alignItems: "center",
                         }}
@@ -196,7 +214,7 @@ const HeaderDefault = memo(() => {
                         <span
                           style={{
                             marginRight: windowWidth < 1200 ? 3 : 6,
-                            fontSize: windowWidth < 1200 ? 14 : 18,
+                            fontSize: 18,
                             verticalAlign: "middle",
                             transition: "margin-right 0.3s ease-in-out",
                             display: "flex",
@@ -205,7 +223,7 @@ const HeaderDefault = memo(() => {
                         >
                           {React.cloneElement(item.icon, {
                             style: {
-                              fontSize: windowWidth < 1200 ? 16 : 18,
+                              fontSize: 18,
                               verticalAlign: "middle",
                             },
                           })}
@@ -213,7 +231,7 @@ const HeaderDefault = memo(() => {
 
                         <span
                           style={{
-                            fontSize: windowWidth < 1200 ? "12px" : "14px",
+                            fontSize: "14px",
                             whiteSpace: "nowrap",
                           }}
                         >
@@ -229,7 +247,7 @@ const HeaderDefault = memo(() => {
                   >
                     <Button
                       variant="primary"
-                      className="subscribe-btn d-flex align-items-center gap-1"
+                      className="btn-subscribe d-flex align-items-center "
                       onClick={() => navigate("/pricing")}
                       style={{
                         background:
@@ -237,18 +255,18 @@ const HeaderDefault = memo(() => {
                         color: "white",
                         fontWeight: "700",
                         borderRadius: "10px",
-                        padding: windowWidth < 1200 ? "8px 16px" : "8px 20px",
-                        fontSize: windowWidth < 1200 ? "0.85rem" : "1rem",
+                        padding: "8px 16px",
+                        fontSize: "1rem",
                         border: "none",
                         boxShadow: "0 4px 15px rgba(25, 118, 210, 0.4)",
-                        transition: "all 0.3s ease",
-                        minWidth: windowWidth < 1200 ? "100px" : "130px",
+                        // transition: "all 0.3s ease",
+                        width: "130px",
                         justifyContent: "center",
                         alignItems: "center",
                         marginRight: "10px",
-                        gap: windowWidth < 1200 ? "6px" : "8px",
+                        gap: "8px",
                         cursor: "pointer",
-                        whiteSpace: "nowrap",
+                        // whiteSpace: "nowrap",
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = "translateY(-2px)";
@@ -267,7 +285,7 @@ const HeaderDefault = memo(() => {
                         className="fas fa-star"
                         style={{
                           color: "gold",
-                          fontSize: windowWidth < 1200 ? "0.8rem" : "0.9rem",
+                          fontSize: "0.9rem",
                         }}
                       ></i>
                       <span>Subscribe</span>
@@ -275,40 +293,74 @@ const HeaderDefault = memo(() => {
                   </Nav.Item>
 
                   {isAuthenticated ? (
-                    <Dropdown align="end" className="user-dropdown">
-                      <Dropdown.Toggle
-                        as="button"
-                        variant="link"
-                        id="user-dropdown"
-                        className="user-icon-button p-0 border-0 bg-transparent"
+                    <div className="position-relative" ref={userDropdownRef}>
+                      <button
+                        className="user-icon-button p-0 border-0 bg-transparent d-flex align-items-center"
                         style={{
                           cursor: "pointer",
                           fontSize: windowWidth < 1200 ? "1.2rem" : "1.4rem",
+                          gap: "4px",
                         }}
+                        onClick={() => setShowUserDropdown(!showUserDropdown)}
                       >
                         <i className="fas fa-user-circle"></i>
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu className="sub-drop dropdown-menu-end">
-                        <Dropdown.Item>
-                          <div className="d-flex align-items-center">
-                            <div className="ms-3">
-                              <h6 className="mb-0">{user?.name}</h6>
-                              <p className="mb-0 font-size-12">{user?.email}</p>
-                            </div>
-                          </div>
-                        </Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item
-                          onClick={() => {
-                            dispatch(logout());
-                            navigate("/");
+                        <i
+                          className="fas fa-chevron-down"
+                          style={{
+                            fontSize: windowWidth < 1200 ? "0.7rem" : "0.8rem",
+                            transition: "transform 0.2s ease",
+                            transform: showUserDropdown
+                              ? "rotate(180deg)"
+                              : "rotate(0deg)",
                           }}
-                        >
-                          Logout
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                        ></i>
+                      </button>
+
+                      {showUserDropdown &&
+                        createPortal(
+                          <div
+                            className="dropdown-menu show"
+                            style={{
+                              position: "fixed",
+                              top: "60px",
+                              right: "20px",
+                              zIndex: 10000,
+                              minWidth: "200px",
+                              backgroundColor: "white",
+                              border: "1px solid #dee2e6",
+                              borderRadius: "0.375rem",
+                              boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)",
+                              padding: "0.5rem 0",
+                            }}
+                          >
+                            <div className="dropdown-item-text">
+                              <div className="d-flex align-items-center">
+                                <div className="ms-3">
+                                  <h6 className="mb-0">{user?.name}</h6>
+                                  <p
+                                    className="mb-0"
+                                    style={{ fontSize: "12px" }}
+                                  >
+                                    {user?.email}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <hr className="dropdown-divider" />
+                            <Dropdown.Item
+                              onClick={() => {
+                                console.log("Logout clicked");
+                                setShowUserDropdown(false);
+                                dispatch(logout());
+                                navigate("/");
+                              }}
+                            >
+                              Logout
+                            </Dropdown.Item>
+                          </div>,
+                          document.body
+                        )}
+                    </div>
                   ) : (
                     <Nav.Item
                       as="li"
