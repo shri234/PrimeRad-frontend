@@ -501,7 +501,7 @@ const LivePage = memo(() => {
                   <div
                     style={{
                       position: "relative",
-                      marginTop: 24,
+                      marginTop: 10,
                       marginBottom: "50px",
                       borderRadius: 16,
                       overflow: "hidden",
@@ -1340,7 +1340,6 @@ const LivePage = memo(() => {
             </Row>
           </Container>
         </div>
-        {/* Faculty/Cast Section */}
         <div className="cast-tabs pb-5 px-0 px-md-0">
           <Container fluid>
             <div
