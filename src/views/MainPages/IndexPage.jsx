@@ -614,7 +614,7 @@ const HomePage = memo(() => {
         >
           Meet Our Faculty
         </h2>
-        {/* Decorative gradients for carousel ends - Hidden on mobile */}
+
         <div
           style={{
             position: "absolute",
@@ -628,6 +628,7 @@ const HomePage = memo(() => {
             pointerEvents: "none",
           }}
         />
+
         <div
           style={{
             position: "absolute",
@@ -762,10 +763,7 @@ const HomePage = memo(() => {
       >
         <LatestMovies title="Upcoming Live Programs" />
       </div>
-
       <TestimonialsSection />
-
-      {/* Recommended Lectures Section */}
       <div
         data-aos="fade-up"
         data-aos-delay="200"
@@ -778,14 +776,11 @@ const HomePage = memo(() => {
         <LatestMovies title="Recommended Lectures" />
       </div>
 
-      {/* Enhanced Responsive Styles */}
       <style jsx>{`
-        /* Smooth scrolling for better UX */
         html {
           scroll-behavior: smooth;
         }
 
-        /* Base responsive adjustments */
         * {
           box-sizing: border-box;
         }

@@ -316,7 +316,6 @@ const videoCardStyles = `
   }
 `;
 
-// Loader component for image placeholder (UNCHANGED)
 const ImageLoader = () => (
   <div
     style={{
@@ -595,11 +594,10 @@ const MainPage = memo(() => {
 
       const reduceDuration = (duration, contentType) => {
         if (contentType === "Lecture" && duration) {
-          // Extract minutes from duration string (assuming format like "45 min" or "1h 30min")
           const match = duration.match(/(\d+)/);
           if (match) {
             const minutes = parseInt(match[1]);
-            const reducedMinutes = Math.max(5, Math.floor(minutes * 0.7)); // Reduce by 30%, minimum 5 minutes
+            const reducedMinutes = Math.max(5, Math.floor(minutes * 0.7));
             return `${reducedMinutes} min`;
           }
         }
@@ -641,19 +639,17 @@ const MainPage = memo(() => {
         submodule: session.subCategoryId || "General",
         startDate: session.startDate,
       }));
-
       setSessions((prevSessions) =>
         append ? [...prevSessions, ...cards] : cards
       );
-      // Determine if there's more data based on total and current page/limit
       setHasMore(pageNum * LIMIT < total);
       console.log(`Page: ${pageNum}, Limit: ${LIMIT}, Total: ${total}`);
       console.log(`Calculated hasMore: ${pageNum * LIMIT < total}`);
-      console.log(`Current hasMore state: ${hasMore}`); // This might be stale due to closure if not carefully managed
+      console.log(`Current hasMore state: ${hasMore}`);
       console.log(`Is Fetching More: ${isFetchingMore}`);
     } catch (error) {
       console.error("Error fetching sessions:", error);
-      setHasMore(false); // On error, assume no more data
+      setHasMore(false);
     } finally {
       setInitialLoading(false);
       setIsFetchingMore(false);

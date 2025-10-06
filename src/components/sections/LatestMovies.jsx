@@ -10,9 +10,7 @@ const LatestMovies = (props) => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate(); // <--- Initialize useNavigate
-
-  // Common function to calculate time ago (optional, but good for consistency)
+  const navigate = useNavigate();
   const calculateTimeAgo = (startDate) => {
     if (!startDate) return "";
     const now = new Date();
@@ -112,7 +110,7 @@ const LatestMovies = (props) => {
       // Changed from if to else if
       fetchRecommendedLectures();
     } else {
-      setLoading(false); // No specific fetch for other titles, assume loaded
+      setLoading(false);
     }
   }, [
     props.title,
@@ -203,8 +201,8 @@ const LatestMovies = (props) => {
         }
         breakpoints={{
           0: {
-            slidesPerView: 1, // 📱 Mobile: show 1
-            slidesPerGroup: 1, // move 1 at a time
+            slidesPerView: 1,
+            slidesPerGroup: 1,
             pagination: { clickable: true },
           },
           768: {
@@ -213,7 +211,7 @@ const LatestMovies = (props) => {
             pagination: false,
           },
           1024: {
-            slidesPerView: 5, // 🖥 Desktop: show 5
+            slidesPerView: 5,
             slidesPerGroup: 5,
           },
         }}

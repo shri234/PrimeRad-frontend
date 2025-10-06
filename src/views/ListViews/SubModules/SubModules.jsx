@@ -2140,7 +2140,6 @@ const SubModuleView = () => {
                       "0 4px 12px rgba(16, 185, 129, 0.1)";
                   }}
                 >
-                  {/* Background Pattern */}
                   <div
                     style={{
                       position: "absolute",
@@ -2374,7 +2373,6 @@ const SubModuleView = () => {
                     </div>
                   </div>
 
-                  {/* Description */}
                   <p
                     style={{
                       margin: 0,
@@ -2424,7 +2422,6 @@ const SubModuleView = () => {
                     ))}
                   </div>
 
-                  {/* Action Button */}
                   <button
                     style={{
                       padding: "12px 16px",
@@ -2559,7 +2556,7 @@ const SubModuleView = () => {
                         }}
                         className="breadcrumb-link"
                       >
-                        {activeModuleName}
+                        Modules
                       </span>
                       {selectedSubModuleId && (
                         <>
@@ -2571,7 +2568,7 @@ const SubModuleView = () => {
                             }}
                             className="breadcrumb-link"
                           >
-                            {selectedSubModule?.pathologyName}{" "}
+                            Pathologies{" "}
                           </span>
                         </>
                       )}
@@ -2632,6 +2629,7 @@ const SubModuleView = () => {
                         </div>
                       </div> */}
                       </div>
+
                       {loadingPathologies ? (
                         <div className="loading-message">
                           Loading pathologies...
@@ -2644,14 +2642,12 @@ const SubModuleView = () => {
                         <div className="no-data-message">
                           No pathologies found for this module.
                         </div>
-                      ) : (
+                      ) : !selectedSubModuleId ? (
                         modulePathologiesData.map((pathologyItem) => {
                           const staticSubModuleDataForPathology =
                             subModulesData[activeModuleName]?.find(
                               (sub) => sub.name === pathologyItem.pathologyName
                             );
-                          const isSelected =
-                            selectedSubModuleId === pathologyItem._id;
                           const apiSessionsForPathology =
                             pathologyItem.sessions || [];
                           const staticSessionsForPathology = [
@@ -2672,15 +2668,10 @@ const SubModuleView = () => {
                               className="submodule-container"
                             >
                               <div
-                                className={`submodule-item ${viewMode}-view ${
-                                  isSelected ? "selected" : ""
-                                }`}
-                                onClick={() => {
-                                  handleSubModuleClick(pathologyItem);
-                                  setTimeout(() => {
-                                    handleScroll();
-                                  }, 0);
-                                }}
+                                className={`submodule-item ${viewMode}-view`}
+                                onClick={() =>
+                                  handleSubModuleClick(pathologyItem)
+                                }
                               >
                                 <img
                                   src={
@@ -2704,14 +2695,12 @@ const SubModuleView = () => {
                                   }}
                                 >
                                   <i
-                                    className={`fas fa-angle-right icon-indicator ${
-                                      isSelected ? "rotated-down" : ""
-                                    }`}
+                                    className="fas fa-angle-right icon-indicator"
                                     style={{
                                       marginRight: isMobile ? "5px" : "10px",
                                     }}
-                                  ></i>{" "}
-                                  {pathologyItem.pathologyName}{" "}
+                                  />
+                                  {pathologyItem.pathologyName}
                                 </div>
                                 <div
                                   className="submodule-type-badges"
@@ -2745,717 +2734,411 @@ const SubModuleView = () => {
                                   </span>
                                 </div>
                               </div>
-                              {isSelected && (
-                                <>
-                                  {pathologyItem.isPlaceholder ? (
-                                    <div
-                                      style={{
-                                        textAlign: "center",
-                                        padding: "50px",
-                                        fontSize: "1.2rem",
-                                        color: "#666",
-                                        width: "100%",
-                                      }}
-                                    >
-                                      No video content defined for "
-                                      {pathologyItem.pathologyName}" yet.
-                                    </div>
-                                  ) : (
-                                    <div
-                                      className={
-                                        viewMode === "list"
-                                          ? "level-list-view"
-                                          : "level-grid-view lecture-grid-view"
-                                      }
-                                      style={{}}
-                                    >
-                                      <div
-                                        ref={
-                                          selectedLevel === "beginner"
-                                            ? sectionRef
-                                            : null
-                                        }
-                                        className={`level-card ${viewMode} ${
-                                          selectedLevel === "beginner"
-                                            ? "selected"
-                                            : ""
-                                        }`}
-                                        onClick={() =>
-                                          handleLevelClick("beginner")
-                                        }
-                                        style={{
-                                          // padding: isMobile
-                                          //   ? "4px 6px"
-                                          //   : "8px 10px",
-                                          width: isMobile ? "90%" : "100%",
-                                        }}
-                                      >
-                                        <div className="level-thumbnail">
-                                          <div
-                                            className="level-icon"
-                                            style={{
-                                              fontSize: isMobile
-                                                ? "18px"
-                                                : "48px",
-                                            }}
-                                          >
-                                            🎓
-                                          </div>
-                                        </div>
-                                        <i
-                                          className={`fas fa-angle-right icon-indicator ${
-                                            selectedLevel === "beginner"
-                                              ? "rotated-down"
-                                              : ""
-                                          }`}
-                                          style={{
-                                            marginRight: isMobile
-                                              ? "7px"
-                                              : "10px",
-                                          }}
-                                        ></i>
-                                        <div className="level-info">
-                                          <h4
-                                            className="level-title"
-                                            style={{
-                                              fontSize: isMobile
-                                                ? "13px"
-                                                : "20px",
-                                            }}
-                                          >
-                                            Beginner
-                                          </h4>
-                                          <div className="level-full-badges">
-                                            {(() => {
-                                              const staticBeginnerSessions =
-                                                staticSubModuleDataForPathology
-                                                  ?.levels?.beginner || [];
-                                              const apiBeginnerSessions =
-                                                pathologyItem.sessions?.filter(
-                                                  (s) =>
-                                                    s.difficulty === "Beginner"
-                                                ) || [];
-                                              const combinedBeginner = [
-                                                ...staticBeginnerSessions,
-                                                ...apiBeginnerSessions,
-                                              ];
-                                              const levelCounts =
-                                                countTypes(combinedBeginner);
-                                              return (
-                                                <>
-                                                  <span
-                                                    className="type-badge badge-lecture"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Lectures:{" "}
-                                                    {levelCounts.lecture}
-                                                  </span>
-                                                  <span
-                                                    className="type-badge badge-case"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Cases: {levelCounts.case}
-                                                  </span>
-                                                  <span
-                                                    className="type-badge badge-live"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Live: {levelCounts.live}
-                                                  </span>
-                                                </>
-                                              );
-                                            })()}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      {selectedLevel === "beginner" && (
-                                        <div
-                                          className={
-                                            viewMode === "list"
-                                              ? "lecture-grid-view"
-                                              : "lecture-grid-view"
-                                          }
-                                          style={{}}
-                                        >
-                                          <div
-                                            className="polished-filter-bar"
-                                            style={{
-                                              gap: isMobile ? "1px" : "",
-                                            }}
-                                          >
-                                            <label className="polished-filter-checkbox">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.dicom}
-                                                onChange={() =>
-                                                  handleFilterChange("dicom")
-                                                }
-                                              />
-                                              <span
-                                                className="polished-custom-checkbox"
-                                                style={{
-                                                  width: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                  height: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                }}
-                                              />{" "}
-                                              DICOM
-                                            </label>
-                                            <label className="polished-filter-checkbox">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.lecture}
-                                                onChange={() =>
-                                                  handleFilterChange("lecture")
-                                                }
-                                              />
-                                              <span
-                                                className="polished-custom-checkbox"
-                                                style={{
-                                                  width: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                  height: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                }}
-                                              />{" "}
-                                              Lectures
-                                            </label>
-                                            <label className="polished-filter-checkbox live">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.live}
-                                                onChange={() =>
-                                                  handleFilterChange("live")
-                                                }
-                                              />
-                                              <span
-                                                className="polished-custom-checkbox"
-                                                style={{
-                                                  width: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                  height: isMobile
-                                                    ? "14px"
-                                                    : "18px",
-                                                }}
-                                              />{" "}
-                                              Live
-                                            </label>
-                                          </div>
-                                          <div className="polished-grid-container">
-                                            {loadingLevelSessions ? (
-                                              <div
-                                                className="loading-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                }}
-                                              >
-                                                Loading {selectedLevel}{" "}
-                                                sessions...
-                                              </div>
-                                            ) : levelSessionsError ? (
-                                              <div
-                                                className="error-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                  color: "#d32f2f",
-                                                }}
-                                              >
-                                                {levelSessionsError}
-                                              </div>
-                                            ) : levelSessions.length === 0 ? (
-                                              <div
-                                                className="no-data-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                  color: "#666",
-                                                }}
-                                              >
-                                                No {selectedLevel} sessions
-                                                found for this pathology.
-                                              </div>
-                                            ) : (
-                                              levelSessions
-                                                .filter((session) => {
-                                                  const sessionType =
-                                                    session.sessionType?.toLowerCase() ||
-                                                    session.type?.toLowerCase();
-                                                  return (
-                                                    ((sessionType === "dicom" ||
-                                                      sessionType === "case") &&
-                                                      filters.dicom) ||
-                                                    ((sessionType === "vimeo" ||
-                                                      sessionType ===
-                                                        "lecture") &&
-                                                      filters.lecture) ||
-                                                    (sessionType === "live" &&
-                                                      filters.live)
-                                                  );
-                                                })
-                                                .map((session) => (
-                                                  <div
-                                                    key={
-                                                      session._id || session.id
-                                                    }
-                                                    className={`lecture-card ${
-                                                      viewMode === "list"
-                                                        ? "polished-grid-view"
-                                                        : "polished-grid-view"
-                                                    }`}
-                                                    onClick={() =>
-                                                      handleSessionClick(
-                                                        session
-                                                      )
-                                                    }
-                                                    style={{
-                                                      width: isMobile
-                                                        ? "120px"
-                                                        : "",
-                                                      height: isMobile
-                                                        ? "78px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    <div
-                                                      className={
-                                                        viewMode === "list"
-                                                          ? "polished-grid-thumbnail"
-                                                          : "polished-grid-thumbnail"
-                                                      }
-                                                      style={{
-                                                        width: isMobile
-                                                          ? "100%"
-                                                          : "",
-                                                        height: isMobile
-                                                          ? "100%"
-                                                          : "",
-                                                      }}
-                                                    >
-                                                      <img
-                                                        src={`https://primerad-backend.onrender.com${
-                                                          session.imageUrl_522x760 ||
-                                                          session.imageUrl_1920x1080 ||
-                                                          session.thumbnail
-                                                        }`}
-                                                        alt={session.title}
-                                                      />
-                                                    </div>
-                                                    <div
-                                                      className={
-                                                        viewMode === "list"
-                                                          ? "polished-grid-content"
-                                                          : "polished-grid-content"
-                                                      }
-                                                    >
-                                                      <div className="title-row">
-                                                        <div
-                                                          className={
-                                                            viewMode === "list"
-                                                              ? "polished-grid-title"
-                                                              : "polished-grid-title"
-                                                          }
-                                                          style={{
-                                                            whiteSpace:
-                                                              "nowrap",
-                                                            overflow: "hidden",
-                                                            textOverflow:
-                                                              "ellipsis",
-                                                            fontSize: isMobile
-                                                              ? "12px"
-                                                              : "",
-                                                          }}
-                                                        >
-                                                          {session.title}
-                                                        </div>
-                                                        {viewMode ===
-                                                          "grid" && (
-                                                          <div className="polished-list-desc">
-                                                            {
-                                                              session.description
-                                                            }
-                                                          </div>
-                                                        )}
-                                                      </div>
-                                                    </div>
-
-                                                    {viewMode === "list" && (
-                                                      <div
-                                                        className={`type-badge ${
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.className || ""
-                                                        } polished-grid-badge`}
-                                                      >
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.icon
-                                                        }{" "}
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.label
-                                                        }
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                ))
-                                            )}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      <div
-                                        ref={
-                                          selectedLevel === "advanced"
-                                            ? sectionRef
-                                            : null
-                                        }
-                                        className={`level-card ${viewMode} ${
-                                          selectedLevel === "advanced"
-                                            ? "selected"
-                                            : ""
-                                        }`}
-                                        onClick={() => {
-                                          handleLevelClick("advanced");
-                                          setTimeout(() => {
-                                            handleScroll();
-                                          }, 0);
-                                        }}
-                                        style={{
-                                          padding: isMobile
-                                            ? "4px 6px"
-                                            : "8px 10px",
-                                          width: isMobile ? "90%" : "100%",
-                                        }}
-                                      >
-                                        <div className="level-thumbnail">
-                                          <div
-                                            className="level-icon"
-                                            style={{
-                                              fontSize: isMobile
-                                                ? "18px"
-                                                : "48px",
-                                            }}
-                                          >
-                                            ⚡
-                                          </div>
-                                        </div>
-                                        <i
-                                          className={`fas fa-angle-right icon-indicator ${
-                                            selectedLevel === "advanced"
-                                              ? "rotated-down"
-                                              : ""
-                                          }`}
-                                          style={{ marginRight: "10px" }}
-                                        ></i>
-                                        <div className="level-info">
-                                          <h4
-                                            className="level-title"
-                                            style={{
-                                              fontSize: isMobile
-                                                ? "13px"
-                                                : "20px",
-                                            }}
-                                          >
-                                            Advanced
-                                          </h4>
-                                          <div className="level-full-badges">
-                                            {(() => {
-                                              const staticAdvancedSessions =
-                                                staticSubModuleDataForPathology
-                                                  ?.levels?.advanced || [];
-                                              const apiAdvancedSessions =
-                                                selectedSubModule.sessions?.filter(
-                                                  (s) =>
-                                                    s.difficulty === "Advanced"
-                                                ) || [];
-                                              const combinedAdvanced = [
-                                                ...staticAdvancedSessions,
-                                                ...apiAdvancedSessions,
-                                              ];
-                                              const levelCounts =
-                                                countTypes(combinedAdvanced);
-                                              return (
-                                                <>
-                                                  <span
-                                                    className="type-badge badge-lecture"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Lectures:{" "}
-                                                    {levelCounts.lecture}
-                                                  </span>
-                                                  <span
-                                                    className="type-badge badge-case"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Cases: {levelCounts.case}
-                                                  </span>
-                                                  <span
-                                                    className="type-badge badge-live"
-                                                    style={{
-                                                      fontSize: isMobile
-                                                        ? "8px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    Live: {levelCounts.live}
-                                                  </span>
-                                                </>
-                                              );
-                                            })()}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {selectedLevel === "advanced" && (
-                                        <div
-                                          className={
-                                            viewMode === "list"
-                                              ? "lecture-grid-view"
-                                              : "lecture-grid-view"
-                                          }
-                                          style={{}}
-                                        >
-                                          <div className="polished-filter-bar">
-                                            <label className="polished-filter-checkbox">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.dicom}
-                                                onChange={() =>
-                                                  handleFilterChange("dicom")
-                                                }
-                                              />
-                                              <span className="polished-custom-checkbox" />
-                                              DICOM
-                                            </label>
-                                            <label className="polished-filter-checkbox">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.lecture}
-                                                onChange={() =>
-                                                  handleFilterChange("lecture")
-                                                }
-                                              />
-                                              <span className="polished-custom-checkbox" />
-                                              Lectures
-                                            </label>
-                                            <label className="polished-filter-checkbox live">
-                                              <input
-                                                type="checkbox"
-                                                checked={filters.live}
-                                                onChange={() =>
-                                                  handleFilterChange("live")
-                                                }
-                                              />
-                                              <span className="polished-custom-checkbox" />
-                                              Live
-                                            </label>
-                                          </div>
-                                          <div
-                                            className={
-                                              viewMode === "list"
-                                                ? "polished-grid-container"
-                                                : "polished-grid-container"
-                                            }
-                                          >
-                                            {loadingLevelSessions ? (
-                                              <div
-                                                className="loading-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                }}
-                                              >
-                                                Loading {selectedLevel}{" "}
-                                                sessions...
-                                              </div>
-                                            ) : levelSessionsError ? (
-                                              <div
-                                                className="error-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                  color: "#d32f2f",
-                                                }}
-                                              >
-                                                {levelSessionsError}
-                                              </div>
-                                            ) : levelSessions.length === 0 ? (
-                                              <div
-                                                className="no-data-message"
-                                                style={{
-                                                  textAlign: "center",
-                                                  padding: "20px",
-                                                  color: "#666",
-                                                }}
-                                              >
-                                                No {selectedLevel} sessions
-                                                found for this pathology.
-                                              </div>
-                                            ) : (
-                                              levelSessions
-                                                .filter((session) => {
-                                                  const sessionType =
-                                                    session.sessionType?.toLowerCase() ||
-                                                    session.type?.toLowerCase();
-                                                  return (
-                                                    ((sessionType === "dicom" ||
-                                                      sessionType === "case") &&
-                                                      filters.dicom) ||
-                                                    ((sessionType === "vimeo" ||
-                                                      sessionType ===
-                                                        "lecture") &&
-                                                      filters.lecture) ||
-                                                    (sessionType === "live" &&
-                                                      filters.live)
-                                                  );
-                                                })
-                                                .map((session) => (
-                                                  <div
-                                                    key={
-                                                      session._id || session.id
-                                                    }
-                                                    className={`lecture-card ${
-                                                      viewMode === "list"
-                                                        ? "polished-grid-view"
-                                                        : "polished-grid-view"
-                                                    }`}
-                                                    onClick={() =>
-                                                      handleSessionClick(
-                                                        session
-                                                      )
-                                                    }
-                                                    style={{
-                                                      width: isMobile
-                                                        ? "120px"
-                                                        : "",
-                                                      height: isMobile
-                                                        ? "78px"
-                                                        : "",
-                                                    }}
-                                                  >
-                                                    <div
-                                                      className={
-                                                        viewMode === "list"
-                                                          ? "polished-grid-thumbnail"
-                                                          : "polished-grid-thumbnail"
-                                                      }
-                                                    >
-                                                      <img
-                                                        src={`https://primerad-backend.onrender.com${
-                                                          session.imageUrl_522x760 ||
-                                                          session.imageUrl_1920x1080 ||
-                                                          session.thumbnail
-                                                        }`}
-                                                        alt={session.title}
-                                                      />
-                                                    </div>
-                                                    <div
-                                                      className={
-                                                        viewMode === "list"
-                                                          ? "polished-grid-content"
-                                                          : "polished-grid-content"
-                                                      }
-                                                    >
-                                                      <div className="title-row">
-                                                        <div
-                                                          className={
-                                                            viewMode === "list"
-                                                              ? "polished-grid-title"
-                                                              : "polished-grid-title"
-                                                          }
-                                                          style={{
-                                                            whiteSpace:
-                                                              "nowrap",
-                                                            overflow: "hidden",
-                                                            textOverflow:
-                                                              "ellipsis",
-                                                            fontSize: isMobile
-                                                              ? "12px"
-                                                              : "",
-                                                          }}
-                                                        >
-                                                          {session.title}
-                                                        </div>
-                                                        {viewMode ===
-                                                          "grid" && (
-                                                          <div className="polished-list-desc">
-                                                            {
-                                                              session.description
-                                                            }
-                                                          </div>
-                                                        )}
-                                                      </div>
-                                                    </div>
-
-                                                    {viewMode === "list" && (
-                                                      <div
-                                                        className={`type-badge ${
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.className || ""
-                                                        } polished-grid-badge`}
-                                                      >
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.icon
-                                                        }{" "}
-                                                        {
-                                                          getSessionTypeBadge(
-                                                            session.sessionType ||
-                                                              session.type
-                                                          )?.label
-                                                        }
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                ))
-                                            )}{" "}
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </>
-                              )}
                             </div>
                           );
                         })
+                      ) : selectedSubModuleId && !selectedLevel ? (
+                        <div
+                          className={
+                            viewMode === "list"
+                              ? "level-list-view"
+                              : "level-grid-view lecture-grid-view"
+                          }
+                        >
+                          {selectedSubModule.isPlaceholder ? (
+                            <div
+                              style={{
+                                textAlign: "center",
+                                padding: "50px",
+                                fontSize: "1.2rem",
+                                color: "#666",
+                                width: "100%",
+                              }}
+                            >
+                              No video content defined for "
+                              {selectedSubModule.pathologyName}" yet.
+                            </div>
+                          ) : (
+                            <>
+                              {/* Beginner Level */}
+                              <div
+                                className={`level-card ${viewMode}`}
+                                onClick={() => handleLevelClick("beginner")}
+                                style={{
+                                  width: isMobile ? "90%" : "100%",
+                                }}
+                              >
+                                <div className="level-thumbnail">
+                                  <div
+                                    className="level-icon"
+                                    style={{
+                                      fontSize: isMobile ? "18px" : "48px",
+                                    }}
+                                  >
+                                    🎓
+                                  </div>
+                                </div>
+                                <i
+                                  className="fas fa-angle-right icon-indicator"
+                                  style={{
+                                    marginRight: isMobile ? "7px" : "10px",
+                                  }}
+                                />
+                                <div className="level-info">
+                                  <h4
+                                    className="level-title"
+                                    style={{
+                                      fontSize: isMobile ? "13px" : "20px",
+                                    }}
+                                  >
+                                    Beginner
+                                  </h4>
+                                  <div className="level-full-badges">
+                                    {(() => {
+                                      const staticSubModuleDataForPathology =
+                                        subModulesData[activeModuleName]?.find(
+                                          (sub) =>
+                                            sub.name ===
+                                            selectedSubModule.pathologyName
+                                        );
+                                      const staticBeginnerSessions =
+                                        staticSubModuleDataForPathology?.levels
+                                          ?.beginner || [];
+                                      const apiBeginnerSessions =
+                                        selectedSubModule.sessions?.filter(
+                                          (s) => s.difficulty === "Beginner"
+                                        ) || [];
+                                      const combinedBeginner = [
+                                        ...staticBeginnerSessions,
+                                        ...apiBeginnerSessions,
+                                      ];
+                                      const levelCounts =
+                                        countTypes(combinedBeginner);
+                                      return (
+                                        <>
+                                          <span
+                                            className="type-badge badge-lecture"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Lectures: {levelCounts.lecture}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-case"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Cases: {levelCounts.case}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-live"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Live: {levelCounts.live}
+                                          </span>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Advanced Level */}
+                              <div
+                                className={`level-card ${viewMode}`}
+                                onClick={() => handleLevelClick("advanced")}
+                                style={{
+                                  padding: isMobile ? "4px 6px" : "8px 10px",
+                                  width: isMobile ? "90%" : "100%",
+                                }}
+                              >
+                                <div className="level-thumbnail">
+                                  <div
+                                    className="level-icon"
+                                    style={{
+                                      fontSize: isMobile ? "18px" : "48px",
+                                    }}
+                                  >
+                                    ⚡
+                                  </div>
+                                </div>
+                                <i
+                                  className="fas fa-angle-right icon-indicator"
+                                  style={{ marginRight: "10px" }}
+                                />
+                                <div className="level-info">
+                                  <h4
+                                    className="level-title"
+                                    style={{
+                                      fontSize: isMobile ? "13px" : "20px",
+                                    }}
+                                  >
+                                    Advanced
+                                  </h4>
+                                  <div className="level-full-badges">
+                                    {(() => {
+                                      const staticSubModuleDataForPathology =
+                                        subModulesData[activeModuleName]?.find(
+                                          (sub) =>
+                                            sub.name ===
+                                            selectedSubModule.pathologyName
+                                        );
+                                      const staticAdvancedSessions =
+                                        staticSubModuleDataForPathology?.levels
+                                          ?.advanced || [];
+                                      const apiAdvancedSessions =
+                                        selectedSubModule.sessions?.filter(
+                                          (s) => s.difficulty === "Advanced"
+                                        ) || [];
+                                      const combinedAdvanced = [
+                                        ...staticAdvancedSessions,
+                                        ...apiAdvancedSessions,
+                                      ];
+                                      const levelCounts =
+                                        countTypes(combinedAdvanced);
+                                      return (
+                                        <>
+                                          <span
+                                            className="type-badge badge-lecture"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Lectures: {levelCounts.lecture}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-case"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Cases: {levelCounts.case}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-live"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Live: {levelCounts.live}
+                                          </span>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        selectedLevel && (
+                          <div
+                            className={
+                              viewMode === "list"
+                                ? "lecture-grid-view"
+                                : "lecture-grid-view"
+                            }
+                          >
+                            <div
+                              className="polished-filter-bar"
+                              style={{ gap: isMobile ? "1px" : "" }}
+                            >
+                              <label className="polished-filter-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.dicom}
+                                  onChange={() => handleFilterChange("dicom")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                DICOM
+                              </label>
+                              <label className="polished-filter-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.lecture}
+                                  onChange={() => handleFilterChange("lecture")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                Lectures
+                              </label>
+                              <label className="polished-filter-checkbox live">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.live}
+                                  onChange={() => handleFilterChange("live")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                Live
+                              </label>
+                            </div>
+                            <div className="polished-grid-container">
+                              {loadingLevelSessions ? (
+                                <div
+                                  className="loading-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                  }}
+                                >
+                                  Loading {selectedLevel} sessions...
+                                </div>
+                              ) : levelSessionsError ? (
+                                <div
+                                  className="error-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                    color: "#d32f2f",
+                                  }}
+                                >
+                                  {levelSessionsError}
+                                </div>
+                              ) : levelSessions.length === 0 ? (
+                                <div
+                                  className="no-data-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                    color: "#666",
+                                  }}
+                                >
+                                  No {selectedLevel} sessions found for this
+                                  pathology.
+                                </div>
+                              ) : (
+                                levelSessions
+                                  .filter((session) => {
+                                    const sessionType =
+                                      session.sessionType?.toLowerCase() ||
+                                      session.type?.toLowerCase();
+                                    return (
+                                      ((sessionType === "dicom" ||
+                                        sessionType === "case") &&
+                                        filters.dicom) ||
+                                      ((sessionType === "vimeo" ||
+                                        sessionType === "lecture") &&
+                                        filters.lecture) ||
+                                      (sessionType === "live" && filters.live)
+                                    );
+                                  })
+                                  .map((session) => (
+                                    <div
+                                      key={session._id || session.id}
+                                      className={`lecture-card ${
+                                        viewMode === "list"
+                                          ? "polished-grid-view"
+                                          : "polished-grid-view"
+                                      }`}
+                                      onClick={() =>
+                                        handleSessionClick(session)
+                                      }
+                                      style={{
+                                        width: isMobile ? "120px" : "",
+                                        height: isMobile ? "78px" : "",
+                                      }}
+                                    >
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "polished-grid-thumbnail"
+                                            : "polished-grid-thumbnail"
+                                        }
+                                        style={{
+                                          width: isMobile ? "100%" : "",
+                                          height: isMobile ? "100%" : "",
+                                        }}
+                                      >
+                                        <img
+                                          src={`https://primerad-backend.onrender.com${
+                                            session.imageUrl_522x760 ||
+                                            session.imageUrl_1920x1080 ||
+                                            session.thumbnail
+                                          }`}
+                                          alt={session.title}
+                                        />
+                                      </div>
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "polished-grid-content"
+                                            : "polished-grid-content"
+                                        }
+                                      >
+                                        <div className="title-row">
+                                          <div
+                                            className={
+                                              viewMode === "list"
+                                                ? "polished-grid-title"
+                                                : "polished-grid-title"
+                                            }
+                                            style={{
+                                              whiteSpace: "nowrap",
+                                              overflow: "hidden",
+                                              textOverflow: "ellipsis",
+                                              fontSize: isMobile ? "12px" : "",
+                                            }}
+                                          >
+                                            {session.title}
+                                          </div>
+                                          {viewMode === "grid" && (
+                                            <div className="polished-list-desc">
+                                              {session.description}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                      {viewMode === "list" && (
+                                        <div
+                                          className={`type-badge ${
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.className || ""
+                                          } polished-grid-badge`}
+                                        >
+                                          {
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.icon
+                                          }{" "}
+                                          {
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.label
+                                          }
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))
+                              )}
+                            </div>
+                          </div>
+                        )
                       )}
                     </div>
                   </>

@@ -491,8 +491,8 @@ const LivePage = memo(() => {
 
   return (
     <Fragment>
+      <FixedBackButton customPath="/main-page"></FixedBackButton>
       <div style={{ backgroundColor: THEME.background }}>
-        <FixedBackButton customPath="/main-page"></FixedBackButton>
         <div className="iq-main-slider site-video">
           <Container fluid>
             <Row>
@@ -519,7 +519,6 @@ const LivePage = memo(() => {
           </Container>
         </div>
 
-        {/* Rest of your component remains the same */}
         <div className="details-part pt-4 px-md-0">
           <Container fluid>
             <Row>
@@ -537,7 +536,6 @@ const LivePage = memo(() => {
                     border: "1px solid rgba(25, 118, 210, 0.1)",
                   }}
                 >
-                  {/* Medical Pattern Background */}
                   <div
                     className="position-absolute"
                     style={{
@@ -604,7 +602,6 @@ const LivePage = memo(() => {
                           </div>
                         </div>
 
-                        {/* Medical Status Badge */}
                         <div className="d-flex flex-column flex-md-row gap-2 gap-md-0">
                           <div
                             className="badge d-flex  align-items-center"

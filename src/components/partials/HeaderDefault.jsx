@@ -17,25 +17,17 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
-
-//redux
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import { logout } from "../../store/auth/actions";
 import { theme_scheme_direction } from "../../store/setting/actions";
 import { createPortal } from "react-dom";
-// components
 import Logo from "../logo";
 import CustomToggle from "../CustomToggle";
 import { useTranslation } from "react-i18next";
 
 import "./HeaderDefault.css";
-
-// img imports (kept for completeness)
 import user from "/assets/images/user/user1.webp";
-// ... (other img imports) ...
-
-// Icons (kept for completeness)
 import { AiFillHome } from "react-icons/ai";
 import { RiNewspaperFill } from "react-icons/ri";
 import { GiAtlas } from "react-icons/gi";
@@ -140,7 +132,6 @@ const HeaderDefault = memo(() => {
 
   return (
     <header
-      // className="header-center-home header-default"
       style={{
         position: "fixed",
         top: 0,
@@ -240,6 +231,7 @@ const HeaderDefault = memo(() => {
                       </Nav.Link>
                     </Nav.Item>
                   ))}
+
                   <Nav.Item
                     as="li"
                     className="mx-1 polished-nav"
@@ -247,7 +239,7 @@ const HeaderDefault = memo(() => {
                   >
                     <Button
                       variant="primary"
-                      className="btn-subscribe d-flex align-items-center "
+                      className="btn-subscribe d-flex align-items-center"
                       onClick={() => navigate("/pricing")}
                       style={{
                         background:
@@ -259,14 +251,12 @@ const HeaderDefault = memo(() => {
                         fontSize: "1rem",
                         border: "none",
                         boxShadow: "0 4px 15px rgba(25, 118, 210, 0.4)",
-                        // transition: "all 0.3s ease",
                         width: "130px",
                         justifyContent: "center",
                         alignItems: "center",
                         marginRight: "10px",
                         gap: "8px",
                         cursor: "pointer",
-                        // whiteSpace: "nowrap",
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = "translateY(-2px)";
