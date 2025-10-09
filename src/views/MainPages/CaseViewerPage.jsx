@@ -1,7 +1,14 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  Fragment,
+} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LatestMovies from "../../components/sections/LatestMovies";
 import { Row, Col, Container, Nav, Tab, Form, Button } from "react-bootstrap";
+import { useEnterExit } from "../../utilities/usePage";
 import { useTranslation } from "react-i18next";
 import Sources from "../../components/Sources";
 import ReviewComponent from "../../components/ReviewComponent";
@@ -14,9 +21,14 @@ import "swiper/css/pagination";
 import { FaGraduationCap, FaUser } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import * as cornerstone from "cornerstone-core";
+import * as cornerstoneTools from "cornerstone-tools";
+import * as cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
+import dicomParser from "dicom-parser";
 
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import { FixedBackButton } from "../../utilities/BackButton";
+import { Info, BookOpen, Star } from "lucide-react";
 
 const CORS_PROXY = "https://corsproxy.io/?";
 const DICOM_AUTH_URL = "http://localhost:5000/api/dicom-auth";
@@ -37,6 +49,27 @@ const THEME = {
   border: "#e0e0e0",
 };
 
+const tabStyles = `
+   .custom-nav-btn, .custom-nav-btn * {
+      cursor: pointer !important;
+    }
+      button {
+  transition: all 0.25s ease;
+}
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+    .nav-pills .nav-link { transition: all 0.3s ease; }
+    .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
+    .nav-pills .nav-link.active { background: ${THEME.primary} !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
+    .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
+    // .sessions-sidebar::-webkit-scrollbar { width: 2px; }
+    // .sessions-sidebar::-webkit-scrollbar-track {  }
+    // .sessions-sidebar::-webkit-scrollbar-thumb { background: ${THEME.primary}; border-radius: 10px; }
+    // .sessions-sidebar::-webkit-scrollbar-thumb:hover { background: #1565c0; }
+  `;
 const medicaiOrigin = "https://app.medicai.io";
 
 const CaseViewerPage = () => {
@@ -54,6 +87,14 @@ const CaseViewerPage = () => {
   const [duration, setDuration] = useState("30 mins");
   const [description, setDescription] = useState("");
   const [module, setModule] = useState("Orthopedics");
+  const [relatedSessions, setRelatedSessions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalSessions, setTotalSessions] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
+
+  const sessionsPerPage = 12;
+
+  useEnterExit();
   const [submodule, setSubmodule] = useState("Knee Pathology");
   const dicomName = "Anonymized00098"; // Set your DICOM name here
   const [showVideo, setShowVideo] = useState(false);
@@ -107,6 +148,39 @@ const CaseViewerPage = () => {
       yearsExp: 12,
     },
   ]);
+  const indexOfLastSession = currentPage * sessionsPerPage;
+  const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
+  const currentSessions = relatedSessions.slice(
+    indexOfFirstSession,
+    indexOfLastSession
+  );
+  const totalPages = Math.ceil(totalSessions / sessionsPerPage);
+  // setSessionId(session._id)
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  useEffect(() => {
+    const currentId = sessionId || caseId;
+
+    if (currentId && currentId !== sessionId) {
+      setSessionId(currentId);
+    }
+    const fetchRelatedSessions = async () => {
+      try {
+        const res = await axios.get(
+          "https://primerad-backend.onrender.com/api/sessions/getRecentItems"
+        );
+        if (res.data?.data) {
+          setRelatedSessions(res.data.data);
+          setTotalSessions(res.data.data.length);
+        }
+      } catch (error) {
+        console.error("Error fetching related sessions:", error);
+      }
+    };
+    fetchRelatedSessions();
+  }, []);
 
   useEffect(() => {
     // This is just a placeholder, you would replace it with your actual data fetch.
@@ -129,9 +203,15 @@ const CaseViewerPage = () => {
   });
   const [observationsSubmitted, setObservationsSubmitted] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("description");
+  const isMobile = window.innerWidth < 480;
+  const isTablet = window.innerWidth < 768;
+
+  const aspectRatio = isMobile ? "1/1" : isTablet ? "4/3" : "16/9";
+  const minHeight = isMobile ? "200px" : isTablet ? "250px" : "400px";
+  const switchToTab = (tabKey) => setActiveTab(tabKey);
   const [showComparisonModal, setShowComparisonModal] = useState(false);
 
-  // State for responsive display of DICOM cases
   const [displayCaseCount, setDisplayCaseCount] = useState(5);
 
   const handleObservationChange = (field, value) => {
@@ -259,12 +339,37 @@ const CaseViewerPage = () => {
       }
     };
     fetchToken();
-    // eslint-disable-next-line
   }, []);
+
+  const handleSessionClick = (session) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const sessionType = session.sessionType?.toLowerCase();
+
+    if (sessionType === "dicom" || sessionType === "case") {
+      navigate(`/case/${session._id}`);
+    } else if (sessionType === "vimeo" || sessionType === "lecture") {
+      navigate("/lecture-detail", {
+        state: {
+          id: session._id,
+          vimeoVideoId: session.vimeoVideoId,
+          title: session.title,
+          description: session.description,
+          faculty: session.faculty,
+          isFree: session.isFree,
+          module: session.moduleName,
+          submodule: session.submodule,
+          duration: session.sessionDuration,
+          startDate: session.startDate,
+          contentType: sessionType === "vimeo" ? "Lecture" : "Case",
+        },
+      });
+    } else if (sessionType === "live") {
+      navigate("/live", { state: session });
+    }
+  };
 
   useEffect(() => {
     if (token) {
-      // Fetch Study ID after token is available
       getStudyId(token, dicomName)
         .then((id) => setStudyId(id))
         .catch((err) => setError(err.message));
@@ -337,6 +442,18 @@ const CaseViewerPage = () => {
     // eslint-disable-next-line
   }, [accessToken, studyId]);
 
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    setTimeout(() => {
+      const target = document.getElementById(`${key}Tab`);
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 200); // wait 200ms for tab to render
+  };
   // Periodically resend authData if not sent
   useEffect(() => {
     if (authSent) return;
@@ -469,2498 +586,461 @@ const CaseViewerPage = () => {
     }
   };
 
+  const iconButtonStyle = {
+    background: "white",
+    border: "1px solid #ddd",
+    borderRadius: "50%",
+    padding: "6px",
+    cursor: "pointer",
+    width: "30%",
+    height: "20%",
+    color: "navy",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+    transition: "all 0.2s ease-in-out",
+  };
+
   return (
-    <>
-      <FixedBackButton customPath="/main-page"></FixedBackButton>
+    <Fragment>
+      <style>{tabStyles}</style>
       <div
-        className="case-viewer-container"
         style={{
+          backgroundColor: THEME.background,
+          minHeight: "100vh",
           display: "flex",
-          height:
-            window.innerWidth <= 768
-              ? "calc(50vh -12px)"
-              : "calc(100vh - 64px)",
-          marginTop: window.innerWidth >= 768 ? 2 : 4,
-          marginBottom: 24,
-          background: THEME.background,
-          flexDirection: window.innerWidth <= 1024 ? "column" : "row",
+          flexDirection: "column",
         }}
       >
-        <div
-          className="dicom-viewer-panel"
-          style={{
-            flex: window.innerWidth <= 1024 ? "none" : 2,
-
-            height: window.innerWidth <= 1024 ? "60vh" : "auto",
-            padding: window.innerWidth <= 768 ? 16 : 32,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "stretch",
-            background: THEME.card,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            borderRadius:
-              window.innerWidth <= 1024 ? "16px 16px 0 0" : "16px 0 0 16px",
-            margin: window.innerWidth <= 768 ? 0 : 24,
-            marginRight:
-              window.innerWidth <= 1024
-                ? window.innerWidth <= 768
-                  ? 0
-                  : 24
-                : 0,
-            marginBottom:
-              window.innerWidth <= 1024
-                ? 0
-                : window.innerWidth <= 768
-                ? 12
-                : 24,
-            minWidth: 0,
-          }}
+        <FixedBackButton customPath="/main-page"></FixedBackButton>
+        <Container
+          fluid
+          className="py-3"
+          // style={{
+          //   flex: 1,
+          //   display: "flex",
+          //   flexDirection: "column",
+          // }}
         >
-          <h4
-            style={{
-              marginBottom: window.innerWidth <= 768 ? 16 : 24,
-              color: THEME.primary,
-              fontWeight: 700,
-              letterSpacing: 1,
-              fontSize: window.innerWidth <= 768 ? 16 : 18,
-            }}
+          <Row
+            className="g-2"
+            style={
+              {
+                // display: "flex",
+                // // flexDirection: "column",
+                // flex: 1,
+                // alignItems: "stretch",
+                // flexWrap: "nowrap",
+              }
+            }
           >
-            DICOM Viewer
-          </h4>
-          {loading && <p>Loading DICOM viewer...</p>}
-          {error && <p style={{ color: "red" }}>Error: {error}</p>}
-          {!loading && !error && token && (
-            <div
-              style={{
-                marginTop: 16,
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {studyId ? (
-                <iframe
-                  ref={iframeRef}
-                  className="dicomview sessioniframe"
-                  id={dicom_caseId ? "dicomcaseviewer" : "dicomviewer"}
-                  src={`https://app.medicai.io/public-study/${studyId}`}
-                  width="100%"
-                  height="100%" // Use 100% height within its flex container
-                  style={{ width: "100%", border: "none" }}
-                  title="DICOM Viewer"
-                />
-              ) : (
-                <div style={{ color: THEME.primary, fontWeight: 600 }}>
-                  Study ID: Not found
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Observations Form */}
-        <div
-          className="observations-form-panel" // Add a class for global styles
-          style={{
-            flex: window.innerWidth <= 1024 ? 1 : 1,
-            height: window.innerWidth <= 1024 ? "50%" : "auto",
-            // marginTop: "4px",
-            borderLeft:
-              window.innerWidth <= 1024 ? "none" : `1px solid ${THEME.border}`,
-            borderTop:
-              window.innerWidth <= 1024 ? `1px solid ${THEME.border}` : "none",
-            padding: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "stretch",
-            background: THEME.card,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            borderRadius:
-              window.innerWidth <= 1024 ? "0 0 16px 16px" : "0 16px 16px 0",
-            margin: window.innerWidth <= 768 ? 24 : 24,
-            marginLeft:
-              window.innerWidth <= 1024
-                ? window.innerWidth <= 768
-                  ? 0
-                  : 24
-                : 0,
-            marginTop:
-              window.innerWidth <= 1024 ? 0 : window.innerWidth <= 768 ? 1 : 24,
-            minWidth: window.innerWidth <= 1024 ? "auto" : 300,
-            maxWidth: window.innerWidth <= 1024 ? "none" : 420,
-            overflow: "hidden",
-          }}
-        >
-          {/* Observations Header */}
-          <div
-            style={{
-              background: THEME.primary,
-              color: "#fff",
-              padding:
-                window.innerWidth <= 768
-                  ? "8px 10px 4px 10px"
-                  : "20px 32px 12px 32px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              borderBottom: `4px solid ${THEME.accent}`,
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: window.innerWidth <= 768 ? 16 : 18,
-                letterSpacing: 1,
-              }}
-            >
-              Your observations
-            </div>
-            <div
-              style={{
-                fontSize: window.innerWidth <= 768 ? 12 : 14,
-                opacity: 0.9,
-                marginTop: window.innerWidth <= 768 ? "4px" : 4,
-              }}
-            >
-              (On submitting your observations, you will be able to compare your
-              observations with the faculty's observations along with an
-              explanation video)
-            </div>
-          </div>
-
-          {/* Observations Form */}
-          <div
-            style={{
-              padding: window.innerWidth <= 768 ? 20 : 32,
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              maxHeight:
-                window.innerWidth <= 1024
-                  ? "50vh"
-                  : "calc(100vh - 64px - 90px)",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
-            {!observationsSubmitted ? (
-              <form
-                onSubmit={handleSubmitObservations}
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {/* Section 1: Medial Meniscus */}
-                <div
-                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
-                >
-                  <h3
-                    style={{
-                      color: THEME.text,
-                      fontWeight: 600,
-                      fontSize: window.innerWidth <= 768 ? 14 : 16,
-                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    1. Medial compartment: A) Medial meniscus
-                  </h3>
-                  <textarea
-                    value={observations.medialMeniscus}
-                    onChange={(e) =>
-                      handleObservationChange("medialMeniscus", e.target.value)
-                    }
-                    placeholder="Add your comments"
-                    style={{
-                      width: "100%",
-                      minHeight: window.innerWidth <= 768 ? 80 : 100,
-                      padding: window.innerWidth <= 768 ? 10 : 12,
-                      border: `1px solid ${THEME.border}`,
-                      borderRadius: 8,
-                      fontSize: window.innerWidth <= 768 ? 13 : 14,
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = THEME.primary;
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = THEME.border;
-                    }}
-                  />
-                </div>
-
-                {/* Section 2: Medial Cartilage */}
-                <div
-                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
-                >
-                  <h3
-                    style={{
-                      color: THEME.text,
-                      fontWeight: 600,
-                      fontSize: window.innerWidth <= 768 ? 14 : 16,
-                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    2. Medial compartment: B) Medial femoral condyle and medial
-                    tibial plateau cartilage
-                  </h3>
-                  <textarea
-                    value={observations.medialCartilage}
-                    onChange={(e) =>
-                      handleObservationChange("medialCartilage", e.target.value)
-                    }
-                    placeholder="Add your comments"
-                    style={{
-                      width: "100%",
-                      minHeight: window.innerWidth <= 768 ? 80 : 100,
-                      padding: window.innerWidth <= 768 ? 10 : 12,
-                      border: `1px solid ${THEME.border}`,
-                      borderRadius: 8,
-                      fontSize: window.innerWidth <= 768 ? 13 : 14,
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = THEME.primary;
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = THEME.border;
-                    }}
-                  />
-                </div>
-
-                {/* Section 3: Lateral Meniscus */}
-                <div
-                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
-                >
-                  <h3
-                    style={{
-                      color: THEME.text,
-                      fontWeight: 600,
-                      fontSize: window.innerWidth <= 768 ? 14 : 16,
-                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    3. Lateral compartment: A) Lateral meniscus
-                  </h3>
-                  <textarea
-                    value={observations.lateralMeniscus}
-                    onChange={(e) =>
-                      handleObservationChange("lateralMeniscus", e.target.value)
-                    }
-                    placeholder="Add your comments"
-                    style={{
-                      width: "100%",
-                      minHeight: window.innerWidth <= 768 ? 80 : 100,
-                      padding: window.innerWidth <= 768 ? 10 : 12,
-                      border: `1px solid ${THEME.border}`,
-                      borderRadius: 8,
-                      fontSize: window.innerWidth <= 768 ? 13 : 14,
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = THEME.primary;
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = THEME.border;
-                    }}
-                  />
-                </div>
-
-                {/* Section 4: Lateral Cartilage */}
-                <div
-                  style={{ marginBottom: window.innerWidth <= 768 ? 16 : 24 }}
-                >
-                  <h3
-                    style={{
-                      color: THEME.text,
-                      fontWeight: 600,
-                      fontSize: window.innerWidth <= 768 ? 14 : 16,
-                      marginBottom: window.innerWidth <= 768 ? 8 : 12,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    4. Lateral compartment: B) Lateral femoral condyle and
-                    lateral tibial plateau cartilage
-                  </h3>
-                  <textarea
-                    value={observations.lateralCartilage}
-                    onChange={(e) =>
-                      handleObservationChange(
-                        "lateralCartilage",
-                        e.target.value
-                      )
-                    }
-                    placeholder="Add your comments"
-                    style={{
-                      width: "100%",
-                      minHeight: window.innerWidth <= 768 ? 80 : 100,
-                      padding: window.innerWidth <= 768 ? 10 : 12,
-                      border: `1px solid ${THEME.border}`,
-                      borderRadius: 8,
-                      fontSize: window.innerWidth <= 768 ? 13 : 14,
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = THEME.primary;
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = THEME.border;
-                    }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  style={{
-                    marginTop: 12,
-                    padding:
-                      window.innerWidth <= 768 ? "10px 20px" : "12px 24px",
-                    background: THEME.primary,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontWeight: 600,
-                    fontSize: window.innerWidth <= 768 ? 14 : 16,
-                    letterSpacing: 1,
-                    boxShadow: "0 2px 8px rgba(25,118,210,0.15)",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = "#1565c0";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow =
-                      "0 4px 12px rgba(25,118,210,0.25)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = THEME.primary;
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow =
-                      "0 2px 8px rgba(25,118,210,0.15)";
-                  }}
-                >
-                  Submit Observations
-                </button>
-              </form>
-            ) : (
-              /* Confirmation Screen */
+            <Col lg={9} md={12} className="d-flex flex-column">
               <div
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
+                  background: "white",
+                  boxShadow: "3px 4px 16px rgba(0,0,0,0.08)",
+                  padding: "24px",
+                  // marginTop: "20px",
+                  borderRadius: "12px",
                   height: "100%",
+
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  zIndex: 2,
-                  animation: "fadeIn 0.7s",
-                  background: "#f8f9fa",
-                  borderRadius:
-                    window.innerWidth <= 1024
-                      ? "0 0 16px 16px"
-                      : "0 16px 16px 0",
                 }}
               >
+                <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <h2
+                    style={{
+                      color: "navy",
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {title}
+                  </h2>
+
+                  <div
+                    className="d-flex gap-2"
+                    style={{
+                      flexShrink: 0,
+                    }}
+                  >
+                    <button
+                      style={{
+                        color: "black",
+                        backgroundColor: "lightblue",
+                        padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                        borderRadius: "10px",
+                        border: "none",
+                        cursor: "pointer",
+                        position: "relative",
+                        zIndex: 1000,
+                        display: "inline-block",
+                        fontWeight: 600,
+                      }}
+                      onClick={() => {
+                        if (!relatedSessions.length) return;
+                        const currentIndex = relatedSessions.findIndex(
+                          (s) => s._id === sessionId
+                        );
+                        if (currentIndex === -1) return;
+                        const prevIndex =
+                          currentIndex <= 0
+                            ? relatedSessions.length - 1
+                            : currentIndex - 1;
+                        handleSessionClick(relatedSessions[prevIndex]);
+                      }}
+                    >
+                      {window.innerWidth < 620 ? "<" : "< Prev"}
+                    </button>
+
+                    <button
+                      style={{
+                        color: "black",
+                        backgroundColor: "lightblue",
+                        padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                        borderRadius: "10px",
+                        border: "none",
+                        cursor: "pointer",
+                        position: "relative",
+                        zIndex: 1000,
+                        display: "inline-block",
+                        fontWeight: 600,
+                      }}
+                      onClick={() => {
+                        if (!relatedSessions.length) return;
+                        const currentIndex = relatedSessions.findIndex(
+                          (s) => s._id === sessionId
+                        );
+                        if (currentIndex === -1) return;
+                        const nextIndex =
+                          currentIndex >= relatedSessions.length - 1
+                            ? 0
+                            : currentIndex + 1;
+                        handleSessionClick(relatedSessions[nextIndex]);
+                      }}
+                    >
+                      {window.innerWidth < 620 ? ">" : "Next >"}
+                    </button>
+                  </div>
+                </div>
+
                 <div
                   style={{
-                    background: "#fff",
-                    borderRadius: 16,
-                    padding:
-                      window.innerWidth <= 768 ? "24px 20px" : "32px 24px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                    textAlign: "center",
-                    maxWidth: window.innerWidth <= 768 ? 280 : 320,
-                    width: "100%",
+                    position: "relative",
+                    backgroundColor: "black",
+                    // width: "100%",
+                    aspectRatio: "16/9",
+                    borderRadius: "10px",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    minHeight,
+                    alignItems: "center",
+                    flexGrow: 1,
                   }}
                 >
-                  {/* Success Icon */}
                   <div
                     style={{
-                      width: window.innerWidth <= 768 ? 50 : 60,
-                      height: window.innerWidth <= 768 ? 50 : 60,
-                      background: "#00bfae",
-                      borderRadius: "50%",
+                      position: "absolute",
+                      top: "12px",
+                      right: "12px",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      margin: "0 auto 16px",
-                      fontSize: window.innerWidth <= 768 ? 20 : 24,
-                      color: "#fff",
-                    }}
-                  >
-                    ✓
-                  </div>
-
-                  <h3
-                    style={{
-                      color: THEME.text,
-                      fontWeight: 600,
-                      fontSize: window.innerWidth <= 768 ? 16 : 18,
-                      marginBottom: 8,
-                    }}
-                  >
-                    Your observations are recorded
-                  </h3>
-
-                  <p
-                    style={{
-                      color: "#666",
-                      fontSize: window.innerWidth <= 768 ? 13 : 14,
-                      marginBottom: window.innerWidth <= 768 ? 20 : 24,
-                    }}
-                  >
-                    You can now compare your observations with faculty feedback
-                  </p>
-
-                  {/* Action Buttons */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 12,
+                      gap: "10px",
+                      zIndex: 3,
                     }}
                   >
                     <button
-                      onClick={handleCompareObservations}
-                      style={{
-                        padding:
-                          window.innerWidth <= 768 ? "10px 16px" : "12px 20px",
-                        background: "#00bfae",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 8,
-                        fontWeight: 600,
-                        fontSize: window.innerWidth <= 768 ? 13 : 14,
-                        cursor: "pointer",
-                        transition: "background 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = "#00a896";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "#00bfae";
-                      }}
+                      title="Description"
+                      onClick={() => handleTabChange("description")}
+                      style={iconButtonStyle}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background = "#f0f4ff")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "white")
+                      }
                     >
-                      COMPARE OBSERVATIONS
+                      <Info size={16} />
                     </button>
 
                     <button
-                      onClick={() => setShowVideo(true)}
-                      style={{
-                        padding:
-                          window.innerWidth <= 768 ? "10px 16px" : "12px 20px",
-                        background: "#00bfae",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 8,
-                        fontWeight: 600,
-                        fontSize: window.innerWidth <= 768 ? 13 : 14,
-                        cursor: "pointer",
-                        transition: "background 0.2s",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = "#00a896";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "#00bfae";
-                      }}
+                      title="Resources"
+                      onClick={() => handleTabChange("resources")}
+                      style={iconButtonStyle}
                     >
-                      ▶ WATCH VIDEO
+                      <BookOpen size={16} />
+                    </button>
+
+                    <button
+                      title="Reviews"
+                      onClick={() => handleTabChange("reviews")}
+                      style={iconButtonStyle}
+                    >
+                      <Star size={16} />
                     </button>
                   </div>
-                  {showVideo && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        marginTop: "35px",
-                        bottom: 0,
-                        background: "rgba(0, 0, 0, 0.8)",
-                        display: "flex",
-                        justifyContent: "center",
-                        overflow: "auto",
-                        alignItems: "center",
-                        zIndex: 10000,
-                      }}
-                    >
-                      <iframe
-                        src={videoUrl}
-                        width={window.innerWidth <= 768 ? "95%" : "80%"}
-                        height={window.innerWidth <= 768 ? "60%" : "80%"}
-                        frameborder="0"
-                        allow="autoplay; fullscreen"
-                        allowfullscreen
-                        title="Vimeo Video Player"
-                      ></iframe>
-                      <button
-                        onClick={() => setShowVideo(false)}
-                        style={{
-                          position: "absolute",
-                          top: "20px",
-                          right: "20px",
-                          background: "lightgray",
-                          border: "none",
-                          padding: "2px 6px",
-                          borderRadius: "50%",
-                          cursor: "pointer",
-                          fontSize: "1.2rem",
-                        }}
-                      >
-                        X
-                      </button>
-                    </div>
-                  )}
+
+                  <img
+                    src="/assets/images/dicomm.jpg"
+                    alt="DICOM preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
+            </Col>
 
-      <div className="details-part pt-4 px-md-0">
-        <Container fluid>
-          <Row>
-            <Col lg="12">
+            <Col lg={3} md={12} className="d-flex flex-column">
               <div
-                className="trending-info pt-0 pb-4 mb-4  position-relative overflow-hidden"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                  borderRadius: "24px",
-                  marginTop: "-60px",
-                  boxShadow:
-                    "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                  padding: "25px 20px",
-                  border: "1px solid rgba(25, 118, 210, 0.1)",
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  // marginTop: "20px",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  overflowY: "auto",
+                  maxHeight: "calc(100vh - 190px)",
                 }}
               >
-                {/* Medical Pattern Background */}
-                <div
-                  className="position-absolute"
+                <h2
                   style={{
-                    top: 0,
-                    right: 0,
-                    width: "200px",
-                    height: "200px",
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231976d2' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    opacity: 0.3,
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "16px",
                   }}
-                />
+                >
+                  User Observations
+                </h2>
 
-                <Row>
-                  <Col md="12" className="mb-auto">
-                    <div
-                      className="d-flex flex-row flex-row-md align-items-center align-items-md-center mb-2 mb-md-4"
-                      style={{
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div className="flex-grow-1 p-2 flex-md-row">
-                        <div className="d-flex align-items-center mb-0  ">
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth <= 768 ? "24px" : "48px",
-                              height:
-                                window.innerWidth <= 768 ? "24px" : "48px",
-                              marginTop:
-                                window.innerWidth <= 768 ? "10px" : "20px",
-                              background:
-                                "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
-                              borderRadius: "12px",
-                              color: "white",
-                              fontSize:
-                                window.innerWidth <= 768 ? "0.8rem" : "1.2rem",
-                            }}
-                          >
-                            🏥
-                          </div>
-                          <div>
-                            <h1
-                              className="fw-bold mx-0 ml-md-0"
-                              style={{
-                                color: "#1a202c",
-                                fontSize:
-                                  window.innerWidth <= 768 ? "1rem" : "2rem",
-                                marginTop: "20px",
-                                marginLeft: "-10px",
-                                lineHeight: 1.2,
-                                textTransform: "uppercase",
-                                background: "darkslategrey",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                backgroundClip: "text",
-                              }}
-                            >
-                              {t(title)}
-                            </h1>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Medical Status Badge */}
-                      <div className="d-flex flex-column flex-md-row gap-2 gap-md-0">
-                        <div
-                          className="badge d-flex  align-items-center"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
-                            color: "white",
-                            fontSize:
-                              window.innerWidth <= 768 ? "0.70rem" : "0.85rem",
-                            padding: "8px 16px",
-                            borderRadius: "20px",
-                            fontWeight: 600,
-                            boxShadow: "0 4px 15px rgba(76, 175, 80, 0.3)",
-                          }}
-                        >
-                          <span className="me-2">✓</span>
-                          {t("Medically Reviewed")}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row g-2 mb-2">
-                      <Col xs={6} md={6} lg={3}>
-                        <div
-                          className="p-3 d-flex flex-row align-items-center w-100 w-md-100 flex-shrink-0"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(25, 118, 210, 0.2)",
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth <= 768 ? "20px" : "40px",
-                              height:
-                                window.innerWidth <= 768 ? "20px" : "40px",
-                              background:
-                                "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
-                              borderRadius: "10px",
-                              color: "white",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            ⏱️
-                          </div>
-                          <div>
-                            <div
-                              className="small fw-semibold"
-                              style={{
-                                color: "#1976d2",
-                                fontSize: "0.8rem",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                              }}
-                            >
-                              {t("Duration")}
-                            </div>
-                            <div
-                              className="fw-bold"
-                              style={{
-                                color: "#1a202c",
-                                fontSize:
-                                  window.innerWidth >= 768
-                                    ? "1.1rem"
-                                    : "0.85rem",
-                              }}
-                            >
-                              {duration}
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col xs={6} md={6} lg={3}>
-                        <div
-                          className="p-3 d-flex align-items-center w-100 w-md-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(156, 39, 176, 0.2)",
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth <= 768 ? "20px" : "40px",
-                              height:
-                                window.innerWidth <= 768 ? "20px" : "40px",
-                              background:
-                                "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)",
-                              borderRadius: "10px",
-                              color: "white",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            📅
-                          </div>
-                          <div>
-                            <div
-                              className="small fw-semibold"
-                              style={{
-                                color: "#9c27b0",
-                                fontSize: "0.8rem",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                              }}
-                            >
-                              {t("Published")}
-                            </div>
-                            <div
-                              className="fw-bold"
-                              style={{
-                                color: "#1a202c",
-                                fontSize:
-                                  window.innerWidth <= 768 ? "13px" : "1.1rem",
-                              }}
-                            >
-                              {formatDate(startDate)}
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col xs={6} md={6} lg={3}>
-                        <div
-                          className="p-3 d-flex align-items-center w-100 w-md-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(76, 175, 80, 0.2)",
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth <= 768 ? "20px" : "40px",
-                              height:
-                                window.innerWidth <= 768 ? "20px" : "40px",
-                              background:
-                                "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
-                              borderRadius: "10px",
-                              color: "white",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            🏥
-                          </div>
-                          <div>
-                            <div
-                              className="small fw-semibold"
-                              style={{
-                                color: "#4caf50",
-                                fontSize:
-                                  window.innerWidth <= 768 ? "10px" : "0.8rem",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                              }}
-                            >
-                              {t("Medical Specialty")}
-                            </div>
-                            <div
-                              className="fw-bold"
-                              style={{
-                                color: "#1a202c",
-                                fontSize: "1.1rem",
-                              }}
-                            >
-                              {t(module)}
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-
-                      <Col xs={6} md={6} lg={3}>
-                        <div
-                          className="p-3 d-flex align-items-center w-100 w-md-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(255, 152, 0, 0.2)",
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth <= 768 ? "20px" : "40px",
-                              height:
-                                window.innerWidth <= 768 ? "20px" : "40px",
-                              background:
-                                "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)",
-                              borderRadius: "10px",
-                              color: "white",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            🔬
-                          </div>
-                          <div>
-                            <div
-                              className="small fw-bolder"
-                              style={{
-                                color: "orange",
-                                fontSize:
-                                  window.innerWidth <= 768 ? "10px" : "0.8rem",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                              }}
-                            >
-                              {t("Pathology Focus")}
-                            </div>
-                            <div
-                              className="fw-bold"
-                              style={{
-                                color: "#1a202c",
-                                fontSize: "1.1rem",
-                              }}
-                            >
-                              {t(submodule)}
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-                    </div>
-
-                    {/* Medical Accreditation Strip */}
-                    <div
-                      className="d-flex flex-wrap align-items-center justify-content-center gap-3 py-3 px-4"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)",
-                        borderRadius: "16px",
-                        border: "1px solid rgba(25, 118, 210, 0.1)",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                      }}
-                    >
-                      <div className="d-flex align-items-center">
-                        <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                          🏆
-                        </span>
-                        <small
-                          style={{
-                            color: "#4a5568",
-                            fontSize:
-                              window.innerWidth <= 768 ? "12px" : "auto",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {t("AMA Approved")}
-                        </small>
-                      </div>
-                      <div
+                <div className="d-flex flex-column gap-3">
+                  {[
+                    "What abnormalities do you notice?",
+                    "Describe the region of interest.",
+                    "Any additional notes or comments?",
+                    "Any suggestions for diagnosis?",
+                    "Any additional notes or comments?",
+                  ].map((question, index) => (
+                    <div key={index}>
+                      <label
                         style={{
-                          width: "2px",
-                          height: "20px",
-                          background: "#e2e8f0",
-                          borderRadius: "1px",
+                          fontWeight: "500",
+                          fontSize: "14px",
+                          marginBottom: "6px",
+                          display: "block",
                         }}
-                      />
-                      <div className="d-flex align-items-center">
-                        <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                          📋
-                        </span>
-                        <small
-                          style={{
-                            color: "#4a5568",
-                            fontSize:
-                              window.innerWidth <= 768 ? "12px" : "auto",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {t("Evidence-Based")}
-                        </small>
-                      </div>
-                      <div
+                      >
+                        {question}
+                      </label>
+                      <textarea
+                        className="form-control"
+                        rows={3}
+                        placeholder="Type your answer here..."
                         style={{
-                          width: "2px",
-                          height: "20px",
-                          background: "#e2e8f0",
-                          borderRadius: "1px",
+                          fontSize: "14px",
+                          borderRadius: "8px",
+                          resize: "none",
                         }}
-                      />
-                      <div className="d-flex align-items-center">
-                        <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                          🔬
-                        </span>
-                        <small
-                          style={{
-                            color: "#4a5568",
-                            fontSize:
-                              window.innerWidth <= 768 ? "12px" : "auto",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {t("Peer Reviewed")}
-                        </small>
-                      </div>
-                      <div
-                        style={{
-                          width: "2px",
-                          height: "20px",
-                          background: "#e2e8f0",
-                          borderRadius: "1px",
-                        }}
-                      />
-                      <div className="d-flex align-items-center">
-                        <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                          ⚕️
-                        </span>
-                        <small
-                          style={{
-                            color: "#4a5568",
-                            fontSize:
-                              window.innerWidth <= 768 ? "12px" : "auto",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {t("Clinical Guidelines")}
-                        </small>
-                      </div>
+                      ></textarea>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  ))}
 
-              {/* Enhanced Tabbed Content with Medical Theme */}
-              <div
-                className="content-details trending-info position-relative overflow-hidden"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                  borderRadius: "24px",
-                  boxShadow:
-                    "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-                  padding: window.innerWidth >= 768 ? "35px" : "20px",
-                  marginBottom: "15px",
-                  border: "1px solid rgba(25, 118, 210, 0.1)",
-                }}
-              >
-                <div
-                  className="position-absolute"
-                  style={{
-                    top: "-20px",
-                    left: "-20px",
-                    width: "100px",
-                    height: "100px",
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e3f2fd' fill-opacity='0.6'%3E%3Cpath d='M20 20.5V18h-2v2.5h-2.5v2H18v2.5h2V22.5h2.5v-2H20zM0 18.5V16h2v2.5h2.5v2H2v2.5H0V20.5h-2.5v-2H0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    opacity: 0.7,
-                  }}
-                />
-
-                <Tab.Container defaultActiveKey="first">
-                  <Nav
-                    className="nav-pills mb-5 position-relative"
+                  <div
                     style={{
-                      background: THEME.softBlue, // Using a theme color
-                      borderRadius: "20px",
-                      padding: "8px",
-                      gap: "6px",
-                      flexWrap: "wrap",
-                      border: "1px solid rgba(25, 118, 210, 0.2)",
-                      boxShadow: "inset 0 2px 4px rgba(25, 118, 210, 0.1)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    <Nav.Item className="flex-grow-1 flex-md-grow-0">
-                      <Nav.Link
-                        eventKey="first"
-                        className="text-center py-3 px-4 position-relative"
-                        style={{
-                          borderRadius: "16px",
-                          fontWeight: 700,
-                          fontSize: "1rem",
-                          border: "none",
-                          transition: "all 0.3s ease",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div className="d-flex align-items-center text-black justify-content-center position-relative z-index-2">
-                          <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                            📋
-                          </span>
-                          {t("Overview")}
-                        </div>
-                        <div
-                          className="position-absolute top-0 start-0 w-100 h-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            borderRadius: "12px",
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
-                            zIndex: 1,
-                          }}
-                        />
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item className="flex-grow-1 flex-md-grow-0">
-                      <Nav.Link
-                        eventKey="second"
-                        className="text-center py-3 px-4 position-relative"
-                        style={{
-                          borderRadius: "16px",
-                          fontWeight: 700,
-                          fontSize: "1rem",
-                          border: "none",
-                          transition: "all 0.3s ease",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div className="d-flex align-items-center text-black justify-content-center position-relative z-index-2">
-                          <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                            📚
-                          </span>
-                          {t("Medical Resources")}
-                        </div>
-                        <div
-                          className="position-absolute top-0 start-0 w-100 h-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            borderRadius: "12px",
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
-                            zIndex: 1,
-                          }}
-                        />
-                      </Nav.Link>
-                    </Nav.Item>
-
-                    <Nav.Item className="flex-grow-1 flex-md-grow-0">
-                      <Nav.Link
-                        eventKey="third"
-                        className="text-center py-3 px-4 position-relative"
-                        style={{
-                          borderRadius: "16px",
-                          fontWeight: 700,
-                          fontSize: "1rem",
-                          border: "none",
-                          transition: "all 0.3s ease",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div className="d-flex align-items-center text-black justify-content-center position-relative z-index-2">
-                          <span className="me-2" style={{ fontSize: "1.1rem" }}>
-                            ⭐
-                          </span>
-                          {t("Reviews")}
-                        </div>
-                        <div
-                          className="position-absolute top-0 start-0 w-100 h-100"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            borderRadius: "12px",
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
-                            zIndex: 1,
-                          }}
-                        />
-                      </Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-
-                  <Tab.Content>
-                    {/* Clinical Overview Tab */}
-                    <Tab.Pane className="fade show" eventKey="first">
-                      <div
-                        className="p-4"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)",
-                          borderRadius: "20px",
-                          border: "1px solid rgba(25, 118, 210, 0.1)",
-                        }}
-                      >
-                        <div className="d-flex align-items-center mb-3">
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: window.innerWidth >= 768 ? "48px" : "24px",
-                              height:
-                                window.innerWidth >= 768 ? "48px" : "24px",
-                              background:
-                                "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
-                              borderRadius: "12px",
-                              color: "white",
-                              fontSize:
-                                window.innerWidth >= 768 ? "1.2rem" : "1rem",
-                            }}
-                          >
-                            🩺
-                          </div>
-                          <div>
-                            <h4
-                              className="fw-bold mb-1"
-                              style={{ color: "#1a202c", fontSize: "1.4rem" }}
-                            >
-                              {t("Medical Summary")}
-                            </h4>
-                            <p
-                              className="mb-0 small"
-                              style={{ color: "#718096" }}
-                            >
-                              {t(
-                                "Comprehensive clinical overview and learning objectives"
-                              )}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          className="content-text"
-                          style={{
-                            lineHeight: 1.8,
-                            fontSize: "1.1rem",
-                            color: "#4a5568",
-                            marginBottom: "24px",
-                          }}
-                        >
-                          {description}
-                        </div>
-
-                        <div
-                          className="p-4 mb-4"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(76, 175, 80, 0.2)",
-                          }}
-                        >
-                          <h5
-                            className="fw-bold mb-3 d-flex align-items-center"
-                            style={{ color: "#2e7d32", fontSize: "1.2rem" }}
-                          >
-                            <span className="me-2">🎯</span>
-                            {t("Learning Objectives")}
-                          </h5>
-                          <ul
-                            className="mb-0"
-                            style={{ color: "#4a5568", fontSize: "1rem" }}
-                          >
-                            <li className="mb-2">
-                              {t(
-                                "Understand fundamental clinical concepts and applications"
-                              )}
-                            </li>
-                            <li className="mb-2">
-                              {t("Apply evidence-based medical practices")}
-                            </li>
-                            <li className="mb-2">
-                              {t(
-                                "Develop critical thinking in diagnostic procedures"
-                              )}
-                            </li>
-                            <li className="mb-0">
-                              {t("Enhance patient care and safety protocols")}
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div
-                          className="p-4"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
-                            borderRadius: "16px",
-                            border: "1px solid rgba(255, 152, 0, 0.2)",
-                          }}
-                        >
-                          <h5
-                            className="fw-bold mb-3 d-flex align-items-center"
-                            style={{ color: "#ef6c00", fontSize: "1.2rem" }}
-                          >
-                            <span className="me-2">⚠️</span>
-                            {t("Important Clinical Notes")}
-                          </h5>
-                          <p
-                            className="mb-0"
-                            style={{ color: "#4a5568", fontSize: "1rem" }}
-                          >
-                            {t(
-                              "This content is for educational purposes and should complement, not replace, clinical judgment and professional medical advice."
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </Tab.Pane>
-
-                    {/* Medical Resources Tab */}
-                    <Tab.Pane className="fade" eventKey="second">
-                      <div
-                        className="p-4"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #f3e5f5 0%, #f8bbd9 100%)",
-                          borderRadius: "20px",
-                          border: "1px solid rgba(156, 39, 176, 0.1)",
-                        }}
-                      >
-                        <div className="d-flex align-items-center mb-4">
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: "48px",
-                              height: "48px",
-                              background:
-                                "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)",
-                              borderRadius: "12px",
-                              color: "white",
-                              fontSize: "1.2rem",
-                            }}
-                          >
-                            📚
-                          </div>
-                          <div>
-                            <h4
-                              className="fw-bold mb-1"
-                              style={{ color: "#1a202c", fontSize: "1.4rem" }}
-                            >
-                              {t("Medical Resources & References")}
-                            </h4>
-                            <p
-                              className="mb-0 small"
-                              style={{ color: "#718096" }}
-                            >
-                              {t(
-                                "Supplementary materials and clinical references"
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                        <Sources />
-                      </div>
-                    </Tab.Pane>
-
-                    {/* Clinical Reviews Tab */}
-                    <Tab.Pane className="fade" eventKey="third">
-                      <div
-                        className="p-4"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)",
-                          borderRadius: "20px",
-                          border: "1px solid rgba(76, 175, 80, 0.1)",
-                        }}
-                      >
-                        <div className="d-flex align-items-center mb-4">
-                          <div
-                            className="me-3 d-flex align-items-center justify-content-center"
-                            style={{
-                              width: "48px",
-                              height: "48px",
-                              background:
-                                "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
-                              borderRadius: "12px",
-                              color: "white",
-                              fontSize: "1.2rem",
-                            }}
-                          >
-                            ⭐
-                          </div>
-                          <div>
-                            <h4
-                              className="fw-bold mb-1"
-                              style={{ color: "#1a202c", fontSize: "1.4rem" }}
-                            >
-                              {t("Reviews & Feedback")}
-                            </h4>
-                            <p
-                              className="mb-0 small"
-                              style={{ color: "#718096" }}
-                            >
-                              {t(
-                                "Peer reviews and educational effectiveness ratings"
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                        {/* Updated ReviewComponent usage */}
-                        <ReviewComponent
-                          itemId={sessionId}
-                          isAuthenticated={isAuthenticated}
-                          currentUserId={user?._id || user?.id || user?.userId} // Pass user ID to ReviewComponent
-                          itemTitle={title}
-                          itemType={contentType} // Pass content type to ReviewComponent
-                        />
-                      </div>
-                    </Tab.Pane>
-                  </Tab.Content>
-                </Tab.Container>
+                    <button
+                      className="btn btn-primary mt-2"
+                      style={{
+                        backgroundColor: "lightblue",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "8px 12px",
+                        width: "70%",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Save Observations
+                    </button>
+                  </div>
+                </div>
               </div>
             </Col>
           </Row>
-        </Container>
-      </div>
-
-      <div className="cast-tabs pb-5 px-0 px-md-0">
-        <Container fluid>
           <div
-            className="content-details trending-info position-relative overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-              borderRadius: "24px",
-              boxShadow:
-                "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-              padding: "40px 35px",
-              border: "1px solid rgba(255,255,255,0.2)",
-              backdropFilter: "blur(10px)",
-              overflow: "hidden",
+              background: "white",
+              borderRadius: "8px",
+              marginTop: "12px",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+              padding: "24px",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                top: "-50px",
-                right: "-50px",
-                width: "150px",
-                height: "150px",
-                background: "linear-gradient(135deg, #667eea20, #764ba220)",
-                borderRadius: "50%",
-                opacity: 0.6,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                bottom: "-30px",
-                left: "-30px",
-                width: "100px",
-                height: "100px",
-                background: "linear-gradient(135deg, #f093fb20, #f5576c20)",
-                borderRadius: "50%",
-                opacity: 0.5,
-              }}
-            />
-
-            <Tab.Container defaultActiveKey="first">
-              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
-                <div>
-                  <h3
-                    className="fw-bold mb-2"
-                    style={{
-                      color: "#1a202c",
-                      fontSize: "2rem",
-                      background:
-                        "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    {t("Meet Your Faculty")}
-                  </h3>
-                  <p
-                    className="mb-0"
-                    style={{
-                      color: "#718096",
-                      fontSize: "1.1rem",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {t("Learn from industry experts and experienced educators")}
-                  </p>
-                </div>
-
-                {/* Faculty Count Badge */}
-                <div
-                  className="d-flex align-items-center mt-3 mt-md-0"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    borderRadius: "20px",
-                    padding: "8px 16px",
-                    color: "white",
-                    fontSize: "0.9rem",
-                    fontWeight: 600,
-                    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.3)",
-                  }}
-                >
-                  <FaGraduationCap className="me-2" />
-                  {Array.isArray(faculty)
-                    ? faculty.length
-                    : faculty
-                    ? 1
-                    : 0}{" "}
-                  {t("Faculty Member")}
-                  {Array.isArray(faculty) && faculty.length !== 1
-                    ? "s"
-                    : ""}{" "}
-                  {/* Corrected pluralization */}
-                </div>
-              </div>
-
-              <Nav
-                className="nav-pills mb-5 position-relative"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%)",
-                  borderRadius: "16px",
-                  padding: "6px",
-                  border: "1px solid rgba(102, 126, 234, 0.1)",
-                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)",
-                }}
-              >
-                <Nav.Item className="flex-grow-1">
+            <Tab.Container defaultActiveKey="overview">
+              <Nav variant="pills" className="mb-4" style={{ gap: "8px" }}>
+                <Nav.Item>
                   <Nav.Link
-                    eventKey="first"
-                    className="text-center py-3 px-4 position-relative"
+                    eventKey="overview"
                     style={{
-                      borderRadius: "12px",
-                      fontWeight: 700,
-                      fontSize: "1.1rem",
-                      border: "none",
-                      background: "transparent",
-                      color: "#2d3748",
-                      transition: "all 0.3s ease",
-                      overflow: "hidden",
+                      borderRadius: "10px",
+                      fontWeight: 600,
+                      color: "black",
+                      padding: "10px 20px",
                     }}
                   >
-                    <div className="d-flex align-items-center justify-content-center position-relative z-index-2">
-                      <FaUser className="me-2" size={16} />
-                      {t("Faculty Information")}
-                    </div>
-                    <div
-                      className="position-absolute top-0 start-0 w-100 h-100"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        borderRadius: "12px",
-                        opacity: 0,
-                        transition: "opacity 0.3s ease",
-                        zIndex: 1,
-                      }}
-                    />
+                    {t("Overview")}
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    eventKey="resources"
+                    style={{
+                      borderRadius: "10px",
+                      fontWeight: 600,
+                      color: "black",
+                      padding: "10px 20px",
+                    }}
+                  >
+                    {t("Resources")}
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    eventKey="reviews"
+                    style={{
+                      borderRadius: "10px",
+                      fontWeight: 600,
+                      color: "black",
+                      padding: "10px 20px",
+                    }}
+                  >
+                    {t("Reviews")}
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
 
               <Tab.Content>
-                <Tab.Pane className="fade show" eventKey="first">
-                  {Array.isArray(faculty) && faculty.length > 0 ? (
-                    <Swiper
-                      slidesPerView={1}
-                      loop={false}
-                      modules={[Navigation]}
-                      navigation={{
-                        nextEl: ".swiper-button-next-custom",
-                        prevEl: ".swiper-button-prev-custom",
-                      }}
-                      className="position-relative faculty-swiper"
+                <Tab.Pane eventKey="overview">
+                  <div style={{ color: THEME.text, lineHeight: 1.8 }}>
+                    <h5 className="fw-bold mb-3">{t("About this Session")}</h5>
+                    <p style={{ fontSize: "1rem", color: THEME.lightText }}>
+                      {description}
+                    </p>
+                    <div
                       style={{
-                        padding: "20px 0",
-                      }}
-                      breakpoints={{
-                        0: { slidesPerView: 1, spaceBetween: 20 },
-                        768: { slidesPerView: 1, spaceBetween: 25 },
-                        992: { slidesPerView: 1, spaceBetween: 30 },
+                        background: "white",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                        padding: "20px",
+                        position: "sticky",
+                        // bottom: "20px",
                       }}
                     >
-                      {faculty.map((member, index) => (
-                        <SwiperSlide key={member._id || index}>
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5
+                          className="fw-bold mb-0"
+                          style={{ color: THEME.darkText }}
+                        >
+                          {t("Meet Your Instructor")}
+                        </h5>
+                      </div>
+
+                      {faculty.length > 0 && (
+                        <div className="d-flex align-items-center gap-3">
                           <div
-                            className="faculty-card position-relative"
                             style={{
-                              background:
-                                "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                              borderRadius: "20px",
-                              padding: "30px",
-                              boxShadow:
-                                "0 8px 25px rgba(0,0,0,0.06), 0 3px 10px rgba(0,0,0,0.03)",
-                              border: "1px solid rgba(255,255,255,0.8)",
-                              transition: "all 0.3s ease",
+                              width: "80px",
+                              height: "80px",
+                              borderRadius: "50%",
                               overflow: "hidden",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform =
-                                "translateY(-5px)";
-                              e.currentTarget.style.boxShadow =
-                                "0 12px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = "translateY(0)";
-                              e.currentTarget.style.boxShadow =
-                                "0 8px 25px rgba(0,0,0,0.06), 0 3px 10px rgba(0,0,0,0.03)";
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                              border: `3px solid ${THEME.primary}`,
+                              flexShrink: 0,
                             }}
                           >
-                            <div
+                            <img
+                              src={faculty[0].image}
+                              alt={faculty[0].name}
                               style={{
-                                position: "absolute",
-                                top: 0,
-                                right: 0,
-                                width: "80px",
-                                height: "80px",
-                                background:
-                                  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                clipPath: "polygon(100% 0, 0 0, 100% 100%)",
-                                opacity: 0.1,
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
                               }}
                             />
-                            <Row className="align-items-center">
-                              <Col
-                                xs={12}
-                                md={4}
-                                lg={3}
-                                className="text-center mb-4 mb-md-0"
-                              >
-                                <div className="position-relative d-inline-block">
-                                  <div
-                                    className="faculty-image-container position-relative"
-                                    style={{
-                                      width: "120px",
-                                      height: "120px",
-                                      margin: "0 auto",
-                                    }}
-                                  >
-                                    <img
-                                      src={member.image}
-                                      alt={`${member.name} profile`}
-                                      className="img-fluid"
-                                      loading="lazy"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                        borderRadius: "50%",
-                                        border: "4px solid #ffffff",
-                                        boxShadow:
-                                          "0 8px 25px rgba(0,0,0,0.15)",
-                                      }}
-                                    />
-                                    <div
-                                      className="position-absolute"
-                                      style={{
-                                        bottom: "8px",
-                                        right: "8px",
-                                        width: "24px",
-                                        height: "24px",
-                                        backgroundColor: "#38a169",
-                                        borderRadius: "50%",
-                                        border: "3px solid white",
-                                        boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                                      }}
-                                    />
-                                    <div
-                                      className="position-absolute"
-                                      style={{
-                                        top: "-10px",
-                                        right: "-10px",
-                                        background:
-                                          "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                                        borderRadius: "12px",
-                                        padding: "4px 8px",
-                                        fontSize: "0.7rem",
-                                        fontWeight: 700,
-                                        color: "white",
-                                        boxShadow:
-                                          "0 4px 15px rgba(240, 147, 251, 0.4)",
-                                      }}
-                                    >
-                                      ⭐ 4.9
-                                    </div>
-                                  </div>
-                                </div>
-                              </Col>
-
-                              <Col xs={12} md={8} lg={9}>
-                                <div className="faculty-info">
-                                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
-                                    <div>
-                                      <h4
-                                        className="fw-bold mb-1"
-                                        style={{
-                                          color: "#1a202c",
-                                          fontSize: "1.6rem",
-                                        }}
-                                      >
-                                        <Link
-                                          to="/faculty-detail" // Adjust this link to pass member._id if faculty-detail page is dynamic
-                                          state={{
-                                            facultyId: member._id,
-                                            facultyName: member.name,
-                                            facultyImage: member.image,
-                                          }}
-                                          style={{
-                                            color: "inherit",
-                                            textDecoration: "none",
-                                            transition: "color 0.3s ease",
-                                          }}
-                                          onMouseEnter={(e) => {
-                                            e.target.style.color = "#667eea";
-                                          }}
-                                          onMouseLeave={(e) => {
-                                            e.target.style.color = "#1a202c";
-                                          }}
-                                        >
-                                          {t(member.name || "Unknown Faculty")}
-                                        </Link>
-                                      </h4>
-                                      <div className="d-flex align-items-center mb-2">
-                                        <span
-                                          className="badge me-2"
-                                          style={{
-                                            background:
-                                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                                            fontSize: "0.8rem",
-                                            padding: "6px 12px",
-                                            borderRadius: "8px",
-                                            fontWeight: 600,
-                                          }}
-                                        >
-                                          {t("Senior Lecturer")}
-                                        </span>
-                                        <span
-                                          className="badge"
-                                          style={{
-                                            background:
-                                              "linear-gradient(135deg, #38a169 0%, #2f855a 100%)",
-                                            fontSize: "0.8rem",
-                                            padding: "6px 12px",
-                                            borderRadius: "8px",
-                                            fontWeight: 600,
-                                          }}
-                                        >
-                                          {t("Verified Educator")}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="row g-3 mb-3">
-                                    <div className="col-6 col-md-3">
-                                      <div
-                                        className="text-center p-3"
-                                        style={{
-                                          background:
-                                            "linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%)",
-                                          borderRadius: "12px",
-                                          border:
-                                            "1px solid rgba(102, 126, 234, 0.1)",
-                                        }}
-                                      >
-                                        <div
-                                          className="fw-bold mb-1"
-                                          style={{
-                                            fontSize: "1.3rem",
-                                            color: "#1a202c",
-                                          }}
-                                        >
-                                          156
-                                        </div>
-                                        <small
-                                          style={{
-                                            color: "#718096",
-                                            fontSize: "0.8rem",
-                                          }}
-                                        >
-                                          {t("Lectures")}
-                                        </small>
-                                      </div>
-                                    </div>
-                                    <div className="col-6 col-md-3">
-                                      <div
-                                        className="text-center p-3"
-                                        style={{
-                                          background:
-                                            "linear-gradient(135deg, #f0fff4 0%, #f0f9ff 100%)",
-                                          borderRadius: "12px",
-                                          border:
-                                            "1px solid rgba(56, 161, 105, 0.1)",
-                                        }}
-                                      >
-                                        <div
-                                          className="fw-bold mb-1"
-                                          style={{
-                                            fontSize: "1.3rem",
-                                            color: "#1a202c",
-                                          }}
-                                        >
-                                          4.9
-                                        </div>
-                                        <small
-                                          style={{
-                                            color: "#718096",
-                                            fontSize: "0.8rem",
-                                          }}
-                                        >
-                                          {t("Rating")}
-                                        </small>
-                                      </div>
-                                    </div>
-                                    <div className="col-6 col-md-3">
-                                      <div
-                                        className="text-center p-3"
-                                        style={{
-                                          background:
-                                            "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)",
-                                          borderRadius: "12px",
-                                          border:
-                                            "1px solid rgba(236, 72, 153, 0.1)",
-                                        }}
-                                      >
-                                        <div
-                                          className="fw-bold mb-1"
-                                          style={{
-                                            fontSize: "1.3rem",
-                                            color: "#1a202c",
-                                          }}
-                                        >
-                                          8+
-                                        </div>
-                                        <small
-                                          style={{
-                                            color: "#718096",
-                                            fontSize: "0.8rem",
-                                          }}
-                                        >
-                                          {t("Years Exp")}
-                                        </small>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <p
-                                    className="mb-3"
-                                    style={{
-                                      color: "#4a5568",
-                                      fontSize: "1rem",
-                                      lineHeight: 1.6,
-                                    }}
-                                  >
-                                    {t(
-                                      "Experienced educator with expertise in medical sciences and innovative teaching methodologies. Passionate about student success and industry-relevant curriculum development."
-                                    )}
-                                  </p>
-
-                                  <div className="mb-3">
-                                    <h6
-                                      className="fw-semibold mb-2"
-                                      style={{
-                                        color: "#2d3748",
-                                        fontSize: "0.9rem",
-                                      }}
-                                    >
-                                      {t("Specializations")}:
-                                    </h6>
-                                    <div className="d-flex flex-wrap gap-2">
-                                      {[
-                                        "Medical Imaging",
-                                        "Diagnostic Radiology",
-                                        "Patient Care",
-                                        "Clinical Research",
-                                      ].map((spec, index) => (
-                                        <span
-                                          key={index}
-                                          className="badge"
-                                          style={{
-                                            background: `linear-gradient(135deg, ${
-                                              index % 2 === 0
-                                                ? "#667eea20, #764ba220"
-                                                : "#f093fb20, #f5576c20"
-                                            })`,
-                                            color: "#4a5568",
-                                            fontSize: "0.8rem",
-                                            padding: "6px 12px",
-                                            borderRadius: "8px",
-                                            fontWeight: 500,
-                                            border: `1px solid ${
-                                              index % 2 === 0
-                                                ? "#667eea30"
-                                                : "#f093fb30"
-                                            }`,
-                                          }}
-                                        >
-                                          {t(spec)}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              </Col>
-                            </Row>
                           </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div
-                      className="text-center py-5"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)",
-                        borderRadius: "16px",
-                        border: "2px dashed #cbd5e0",
-                      }}
-                    >
-                      <FaGraduationCap
-                        size={48}
-                        style={{ color: "#a0aec0", marginBottom: "16px" }}
-                      />
-                      <h5 style={{ color: "#4a5568", marginBottom: "8px" }}>
-                        {t("No Faculty Information")}
-                      </h5>
-                      <p style={{ color: "#718096", marginBottom: 0 }}>
-                        {t(
-                          "Faculty details will be displayed here when available"
-                        )}
-                      </p>
+                          <div className="flex-grow-1">
+                            <h6
+                              className="fw-bold mb-1"
+                              style={{
+                                color: THEME.darkText,
+                                fontSize: "1rem",
+                              }}
+                            >
+                              {faculty[0].name}
+                            </h6>
+                            <p
+                              className="mb-2 text-muted"
+                              style={{ fontSize: "0.9rem" }}
+                            >
+                              {faculty[0].specializations?.join(", ")}
+                            </p>
+                            <div
+                              style={{
+                                fontSize: "0.85rem",
+                                color: THEME.lightText,
+                              }}
+                            >
+                              <span
+                                style={{
+                                  color: "#ffb300",
+                                  marginRight: "4px",
+                                }}
+                              >
+                                ⭐
+                              </span>
+                              <strong
+                                style={{
+                                  color: THEME.darkText,
+                                  marginRight: "4px",
+                                }}
+                              >
+                                {faculty[0].rating}
+                              </strong>
+                              {t("Rating")}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+                </Tab.Pane>
+                <Tab.Pane eventKey="resources">
+                  <Sources />
+                </Tab.Pane>
+                <Tab.Pane eventKey="reviews">
+                  <ReviewComponent
+                    itemId={sessionId}
+                    isAuthenticated={isAuthenticated}
+                    currentUserId={user?._id || user?.id}
+                    itemTitle={title}
+                    itemType={contentType}
+                  />
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
           </div>
         </Container>
+        <LatestMovies title="Recent Items" />
       </div>
-
-      {/* More DICOM Cases Section - now below the main flex row */}
-      <div
-        data-aos="zoom-in"
-        data-aos-duration="1000"
-        style={{
-          // background: sectionBg[1],
-          padding: "48px 0",
-          // height: "30%",
-        }}
-      >
-        <LatestMovies title="Recommended Cases" />
-      </div>
-
-      {/* Confirmation Modal */}
-      {showConfirmationModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            animation: "fadeIn 0.3s ease-out",
-          }}
-          onClick={handleCancelSubmission}
-        >
-          <div
-            className="confirmation-modal-content" // Add class for responsiveness
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              padding: "32px",
-              maxWidth: 480,
-              width: "90%",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
-              animation: "slideUp 0.3s ease-out",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  background: "linear-gradient(135deg, #1976d2, #00bfae)",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 16px",
-                  fontSize: 28,
-                  color: "#fff",
-                  boxShadow: "0 8px 24px rgba(25, 118, 210, 0.3)",
-                }}
-              >
-                ⚠️
-              </div>
-              <h2
-                style={{
-                  color: THEME.text,
-                  fontWeight: 700,
-                  fontSize: 24,
-                  marginBottom: 8,
-                }}
-              >
-                Confirm Submission
-              </h2>
-              <p
-                style={{
-                  color: "#666",
-                  fontSize: 16,
-                  lineHeight: 1.5,
-                }}
-              >
-                Are you sure you want to submit your observations? This action
-                cannot be undone.
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                justifyContent: "center",
-              }}
-            >
-              <button
-                onClick={handleCancelSubmission}
-                style={{
-                  padding: "12px 24px",
-                  background: "#f8f9fa",
-                  color: "#666",
-                  border: "1px solid #dee2e6",
-                  borderRadius: 8,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  minWidth: 120,
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = "#e9ecef";
-                  e.target.style.borderColor = "#adb5bd";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "#f8f9fa";
-                  e.target.style.borderColor = "#dee2e6";
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmSubmission}
-                style={{
-                  padding: "12px 24px",
-                  background: THEME.primary,
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  minWidth: 120,
-                  boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = "translateY(-1px)";
-                  e.target.style.boxShadow =
-                    "0 6px 16px rgba(25, 118, 210, 0.4)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow =
-                    "0 4px 12px rgba(25, 118, 210, 0.3)";
-                }}
-              >
-                Yes, Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Comparison Modal */}
-      {showComparisonModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            animation: "fadeIn 0.3s ease-out",
-          }}
-          onClick={handleCloseComparisonModal}
-        >
-          <div
-            className="comparison-modal-content" // Add class for responsiveness
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              maxWidth: "95vw",
-              maxHeight: "95vh",
-              width: 1400,
-              marginTop: "38px",
-              height: "90vh",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
-              animation: "slideUp 0.3s ease-out",
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div
-              style={{
-                padding: "12px 10px",
-
-                borderBottom: "1px solid #e0e0e0",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                background: "#f8f9fa",
-                color: "#495057",
-                borderRadius: "16px 16px 0 0",
-              }}
-            >
-              <h2
-                style={{
-                  fontWeight: 700,
-                  fontSize: 24,
-                  margin: 0,
-                }}
-              >
-                Observations Comparison
-              </h2>
-              <button
-                onClick={handleCloseComparisonModal}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#495057",
-                  fontSize: 24,
-                  cursor: "pointer",
-                  padding: "8px",
-                  borderRadius: "50%",
-                  width: 40,
-                  height: 40,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "background 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = "rgba(0, 0, 0, 0.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "none";
-                }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div
-              className="comparison-modal-body" // Add class for responsiveness
-              style={{
-                flex: 1,
-                display: "flex",
-                overflow: "hidden",
-                flexDirection: "row", // Default for larger screens
-              }}
-            >
-              {/* Left Column: Your Observations */}
-              <div
-                style={{
-                  flex: 1,
-                  padding: "32px",
-                  borderRight: "1px solid #e0e0e0",
-                  overflowY: "auto",
-                }}
-              >
-                <h3
-                  style={{
-                    color: "#6c757d",
-                    fontWeight: 700,
-                    fontSize: 24,
-                    marginBottom: 24,
-                    textAlign: "center",
-                  }}
-                >
-                  Your Observations
-                </h3>
-
-                {Object.entries(observations).map(([key, value]) => {
-                  const sectionNames = {
-                    medialMeniscus: "Medial compartment: A) Medial meniscus",
-                    medialCartilage:
-                      "Medial compartment: B) Medial femoral condyle and medial tibial plateau cartilage",
-                    lateralMeniscus: "Lateral compartment: A) Lateral meniscus",
-                    lateralCartilage:
-                      "Lateral compartment: B) Lateral femoral condyle and lateral tibial plateau cartilage",
-                  };
-
-                  return (
-                    <div
-                      key={key}
-                      style={{
-                        marginBottom: 24,
-                        padding: "20px",
-                        background: value ? "#f8f9fa" : "#fff8e1",
-                        borderRadius: 8,
-                        border: `1px solid ${value ? "#e9ecef" : "#ffecb3"}`,
-                      }}
-                    >
-                      <h4
-                        style={{
-                          color: "#495057",
-                          fontWeight: 600,
-                          fontSize: 16,
-                          marginBottom: 12,
-                        }}
-                      >
-                        {sectionNames[key]}
-                      </h4>
-                      <p
-                        style={{
-                          color: value ? "#6c757d" : "#8d6e63",
-                          fontSize: 15,
-                          lineHeight: 1.6,
-                          margin: 0,
-                          fontStyle: value ? "normal" : "italic",
-                        }}
-                      >
-                        {value || "No observations recorded"}
-                      </p>
-                    </div>
-                  );
-                })}
-
-                {/* Additional sections that weren't in the form but are in faculty observations */}
-                {[
-                  "Extensor mechanism (PF joint, tendons, ligaments, fat pad, any PF dysplasia features)",
-                  "Cruciate ligaments",
-                  "Collateral ligaments (medial and lateral; posterolateral and posteromedial corners)",
-                ].map((section) => (
-                  <div
-                    key={section}
-                    style={{
-                      marginBottom: 24,
-                      padding: "20px",
-                      background: "#fff8e1",
-                      borderRadius: 8,
-                      border: "1px solid #ffecb3",
-                    }}
-                  >
-                    <h4
-                      style={{
-                        color: "#495057",
-                        fontWeight: 600,
-                        fontSize: 16,
-                        marginBottom: 12,
-                      }}
-                    >
-                      {section}
-                    </h4>
-                    <p
-                      style={{
-                        color: "#8d6e63",
-                        fontSize: 15,
-                        lineHeight: 1.6,
-                        margin: 0,
-                        fontStyle: "italic",
-                      }}
-                    >
-                      No observations recorded
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Right Column: Faculty Observations */}
-              <div
-                style={{
-                  flex: 1,
-                  padding: "32px",
-                  overflowY: "auto",
-                }}
-              >
-                <h3
-                  style={{
-                    color: "#6c757d",
-                    fontWeight: 700,
-                    fontSize: 24,
-                    marginBottom: 24,
-                    textAlign: "center",
-                  }}
-                >
-                  Faculty's Observations
-                </h3>
-
-                {/* Faculty observations data */}
-                {[
-                  {
-                    section:
-                      "Medial compartment (Medial meniscus Medial femoral condyle and medial tibial plateau cartilage)",
-                    observation:
-                      "Medial meniscal signal changes in body and posterior horn – degeneration and could represent some contusional change. No medial meniscal tear.",
-                  },
-                  {
-                    section:
-                      "Lateral compartment (Lateral meniscus Lateral femoral condyle and lateral tibial plateau cartilage)",
-                    observation: "Intact lateral meniscus",
-                  },
-                  {
-                    section:
-                      "Extensor mechanism (PF joint, tendons, ligaments, fat pad, any PF dysplasia features)",
-                    observation: "Intact.",
-                  },
-                  {
-                    section: "Cruciate ligaments",
-                    observation: "Intact.",
-                  },
-                  {
-                    section:
-                      "Collateral ligaments (medial and lateral; posterolateral and posteromedial corners)",
-                    observation:
-                      "The most striking feature is at the posterolateral/ lateral aspects of the knee where there is significant abnormality to the fibular collateral ligament which appears to be disrupted from its distal attachment region where it joins biceps femoris and there is oedema throughout the residual ligament (high-grade injury of the LCL and biceps femoris). The biceps femoris attachment shows signal changes in keeping with partial strain. Popliteus and iliotibial band are intact. There is associated soft tissue oedema in the posterolateral corner representing injury to the smaller ligaments (particularly popliteofibular). Focal bony edema is seen at lateral margin of tibial plateau in region of distal ALL.",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      marginBottom: 24,
-                      padding: "20px",
-                      background: "#f1f8e9",
-                      borderRadius: 8,
-                      border: "1px solid #c8e6c9",
-                    }}
-                  >
-                    <h4
-                      style={{
-                        color: "#495057",
-                        fontWeight: 600,
-                        fontSize: 16,
-                        marginBottom: 12,
-                      }}
-                    >
-                      {item.section}
-                    </h4>
-                    <p
-                      style={{
-                        color: "#558b2f",
-                        fontSize: 15,
-                        lineHeight: 1.6,
-                        margin: 0,
-                      }}
-                    >
-                      {item.observation}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style>
-        {`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          
-          @keyframes slideUp {
-            from { 
-              opacity: 0;
-              transform: translateY(20px) scale(0.95);
-            }
-            to { 
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
-          }
-
-          /* Responsive Styles */
-
-          /* Base styles for larger screens (1025px and up) - already mostly in JS inline styles */
-          .case-viewer-container {
-            padding: 0px 6px; /* Add some horizontal padding to the main container */
-          }
-
-          /* Medium screens (769px to 1024px) */
-          @media (max-width: 1024px) {
-            .case-viewer-container {
-              flex-direction: column;
-              height: auto; /* Allow height to adjust */
-              // margin-top: 64px;
-              padding: 24px; /* Uniform padding */
-            }
-
-            .dicom-viewer-panel {
-              margin: 0 0 24px 0; /* Remove right margin, add bottom margin */
-              border-radius: 16px; /* Full border-radius when stacked */
-              max-width: 100%; /* Take full width */
-              min-width: unset; /* Remove min-width constraint */
-            }
-
-            .observations-form-panel {
-              margin: 0; /* Remove left margin when stacked */
-              border-radius: 16px; /* Full border-radius when stacked */
-              padding-left: 0; /* Reset padding */
-              border-left: none; /* Remove left border when stacked */
-              flex: unset; /* Remove flex sizing */
-              width: 100%; /* Take full width */
-              max-width: 100%; /* Override max-width constraint */
-            }
-
-            .dicom-viewer-panel h2 {
-              font-size: 20px; /* Smaller heading */
-            }
-
-            .dicomview.sessioniframe {
-              height: 400px !important; /* Adjust iframe height for medium screens */
-            }
-
-            .confirmation-modal-content, .comparison-modal-content {
-                padding: 24px;
-            }
-          }
-
-          /* Small screens (400px to 768px) */
-          @media (max-width: 768px) {
-            .case-viewer-container {
-              padding: 16px; /* Smaller padding */
-            }
-
-            .dicom-viewer-panel, .observations-form-panel {
-                margin: 0 0 16px 0; /* Even smaller margins */
-                border-radius: 12px; /* Slightly smaller radius */
-            }
-
-            .observations-form-panel div:first-child { /* Header */
-                padding: 16px 20px 8px 20px; /* Adjust header padding */
-            }
-            .observations-form-panel div:nth-child(2) { /* Form content */
-                padding: 20px; /* Adjust form content padding */
-            }
-
-            .observations-form-panel div h3 {
-                font-size: 15px; /* Smaller headings in form */
-            }
-
-            .observations-form-panel textarea,
-            .observations-form-panel button {
-                font-size: 13px; /* Smaller font sizes for form elements */
-                padding: 10px;
-            }
-
-            .dicom-viewer-panel h2 {
-              font-size: 18px; /* Even smaller heading */
-              margin-bottom: 16px;
-            }
-
-            .dicomview.sessioniframe {
-              height: 300px !important; /* Further adjust iframe height for small screens */
-            }
-
-            .confirmation-modal-content {
-                width: 95%; /* Take more width on very small screens */
-                padding: 20px;
-            }
-            .confirmation-modal-content h2 {
-                font-size: 20px;
-            }
-            .confirmation-modal-content p {
-                font-size: 14px;
-            }
-            .confirmation-modal-content button {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-
-            .comparison-modal-content {
-                width: 98vw; /* Almost full width for comparison modal */
-                height: 90vh; /* Max height */
-                padding: 0; /* Remove padding around content within the modal */
-                border-radius: 12px;
-            }
-            .comparison-modal-content > div:first-child { /* Modal header */
-                padding: 16px 20px;
-            }
-            .comparison-modal-content > div:first-child h2 {
-                font-size: 20px;
-            }
-            .comparison-modal-body {
-                flex-direction: column; /* Stack columns inside comparison modal */
-                overflow-y: auto; /* Enable scrolling for the whole body */
-            }
-            .comparison-modal-body > div { /* Both observation columns */
-                border-right: none !important; /* Remove right border */
-                border-bottom: 1px solid #e0e0e0; /* Add bottom border between stacked columns */
-                padding: 20px; /* Adjust padding */
-            }
-            .comparison-modal-body > div:last-child {
-                border-bottom: none; /* No bottom border for the last column */
-            }
-            .comparison-modal-body h3 {
-                font-size: 20px;
-            }
-            .comparison-modal-body h4 {
-                font-size: 14px;
-            }
-            .comparison-modal-body p {
-                font-size: 13px;
-            }
-          }
-
-          /* Extra-large screens (1401px to 1600px) - mostly using existing styles but could be enhanced */
-          @media (min-width: 1401px) and (max-width: 1600px) {
-            .case-viewer-container {
-              max-width: 1500px; /* Constrain max-width for very wide screens */
-              margin: 28px auto 0 auto; /* Center the container */
-            }
-            .observations-form-panel {
-                max-width: 480px; /* Slightly wider form */
-            }
-            .dicom-viewer-panel {
-                padding: 40px; /* More padding */
-            }
-          }
-        `}
-      </style>
-    </>
+    </Fragment>
   );
 };
 

@@ -380,7 +380,7 @@
   border-radius: 4px;
   font-size: 12px;
   white-space: nowrap;
-  z-index: 1000;
+  /* z-index: 1000; */
 }
 
 /* Mobile responsiveness */

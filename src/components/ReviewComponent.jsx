@@ -267,91 +267,19 @@ const ReviewComponent = memo(
         : t("Write your Review");
 
     return (
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "20px 0" }}>
-        {/* Header Section */}
-        <div
-          style={{
-            backgroundColor: "lightblue",
-            borderRadius: "16px",
-            padding: "32px",
-            marginBottom: "24px",
-            color: "white",
-            boxShadow: "0 4px 20px rgba(99, 102, 241, 0.15)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "16px",
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 700 }}>
-              Reviews
-            </h2>
-            <div
-              style={{
-                background: "lightgray",
-                backdropFilter: "blur(10px)",
-                padding: "8px 16px",
-                borderRadius: "20px",
-                fontSize: "16px",
-                color: "navy",
-                fontWeight: 600,
-              }}
-            >
-              {totalReviewsCount}{" "}
-              {totalReviewsCount === 1 ? "Review" : "Reviews"}
-            </div>
-            {totalReviewsCount > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginLeft: "auto",
-                }}
-              >
-                <span style={{ fontSize: "32px", fontWeight: 700 }}>
-                  {averageRating}
-                </span>
-                <div>
-                  <div style={{ fontSize: "14px", opacity: 0.9 }}>out of 5</div>
-                  <StarRatingInput
-                    rating={Math.round(averageRating)}
-                    disabled={true}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Review Form Section */}
+      <div style={{ maxWidth: "700px", padding: "20px 0" }}>
         {isAuthenticated ? (
           <div
             ref={reviewFormRef}
             style={{
-              background: THEME.card,
+              // background: THEME.card,
               borderRadius: "16px",
-              padding: "28px",
-              marginBottom: "24px",
-              boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
-              border: `1px solid ${THEME.border}`,
+              padding: "16px",
+              // marginBottom: "24px",
+              // boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
+              // border: `1px solid ${THEME.border}`,
             }}
           >
-            <h3
-              style={{
-                color: THEME.darkText,
-                fontSize: "20px",
-                fontWeight: 600,
-                marginBottom: "24px",
-              }}
-            >
-              {formTitle}
-            </h3>
-
             {error && (
               <div
                 style={{
@@ -369,25 +297,6 @@ const ReviewComponent = memo(
             )}
 
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4">
-                <Form.Label
-                  style={{
-                    color: THEME.text,
-                    fontWeight: 600,
-                    marginBottom: "12px",
-                    display: "block",
-                  }}
-                >
-                  Your Rating <span style={{ color: THEME.danger }}>*</span>
-                </Form.Label>
-                <StarRatingInput
-                  rating={rating}
-                  setRating={setRating}
-                  isAuthenticated={isAuthenticated}
-                  disabled={submitting}
-                />
-              </Form.Group>
-
               <Form.Group className="mb-4">
                 <Form.Label
                   style={{
@@ -415,7 +324,7 @@ const ReviewComponent = memo(
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   disabled={submitting}
-                  placeholder="Share your thoughts about this item..."
+                  placeholder="Share your thoughts about this session..."
                   onFocus={(e) => (e.target.style.borderColor = THEME.primary)}
                   onBlur={(e) => (e.target.style.borderColor = THEME.border)}
                 />
@@ -501,7 +410,7 @@ const ReviewComponent = memo(
               background: THEME.card,
               borderRadius: "16px",
               padding: "32px",
-              marginBottom: "24px",
+              // marginBottom: "24px",
               textAlign: "center",
               boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
               border: `2px dashed ${THEME.border}`,
@@ -532,162 +441,6 @@ const ReviewComponent = memo(
             </RouterLink>
           </div>
         )}
-
-        {/* Reviews List */}
-        <div>
-          {loading ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "40px",
-                color: THEME.lightText,
-              }}
-            >
-              {t("loading_reviews")}
-            </div>
-          ) : reviews.length === 0 ? (
-            <div
-              style={{
-                background: THEME.card,
-                borderRadius: "16px",
-                padding: "48px 32px",
-                textAlign: "center",
-                boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
-                border: `1px solid ${THEME.border}`,
-              }}
-            >
-              <div
-                style={{ fontSize: "48px", marginBottom: "16px", opacity: 0.3 }}
-              >
-                📝
-              </div>
-              <h4
-                style={{
-                  color: THEME.darkText,
-                  marginBottom: "8px",
-                  fontWeight: 600,
-                }}
-              >
-                No Reviews Yet
-              </h4>
-              <p style={{ color: THEME.lightText, fontSize: "15px" }}>
-                {t("Be the first to review", { itemTitle: itemTitle })}
-              </p>
-            </div>
-          ) : (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-            >
-              {reviews.map((review) => (
-                <div
-                  key={review._id}
-                  style={{
-                    background: THEME.card,
-                    borderRadius: "16px",
-                    padding: "24px",
-                    boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
-                    border: `1px solid ${THEME.border}`,
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "16px",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    <img
-                      src={
-                        review.userId?.profilePicture ||
-                        "https://www.gravatar.com/avatar/?d=mp"
-                      }
-                      alt={review.userId?.username || "User"}
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: `3px solid ${THEME.border}`,
-                      }}
-                    />
-                    <div style={{ flex: 1 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                          marginBottom: "4px",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <h5
-                          style={{
-                            color: THEME.darkText,
-                            margin: 0,
-                            fontWeight: 600,
-                            fontSize: "16px",
-                          }}
-                        >
-                          {review.userId?.name || "Anonymous User"}
-                        </h5>
-                        {review.userId?._id === currentUserId && (
-                          <span
-                            style={{
-                              background: `linear-gradient(135deg, ${THEME.primary} 0%, ${THEME.secondary} 100%)`,
-                              color: "white",
-                              padding: "2px 10px",
-                              borderRadius: "12px",
-                              fontSize: "12px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            You
-                          </span>
-                        )}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "12px",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <StarRatingInput
-                          rating={review.rating}
-                          disabled={true}
-                        />
-                        <span
-                          style={{ fontSize: "13px", color: THEME.lightText }}
-                        >
-                          {new Date(review.createdAt).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <p
-                    style={{
-                      color: THEME.text,
-                      lineHeight: 1.7,
-                      fontSize: "15px",
-                      margin: 0,
-                    }}
-                  >
-                    {review.comment}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     );
   }

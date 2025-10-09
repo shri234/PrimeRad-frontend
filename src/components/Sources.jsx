@@ -28,11 +28,11 @@ const Sources = memo(() => {
 
   const styles = {
     container: {
-      backgroundColor: "#fff",
+      // backgroundColor: "#fff",
       borderRadius: "16px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-      border: "1px solid #eee",
-      padding: "24px",
+      // boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+      // border: "1px solid #eee",
+      padding: "20px",
       overflowX: "auto",
     },
     heading: {
@@ -88,7 +88,7 @@ const Sources = memo(() => {
   return (
     <Fragment>
       <div style={styles.container}>
-        <h2 style={styles.heading}>{t("detail_page.sources")}</h2>
+        <h2 style={styles.heading}>{t("Session Resources")}</h2>
 
         <table style={styles.table}>
           <thead>

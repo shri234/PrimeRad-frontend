@@ -8,6 +8,7 @@ import RecentItemsViewAll from "../views/RecentItemsViewAll";
 import RecommendedCasesViewAll from "../views/RecommendedCasesViewAll";
 import UpcomingLiveProgramsViewAll from "../views/UpcomingLiveProgramsViewAll";
 import RecommendedLecturesViewAll from "../views/RecommendedLecturesViewAll";
+import AssessmentView from "../views/ListViews/SubModules/AssessmentView";
 
 const OTTPage = lazy(() => import("../views/MainPages/OTTPage"));
 const AtlasView = lazy(() => import("../views/ListViews/AtlasView"));
@@ -86,11 +87,7 @@ export const LandingpageRouter = [
       },
       {
         path: "/assessment",
-        element: <AssessmentDetail />,
-      },
-      {
-        path: "/assessment/:moduleName",
-        element: <AssessmentPage />,
+        element: <AssessmentView />,
       },
       {
         path: "/assessment/:moduleName/practice",

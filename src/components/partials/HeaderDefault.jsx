@@ -139,6 +139,7 @@ const HeaderDefault = memo(() => {
         overflow: "hidden",
         right: 0,
         zIndex: 1050,
+        height: "70px",
         transition: "all 0.3s ease-in-out",
         willChange: "transform",
       }}
@@ -148,6 +149,8 @@ const HeaderDefault = memo(() => {
         className="nav navbar-light iq-navbar header-hover-menu py-xl-0"
         style={{
           backgroundColor: "white",
+          height: windowWidth < 768 ? "60px" : "75px",
+
           overflow: "hidden",
           transition: "all 0.3s ease-in-out",
         }}
@@ -197,7 +200,7 @@ const HeaderDefault = memo(() => {
                         onClick={() => handleNavigation(item.path)}
                         style={{
                           transition: "all 0.3s ease-in-out",
-                          fontSize: "14px",
+                          fontSize: "18px",
                           display: "flex",
                           alignItems: "center",
                         }}

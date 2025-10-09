@@ -2,31 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import NavCategories from "../../MainPages/NavCategories";
 import { FaArrowRight, FaArrowLeft, FaFilter } from "react-icons/fa";
-import AssessmentView from "./AssessmentView";
-import { FixedBackButton } from "../../../utilities/BackButton";
-import { OpenAI } from "openai";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import {
-  Row,
-  Col,
-  Container,
-  Nav,
-  Tab,
-  Form,
-  Button,
-  Modal,
-} from "react-bootstrap";
-import { useTranslation } from "react-i18next";
-import { Info, BookOpen, Star } from "lucide-react";
-import CompareObservationsModal from "./CompareObservationsModal";
-
-import {
-  FaFolderOpen,
-  FaChalkboardTeacher,
-  FaBroadcastTower,
-} from "react-icons/fa";
-
 import {
   selectIsAuthenticated,
   selectUser,
@@ -38,22 +13,413 @@ import axios from "axios";
 import "./SubModules.css";
 
 const modules = [
+  { name: "Knee", pathologies: 5 },
   { name: "Shoulder", pathologies: 7 },
+  { name: "Spine", pathologies: 2 },
+  { name: "Ankle", pathologies: 2 },
+  { name: "Elbow", pathologies: 2 },
   { name: "Hip", pathologies: 2 },
 ];
 const THEME = {
-  primary: "#1976d2",
-  secondary: "#00bfae",
-  background: "#f4f8fb",
+  primary: "#1976d2", // blue
+  secondary: "#00bfae", // teal
+  background: "#f4f8fb", // light blue/gray
   card: "#fff",
-  accent: "#ffb300",
-  text: "#263238",
+  accent: "#ffb300", // amber
+  text: "#263238", // dark blue-gray
   border: "#e0e0e0",
 };
 
-// const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 const subModulesData = {
+  Knee: [
+    {
+      name: "ACL",
+      pathologies: 5,
+      thumbnail: "/assets/images/rotator-cuff.jpg",
+      levels: {
+        beginner: [
+          {
+            title: "ACL Basics",
+            type: "lecture",
+            description: "Introduction to ACL anatomy and function.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d51",
+            vimeoVideoId: "1097623899",
+            duration: "10:30",
+            startDate: "2024-03-01T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. A. Jones",
+          },
+          {
+            title: "ACL Case 1",
+            type: "case",
+            description: "Case study: ACL tear in a young athlete.",
+            thumbnail: "/assets/images/dislocation.png",
+            id: "60d0fe4f5b5b2e001c8d0d52",
+            contentType: "Case",
+          },
+          {
+            title: "ACL Live Q&A",
+            type: "live",
+            description: "Live Q&A session on ACL reconstruction.",
+            thumbnail: "/assets/images/tear-rasions.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d53",
+            contentType: "Live",
+          },
+          {
+            title: "ACL Imaging Essentials",
+            type: "lecture",
+            description: "Key imaging findings in ACL injuries.",
+            thumbnail: "/assets/images/knee4.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d54",
+            vimeoVideoId: "1097623899",
+            duration: "18:00",
+            startDate: "2024-03-05T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. A. Jones",
+          },
+        ],
+        advanced: [
+          {
+            title: "Advanced ACL Repair",
+            type: "lecture",
+            description: "Advanced surgical techniques for ACL repair.",
+            thumbnail: "/assets/images/knee5.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d55",
+            vimeoVideoId: "1102457741",
+            duration: "28:00",
+            startDate: "2024-03-15T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Prof. B. Smith",
+          },
+          {
+            title: "Complex ACL Case",
+            type: "case",
+            description: "Complex ACL injury management and treatment.",
+            thumbnail: "/assets/images/knee6.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d56",
+            contentType: "Case",
+          },
+          {
+            title: "ACL Live Surgery",
+            type: "live",
+            description: "Live broadcast of ACL surgery.",
+            thumbnail: "/assets/images/knee7.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d57",
+            contentType: "Live",
+          },
+          {
+            title: "ACL Rehabilitation Protocols",
+            type: "lecture",
+            description: "Rehabilitation after ACL surgery.",
+            thumbnail: "/assets/images/knee8.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d58",
+            vimeoVideoId: "1102457741",
+            duration: "22:00",
+            startDate: "2024-03-20T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Prof. B. Smith",
+          },
+        ],
+      },
+    },
+    {
+      name: "Meniscus",
+      pathologies: 7,
+      thumbnail: "/assets/images/knee2.jpg",
+      levels: {
+        beginner: [
+          {
+            title: "Meniscus Basics",
+            type: "lecture",
+            description: "Introduction to meniscus anatomy and function.",
+            thumbnail: "/assets/images/knee2.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d59",
+            vimeoVideoId: "1102457741",
+            duration: "15:00",
+            startDate: "2024-04-01T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. C. Lee",
+          },
+          {
+            title: "Meniscus Case 1",
+            type: "case",
+            description: "Case study on meniscus repair.",
+            thumbnail: "/assets/images/knee3.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d60",
+            contentType: "Case",
+          },
+          {
+            title: "Meniscus Live Webinar",
+            type: "live",
+            description: "Live webinar on meniscus injuries.",
+            thumbnail: "/assets/images/knee4.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d61",
+            contentType: "Live",
+          },
+        ],
+        advanced: [
+          {
+            title: "Advanced Meniscus Repair",
+            type: "lecture",
+            description: "Advanced techniques for meniscus repair.",
+            thumbnail: "/assets/images/knee5.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d62",
+            vimeoVideoId: "1097623899",
+            duration: "20:00",
+            startDate: "2024-04-10T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. D. Patel",
+          },
+          {
+            title: "Meniscus Live Q&A",
+            type: "live",
+            description: "Live Q&A on meniscus injuries.",
+            thumbnail: "/assets/images/knee6.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d63",
+            contentType: "Live",
+          },
+          {
+            title: "Meniscus Case: Elderly Patient",
+            type: "case",
+            description: "Case: Meniscus tear in an elderly patient.",
+            thumbnail: "/assets/images/knee7.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d64",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+  ],
+  Shoulder: [
+    {
+      name: "Rotator Cuff",
+      pathologies: 2,
+      thumbnail: "/assets/images/rotator-cuff(1).jpg",
+      levels: {
+        beginner: [
+          {
+            title: "Rotator Cuff Anatomy",
+            type: "lecture",
+            description: "Basic anatomy of the rotator cuff muscles.",
+            thumbnail: "/assets/images/rotator-cuff (1).jpg",
+            id: "60d0fe4f5b5b2e001c8d0d65",
+            vimeoVideoId: "1102457741",
+            duration: "12:00",
+            startDate: "2024-05-01T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. E. King",
+          },
+          {
+            title: "Rotator Cuff Case",
+            type: "case",
+            description: "Case study on rotator cuff repair.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d66",
+            contentType: "Case",
+          },
+          {
+            title: "Rotator Cuff Live Q&A",
+            type: "live",
+            description: "Live Q&A on rotator cuff injuries.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d67",
+            contentType: "Live",
+          },
+        ],
+        advanced: [
+          {
+            title: "Rotator Cuff Live Surgery",
+            type: "live",
+            description: "Live surgery demonstration.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d68",
+            contentType: "Live",
+          },
+          {
+            title: "Rotator Cuff Imaging",
+            type: "lecture",
+            description: "Imaging findings in rotator cuff tears.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d69",
+            vimeoVideoId: "1097623899",
+            duration: "25:00",
+            startDate: "2024-05-15T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. F. Grey",
+          },
+          {
+            title: "Rotator Cuff Case: Athlete",
+            type: "case",
+            description: "Case: Rotator cuff tear in an athlete.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d70",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+    {
+      name: "Tears and Rasions",
+      pathologies: 2,
+      thumbnail: "/assets/images/rotator-cuff.jpg",
+      levels: {
+        beginner: [
+          {
+            title: "Tears Basics",
+            type: "lecture",
+            description:
+              "Introduction to different types of tears and abrasions.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "687f617f001b126d3ebf6364_vid1",
+            vimeoVideoId: "1102457741",
+            duration: "18:00",
+            startDate: "2024-06-01T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. G. White",
+          },
+        ],
+        advanced: [
+          {
+            title: "Complex Tears Case",
+            type: "case",
+            description: "Case study: Complex tear in a joint.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "687f617f001b126d3ebf6364_case1",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+    {
+      name: "Strains",
+      pathologies: 2,
+      thumbnail: "/assets/images/sprain.jpg",
+      levels: {
+        beginner: [
+          {
+            title: "Strains Basics",
+            type: "lecture",
+            description: "Understanding muscle strains and their causes.",
+            thumbnail: "/assets/images/sprain.jpg",
+            id: "6881eba97607e55b28d18c16_vid1",
+            vimeoVideoId: "1097623899",
+            duration: "15:00",
+            startDate: "2024-07-01T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. H. Black",
+          },
+        ],
+        advanced: [
+          {
+            title: "Advanced Strain Management",
+            type: "case",
+            description: "Case study: Chronic muscle strain in an athlete.",
+            thumbnail: "/assets/images/sprain.jpg",
+            id: "6881eba97607e55b28d18c16_case1",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+    {
+      name: "Dislocations and Separations",
+      pathologies: 2,
+      thumbnail: "/assets/images/dislocation.png",
+      levels: {
+        beginner: [
+          {
+            title: "Dislocation Basics",
+            type: "lecture",
+            description: "Basics of shoulder dislocations and separations.",
+            thumbnail: "/assets/images/dislocation.png",
+            id: "60d0fe4f5b5b2e001c8d0d75",
+            vimeoVideoId: "1102457741",
+            duration: "17:00",
+            startDate: "2024-07-10T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. I. Green",
+          },
+        ],
+        advanced: [
+          {
+            title: "Dislocation Case",
+            type: "case",
+            description: "Case study: Shoulder dislocation in a gymnast.",
+            thumbnail: "/assets/images/dislocation.png",
+            id: "60d0fe4f5b5b2e001c8d0d76",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+    {
+      name: "Shoulder Impingement Syndrome",
+      pathologies: 2,
+      thumbnail: "/assets/images/rotator-cuff.jpg",
+      levels: {
+        beginner: [
+          {
+            title: "Impingement Overview",
+            type: "lecture",
+            description: "Overview of shoulder impingement syndrome.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d77",
+            vimeoVideoId: "1097623899",
+            duration: "20:00",
+            startDate: "2024-07-15T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. J. Brown",
+          },
+        ],
+        advanced: [
+          {
+            title: "Impingement Case",
+            type: "case",
+            description: "Case study: Impingement syndrome in a tennis player.",
+            thumbnail: "/assets/images/rotator-cuff.jpg",
+            id: "60d0fe4f5b5b2e001c8d0d78",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+    {
+      name: "Arthritis",
+      pathologies: 2,
+      thumbnail: "/assets/images/arthritis.webp",
+      levels: {
+        beginner: [
+          {
+            title: "Arthritis Basics",
+            type: "lecture",
+            description: "Introduction to shoulder arthritis.",
+            thumbnail: "/assets/images/arthritis.webp",
+            id: "60d0fe4f5b5b2e001c8d0d79",
+            vimeoVideoId: "1102457741",
+            duration: "16:00",
+            startDate: "2024-07-20T10:00:00Z",
+            contentType: "Lecture",
+            faculty: "Dr. K. White",
+          },
+        ],
+        advanced: [
+          {
+            title: "Arthritis Case",
+            type: "case",
+            description:
+              "Case study: Shoulder arthritis in an elderly patient.",
+            thumbnail: "/assets/images/arthritis.webp",
+            id: "60d0fe4f5b5b2e001c8d0d80",
+            contentType: "Case",
+          },
+        ],
+      },
+    },
+  ],
+  Spine: [],
+  Ankle: [],
+  Elbow: [],
   Hip: [
     {
       name: "Labral Tear",
@@ -165,21 +531,6 @@ const countTypes = (items = []) => {
   );
 };
 
-const userObs = `
-- The lesion appears hyperpigmented.
-- Possible diagnosis: Melanocytic nevus.
-- Recommend dermoscopy follow-up in 6 months.
-`;
-
-const handleSave = () => {
-  setSaved(true);
-};
-const facultyObs = `
-- Lesion shows uniform pigmentation.
-- Diagnosis: Benign melanocytic nevus.
-- Agree with follow-up suggestion.
-`;
-
 const countSubmoduleTypes = (sub, apiSessions) => {
   let combinedSessions = [];
 
@@ -197,7 +548,7 @@ const countSubmoduleTypes = (sub, apiSessions) => {
   return countTypes(combinedSessions);
 };
 
-// const countLevelTypes = (levelItems) => countTypes(levelItems);
+const countLevelTypes = (levelItems) => countTypes(levelItems);
 
 const moduleIcons = {
   Knee: "",
@@ -256,17 +607,12 @@ const SubModuleView = () => {
     location.state?.moduleName || urlModuleName
   );
 
-  const [aiComparison, setAiComparison] = useState("");
-  // const [loading, setLoading] = useState(false);
-
   const [viewMode, setViewMode] = useState("list");
   const [view, setView] = useState("atlas");
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [selectedSubModuleId, setSelectedSubModuleId] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  // const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const [selectedFeedback, setSelectedFeedback] = useState("");
 
   const [allModules, setAllModules] = useState([]);
   const [loadingModules, setLoadingModules] = useState(true);
@@ -282,7 +628,6 @@ const SubModuleView = () => {
 
   const [currentView, setCurrentView] = useState("submodules");
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
-  const [saved, setSaved] = useState(false);
 
   const [assessmentQuestions, setAssessmentQuestions] = useState([]);
   const [currentBatch, setCurrentBatch] = useState(0);
@@ -292,12 +637,9 @@ const SubModuleView = () => {
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [submittingAnswer, setSubmittingAnswer] = useState(false);
   const [userProgress, setUserProgress] = useState(null);
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const [feedbackText, setFeedbackText] = useState("");
 
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   const questionsPerBatch = 5;
   const totalBatches = Math.ceil(
@@ -397,7 +739,7 @@ const SubModuleView = () => {
       setLevelSessionsError(null);
 
       const response = await axios.get(
-        `https://primerad-backend.onrender.com/api/sessions/getSessionByDifficulty?pathologyId=${pathologyId}`
+        `https://primerad-backend.onrender.com/api/sessions/getSessionByDifficulty?difficulty=${level.toLowerCase()}&pathologyId=${pathologyId}`
       );
 
       let combinedSessions = [];
@@ -427,14 +769,6 @@ const SubModuleView = () => {
     } finally {
       setLoadingLevelSessions(false);
     }
-  };
-
-  const [showAISummary, setShowAISummary] = useState(false);
-  const [aiResponse, setAiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSave = () => {
-    setSaved(true);
   };
 
   useEffect(() => {
@@ -516,39 +850,6 @@ const SubModuleView = () => {
       setAssessmentQuestions([]);
     } finally {
       setAssessmentLoading(false);
-    }
-  };
-
-  const handleAICompare = async () => {
-    setAiComparison(""); // Clear previous summary
-    setLoading(true);
-    setShowAISummary(true); // Open modal immediately
-
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/sessions/compare-observations",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userObservations: userObs,
-            facultyObservations: facultyObs,
-          }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch AI report");
-
-      const data = await response.json();
-
-      setAiComparison(data.report || "<p>No summary generated.</p>");
-    } catch (err) {
-      console.error("AI Summary Error:", err);
-      setAiComparison(
-        "<p>⚠️ Failed to generate AI report. Please try again later.</p>"
-      );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -1118,19 +1419,15 @@ const SubModuleView = () => {
     setFilters((prev) => ({ ...prev, [type]: !prev[type] }));
   };
 
-  const handleSubModuleClick = async (pathologyItem) => {
-    const newSubModuleId =
-      selectedSubModuleId === pathologyItem._id ? null : pathologyItem._id;
-
-    setSelectedSubModuleId(newSubModuleId);
-    setSelectedLevel(null);
-    setSelectedVideo(null);
-
-    console.log(newSubModuleId, "submoduleId");
-
-    // ✅ Call pathology API immediately when submodule is clicked
-    if (newSubModuleId) {
-      await fetchSessionsByPathologyAndLevel(newSubModuleId, null); // or pass default level if needed
+  const handleSubModuleClick = (pathologyItem) => {
+    if (selectedSubModuleId === pathologyItem._id) {
+      setSelectedSubModuleId(null);
+      setSelectedLevel(null);
+      setSelectedVideo(null);
+    } else {
+      setSelectedSubModuleId(pathologyItem._id);
+      setSelectedLevel(null);
+      setSelectedVideo(null);
     }
   };
 
@@ -1146,7 +1443,6 @@ const SubModuleView = () => {
     }
     setSelectedVideo(null);
   };
-
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth <= 768;
@@ -1193,18 +1489,6 @@ const SubModuleView = () => {
     setSelectedDifficulty(difficulty);
     setCurrentView("assessment");
   };
-  const iconButtonStyle = {
-    background: "white",
-    border: "1px solid #ddd",
-    borderRadius: "50%",
-    padding: "6px",
-    cursor: "pointer",
-    width: "30%",
-    height: "20%",
-    color: "navy",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-    transition: "all 0.2s ease-in-out",
-  };
 
   const resetToSubModules = () => {
     setSelectedSubModuleId(null);
@@ -1220,10 +1504,6 @@ const SubModuleView = () => {
 
   console.log(currentView, sidebarOpen, view);
 
-  console.log(selectedSubModule, "sessions");
-
-  const allSessions = levelSessions.length > 0 ? levelSessions : [];
-
   return (
     <>
       <div
@@ -1235,40 +1515,6 @@ const SubModuleView = () => {
           // overflow: "hidden",
         }}
       >
-        <style>
-          {`
-       .labell-badge {
-  position: absolute;   /* top-right positioning */
-  top: 8px;
-  
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: inline-block;
-
-  opacity: 1 !important;
-  pointer-events: auto;    /* ensure clickable if needed */
-  z-index: 10;
-
-  /* optional colors based on difficulty */
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-}
-
-
-        .labell-badge.level-beginner {
-          background: #e3f2fd;
-          color: #1976d2;
-        }
-        .labell-badge.level-advanced {
-          background: #fde8e8;
-          color: #d32f2f;
-        }
-      `}
-        </style>
         {isMobile && (
           <button
             style={{
@@ -1457,6 +1703,44 @@ const SubModuleView = () => {
                                     </span>
                                     {pathology.pathologyName}
                                   </div>
+                                  {selectedSubModuleId === pathology._id && (
+                                    <div className="sidebar-level-dropdown">
+                                      <div
+                                        className={`sidebar-level-item ${
+                                          selectedLevel === "beginner"
+                                            ? "active"
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          handleLevelClick("beginner")
+                                        }
+                                        style={{
+                                          marginLeft: "50px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        {" "}
+                                        Beginner
+                                      </div>
+                                      <div
+                                        className={`sidebar-level-item ${
+                                          selectedLevel === "advanced"
+                                            ? "active"
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          handleLevelClick("advanced")
+                                        }
+                                        style={{
+                                          marginLeft: "50px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        {" "}
+                                        Advanced
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               ))
                             )}
@@ -1533,6 +1817,39 @@ const SubModuleView = () => {
                               aria-pressed={currentView === "difficulty"}
                               aria-label="Assessment menu item"
                             >
+                              {/* Icon Container */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "24px",
+                                  height: "24px",
+                                  flexShrink: 0,
+                                  borderRadius: "4px",
+                                  backgroundColor:
+                                    currentView === "difficulty"
+                                      ? "#6366f1"
+                                      : "#9ca3af",
+                                  padding: "2px",
+                                  transition: "all 0.2s ease-in-out",
+                                }}
+                              >
+                                <img
+                                  src="/assets/images/assessment.jpeg"
+                                  alt="Assessment icon"
+                                  style={{
+                                    width: "16px",
+                                    height: "16px",
+                                    objectFit: "contain",
+                                    filter:
+                                      currentView === "difficulty"
+                                        ? "brightness(0) invert(1)"
+                                        : "brightness(0.8)",
+                                  }}
+                                />
+                              </div>
+
                               {/* Text Label */}
                               <span
                                 style={{
@@ -1626,213 +1943,504 @@ const SubModuleView = () => {
             ref={sectionRef}
           >
             {currentView === "assessment" ? (
-              //  <style>{tabStyles}</style>
-              navigate("/assessment", {
-                state: {
-                  THEME,
-                  selectedDifficulty,
-                  userObs,
-                  facultyObs,
-                  showModal,
-                  showAISummary,
-                  aiComparison,
-                  loading,
-                  showFeedbackModal,
-                  selectedFeedback,
-                },
-              })
+              <div>
+                <button
+                  onClick={() => setCurrentView("submodules")}
+                  className="back-link"
+                >
+                  ← Back to Modules
+                </button>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: window.innerWidth <= 768 ? "column" : "row",
+                    height:
+                      window.innerWidth <= 768 ? "auto" : "calc(100vh - 64px)",
+                    background: "#f4f8fb",
+                    borderRadius: 16,
+                    overflowY: window.innerWidth <= 768 ? "visible" : "hidden",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    position: "relative",
+                    gap: window.innerWidth <= 768 ? 16 : 0,
+                  }}
+                >
+                  {/* DICOM Viewer - Now on the LEFT */}
+                  <div
+                    style={{
+                      flex: window.innerWidth <= 768 ? "none" : 2,
+                      width: window.innerWidth <= 768 ? "100%" : "auto",
+                      background: "#f4f8fb",
+                      borderRadius:
+                        window.innerWidth <= 768 ? 16 : "16px 0 0 16px",
+                      margin:
+                        window.innerWidth <= 768
+                          ? "0 16px 16px 16px"
+                          : "24px 0 24px 24px",
+                      padding: window.innerWidth <= 768 ? 20 : 32,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      minHeight: window.innerWidth <= 768 ? "500px" : "auto",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        color: "#1976d2",
+                        fontWeight: 700,
+                        fontSize: window.innerWidth <= 768 ? 20 : 22,
+                        marginBottom: 16,
+                      }}
+                    >
+                      DICOM Viewer
+                    </h2>
+                    <iframe
+                      className="dicomview sessioniframe"
+                      src="https://app.medicai.io/public-study/5e8c1f7e2f8fbf0017b2b1a1"
+                      width="100%"
+                      height={window.innerWidth <= 768 ? "400px" : "650px"}
+                      style={{
+                        width: "100%",
+                        borderRadius: 12,
+                        border: "1px solid #e0e0e0",
+                        background: "#fff",
+                        minHeight: window.innerWidth <= 768 ? "400px" : "650px",
+                      }}
+                      title="DICOM Viewer"
+                    />
+                  </div>
+
+                  {/* Assessment Section - Now on the RIGHT */}
+                  <div
+                    style={{
+                      flex: window.innerWidth <= 768 ? "none" : 1,
+                      width: window.innerWidth <= 768 ? "100%" : "auto",
+                      borderLeft:
+                        window.innerWidth <= 768 ? "none" : "1px solid #e0e0e0",
+                      borderBottom:
+                        window.innerWidth <= 768 ? "1px solid #e0e0e0" : "none",
+                      padding: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      background: "#fff",
+                      borderRadius:
+                        window.innerWidth <= 768 ? 16 : "0 16px 16px 0",
+                      margin:
+                        window.innerWidth <= 768
+                          ? "16px 16px 0 16px"
+                          : "24px 24px 24px 0",
+                      minWidth: window.innerWidth <= 768 ? "auto" : 320,
+                      maxWidth: window.innerWidth <= 768 ? "none" : 420,
+                      minHeight: window.innerWidth <= 768 ? "auto" : "auto",
+                      overflowY: "auto",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    {renderAssessmentHeader()}
+                    <div
+                      style={{
+                        padding: window.innerWidth <= 768 ? 20 : 32,
+                        flex: 1,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {renderAssessmentContent()}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : currentView === "difficulty" ? (
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "24px",
-                  padding: "32px",
-                  backgroundColor: "#f9fafb",
-                  borderRadius: "16px",
-                  // border: "1px solid #e5e7eb",
-                  margin: "20px",
+                  gap: "16px",
+                  padding: "24px",
+                  backgroundColor: "#f8fafc",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
                   animation: "slideIn 0.3s ease-out",
+                  margin: "20px",
                 }}
               >
+                {/* Back Button for Difficulty View */}
                 <button
-                  onClick={() => setCurrentView("main")}
+                  onClick={() => setCurrentView("main")} // or whatever your default view should be
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
                     background: "none",
                     border: "none",
-                    color: "#4f46e5",
+                    color: "#6366f1",
                     fontSize: "14px",
                     cursor: "pointer",
                     padding: "8px 12px",
                     borderRadius: "6px",
-                    width: "fit-content",
-                    transition: "background 0.2s ease, color 0.2s ease",
+                    transition: "all 0.2s ease",
+                    marginBottom: "16px",
                   }}
-                  onMouseEnter={(e) => (e.target.style.color = "#3730a3")}
-                  onMouseLeave={(e) => (e.target.style.color = "#4f46e5")}
                 >
                   ← Back to Pathologies
                 </button>
 
-                {/* Header */}
-                <div style={{ marginBottom: "16px" }}>
+                {/* Assessment Difficulty Selection Title */}
+                <div style={{ marginBottom: "20px" }}>
                   <h2
                     style={{
                       fontSize: "28px",
                       fontWeight: "700",
                       color: "#1f2937",
+                      margin: 0,
                       marginBottom: "8px",
                     }}
                   >
                     Choose Assessment Level
                   </h2>
-                  <p style={{ fontSize: "16px", color: "#6b7280", margin: 0 }}>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#6b7280",
+                      margin: 0,
+                    }}
+                  >
                     Select the difficulty level that matches your expertise in{" "}
-                    <span style={{ color: "#111827", fontWeight: "600" }}>
-                      {activeModuleName}
-                    </span>{" "}
-                    pathologies.
+                    {activeModuleName} pathologies.
                   </p>
                 </div>
 
+                {/* Beginner Assessment Card */}
                 <div
+                  className="assessment-card beginner-card"
                   style={{
                     display: "flex",
-                    flexWrap: "wrap",
-                    gap: "24px",
-                    justifyContent: "center",
+                    flexDirection: "column",
+                    padding: "20px",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    border: "2px solid #10b981",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onClick={() => {
+                    handleDifficultySelect("beginner");
+                    setCurrentView("assessment"); // Switch to assessment view
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 25px rgba(16, 185, 129, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(16, 185, 129, 0.1)";
                   }}
                 >
                   <div
                     style={{
-                      backgroundColor: "white",
-                      padding: "24px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                      borderRadius: "12px",
-                      flex: "1 1 280px",
-                      maxWidth: "320px",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      textAlign: "center",
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "80px",
+                      height: "80px",
+                      background: "linear-gradient(135deg, #10b981, #34d399)",
+                      borderRadius: "0 12px 0 100%",
+                      opacity: 0.1,
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 20px rgba(99, 102, 241, 0.2)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(0, 0, 0, 0.08)";
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: "700",
-                        color: "#1e293b",
-                      }}
-                    >
-                      Beginner Assessment
-                    </h3>
-                    <p
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "15px",
-                        margin: "12px 0 20px",
-                      }}
-                    >
-                      Perfect for learners starting out. Focuses on identifying
-                      basic findings and patterns.
-                    </p>
-                    <button
-                      onClick={() => handleDifficultyCardClick("Beginner")}
-                      style={{
-                        backgroundColor: "#e0e7ff",
-                        color: "#1e3a8a",
-                        padding: "10px 16px",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.backgroundColor = "#c7d2fe")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.target.style.backgroundColor = "#e0e7ff")
-                      }
-                    >
-                      Start Beginner Level
-                    </button>
-                  </div>
+                  />
 
+                  {/* Header */}
                   <div
                     style={{
-                      backgroundColor: "white",
-                      padding: "24px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                      borderRadius: "12px",
-                      flex: "1 1 280px",
-                      maxWidth: "320px",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      textAlign: "center",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 20px rgba(251, 191, 36, 0.25)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(0, 0, 0, 0.08)";
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
                     }}
                   >
-                    <h3
+                    <div
                       style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#10b981",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         fontSize: "20px",
-                        fontWeight: "700",
-                        color: "#1e293b",
                       }}
                     >
-                      Advanced Assessment
-                    </h3>
-                    <p
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "15px",
-                        margin: "12px 0 20px",
-                      }}
-                    >
-                      Designed for experienced users. Includes complex DICOM
-                      cases and multi-system analysis.
-                    </p>
-                    <button
-                      onClick={() => handleDifficultyCardClick("Advanced")}
-                      style={{
-                        backgroundColor: "#fef3c7",
-                        color: "#92400e",
-                        padding: "10px 16px",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.backgroundColor = "#fde68a")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.target.style.backgroundColor = "#fef3c7")
-                      }
-                    >
-                      Start Advanced Level
-                    </button>
+                      🌱
+                    </div>
+                    <div>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#065f46",
+                          lineHeight: "1.2",
+                        }}
+                      >
+                        Beginner Assessment
+                      </h3>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "12px",
+                          color: "#10b981",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        Foundation Level
+                      </p>
+                    </div>
                   </div>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "14px",
+                      color: "#374151",
+                      lineHeight: "1.6",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    Perfect for those starting their journey. Covers basic
+                    concepts, fundamental skills, and core knowledge areas with
+                    guided support.
+                  </p>
+
+                  {/* Features */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    {[
+                      "20-30 mins",
+                      "Basic concepts",
+                      "Guided hints",
+                      "Multiple attempts",
+                    ].map((feature, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          backgroundColor: "#d1fae5",
+                          color: "#065f46",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#10b981",
+                      color: "white",
+                      width: "20%",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                    onClick={() => handleDifficultyCardClick("Beginner")}
+                  >
+                    Start Assessment
+                  </button>
+                </div>
+
+                {/* Advanced Assessment Card */}
+                <div
+                  className="assessment-card advanced-card"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "20px",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    border: "2px solid #8b5cf6",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onClick={() => {
+                    handleDifficultySelect("advanced");
+                    setCurrentView("assessment"); // Switch to assessment view
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 25px rgba(139, 92, 246, 0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 12px rgba(139, 92, 246, 0.1)";
+                  }}
+                >
+                  {/* Background Pattern */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "80px",
+                      height: "80px",
+                      background: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
+                      borderRadius: "0 12px 0 100%",
+                      opacity: 0.1,
+                    }}
+                  />
+
+                  {/* Header */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: "#8b5cf6",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                      }}
+                    >
+                      🚀
+                    </div>
+                    <div>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#581c87",
+                          lineHeight: "1.2",
+                        }}
+                      >
+                        Advanced Assessment
+                      </h3>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "12px",
+                          color: "#8b5cf6",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        Expert Level
+                      </p>
+                    </div>
+                  </div>
+
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "14px",
+                      color: "#374151",
+                      lineHeight: "1.6",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    Designed for experienced learners. Tests deep understanding,
+                    complex problem-solving, and advanced application of
+                    concepts.
+                  </p>
+
+                  {/* Features */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      marginBottom: "16px",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    {[
+                      "45-60 mins",
+                      "Complex scenarios",
+                      "Detailed analysis",
+                      "Single attempt",
+                    ].map((feature, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          backgroundColor: "#ede9fe",
+                          color: "#581c87",
+                          borderRadius: "12px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#8b5cf6",
+                      color: "white",
+                      width: "20%",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                    onClick={() => handleDifficultyCardClick("Advanced")}
+                  >
+                    Start Assessment
+                  </button>
                 </div>
               </div>
             ) : (
@@ -1948,7 +2556,7 @@ const SubModuleView = () => {
                         }}
                         className="breadcrumb-link"
                       >
-                        Modules{" "}
+                        Modules
                       </span>
                       {selectedSubModuleId && (
                         <>
@@ -1960,7 +2568,7 @@ const SubModuleView = () => {
                             }}
                             className="breadcrumb-link"
                           >
-                            {activeModuleName} Pathologies{" "}
+                            Pathologies{" "}
                           </span>
                         </>
                       )}
@@ -2129,183 +2737,406 @@ const SubModuleView = () => {
                             </div>
                           );
                         })
-                      ) : selectedSubModuleId ? (
+                      ) : selectedSubModuleId && !selectedLevel ? (
                         <div
-                          className={
-                            viewMode === "list"
-                              ? "lecture-grid-view"
-                              : "lecture-grid-view"
-                          }
+                         
                         >
-                          <div
-                            className="polished-filter-bar"
-                            style={{ gap: isMobile ? "1px" : "" }}
-                          >
-                            <label className="polished-filter-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={filters.dicom}
-                                onChange={() => handleFilterChange("dicom")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              DICOM
-                            </label>
-                            <label className="polished-filter-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={filters.lecture}
-                                onChange={() => handleFilterChange("lecture")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              Lectures
-                            </label>
-                            <label className="polished-filter-checkbox live">
-                              <input
-                                type="checkbox"
-                                checked={filters.live}
-                                onChange={() => handleFilterChange("live")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              Live
-                            </label>
-                          </div>
-
-                          <div className="polished-grid-container">
-                            {loadingLevelSessions ? (
+                          {selectedSubModule.isPlaceholder ? (
+                            <div
+                              style={{
+                                textAlign: "center",
+                                padding: "50px",
+                                fontSize: "1.2rem",
+                                color: "#666",
+                                width: "100%",
+                              }}
+                            >
+                              No video content defined for "
+                              {selectedSubModule.pathologyName}" yet.
+                            </div>
+                          ) 
+                          : (
+                            <>
+                              {/* Beginner Level */}
                               <div
-                                className="loading-message"
-                                style={{ textAlign: "center", padding: "20px" }}
-                              >
-                                Loading sessions...
-                              </div>
-                            ) : levelSessionsError ? (
-                              <div
-                                className="error-message"
+                                className={`level-card ${viewMode}`}
+                                onClick={() => handleLevelClick("beginner")}
                                 style={{
-                                  textAlign: "center",
-                                  padding: "20px",
-                                  color: "#d32f2f",
+                                  width: isMobile ? "90%" : "100%",
                                 }}
                               >
-                                {levelSessionsError}
-                              </div>
-                            ) : allSessions.length === 0 ? (
-                              <div
-                                className="no-data-message"
-                                style={{
-                                  textAlign: "center",
-                                  padding: "20px",
-                                  color: "#666",
-                                }}
-                              >
-                                No sessions found for this pathology.
-                              </div>
-                            ) : (
-                              allSessions
-                                .filter((session) => {
-                                  const sessionType =
-                                    session.sessionType?.toLowerCase() ||
-                                    session.type?.toLowerCase();
-                                  return (
-                                    ((sessionType === "dicom" ||
-                                      sessionType === "case") &&
-                                      filters.dicom) ||
-                                    ((sessionType === "vimeo" ||
-                                      sessionType === "lecture") &&
-                                      filters.lecture) ||
-                                    (sessionType === "live" && filters.live)
-                                  );
-                                })
-                                .map((session) => (
+                                <div className="level-thumbnail">
                                   <div
-                                    key={session._id || session.id}
-                                    className={`lecture-card polished-grid-view ${
-                                      isMobile ? "mobile" : ""
-                                    }`}
-                                    onClick={() => handleSessionClick(session)}
+                                    className="level-icon"
+                                    style={{
+                                      fontSize: isMobile ? "18px" : "48px",
+                                    }}
                                   >
-                                    <div className="top-right-badges">
-                                      {session.difficulty && (
-                                        <span
-                                          className={`labell-badge level-${session.difficulty.toLowerCase()}`}
-                                        >
-                                          {session.difficulty}
-                                        </span>
-                                      )}
-
-                                      {session.sessionType && (
-                                        <span className="content-type-badge">
-                                          {session.sessionType === "Dicom" && (
-                                            <FaFolderOpen
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType === "Vimeo" && (
-                                            <FaChalkboardTeacher
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType === "Live" && (
-                                            <FaBroadcastTower
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType}
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    <div className="polished-grid-thumbnail">
-                                      <img
-                                        src={`https://primerad-backend.onrender.com${
-                                          session.imageUrl_522x760 ||
-                                          session.imageUrl_1920x1080 ||
-                                          session.thumbnail
-                                        }`}
-                                        alt={session.title}
-                                      />
-                                    </div>
-
-                                    <div className="polished-grid-content">
-                                      <div className="title-row">
-                                        <div className="polished-grid-title">
-                                          {session.title}
-                                        </div>
-                                      </div>
-                                    </div>
+                                    🎓
                                   </div>
-                                ))
-                            )}
-                          </div>
+                                </div>
+                                <i
+                                  className="fas fa-angle-right icon-indicator"
+                                  style={{
+                                    marginRight: isMobile ? "7px" : "10px",
+                                  }}
+                                />
+                                <div className="level-info">
+                                  <h4
+                                    className="level-title"
+                                    style={{
+                                      fontSize: isMobile ? "13px" : "20px",
+                                    }}
+                                  >
+                                    Beginner
+                                  </h4>
+                                  <div className="level-full-badges">
+                                    {(() => {
+                                      const staticSubModuleDataForPathology =
+                                        subModulesData[activeModuleName]?.find(
+                                          (sub) =>
+                                            sub.name ===
+                                            selectedSubModule.pathologyName
+                                        );
+                                      const staticBeginnerSessions =
+                                        staticSubModuleDataForPathology?.levels
+                                          ?.beginner || [];
+                                      const apiBeginnerSessions =
+                                        selectedSubModule.sessions?.filter(
+                                          (s) => s.difficulty === "Beginner"
+                                        ) || [];
+                                      const combinedBeginner = [
+                                        ...staticBeginnerSessions,
+                                        ...apiBeginnerSessions,
+                                      ];
+                                      const levelCounts =
+                                        countTypes(combinedBeginner);
+                                      return (
+                                        <>
+                                          <span
+                                            className="type-badge badge-lecture"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Lectures: {levelCounts.lecture}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-case"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Cases: {levelCounts.case}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-live"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Live: {levelCounts.live}
+                                          </span>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Advanced Level */}
+                              <div
+                                className={`level-card ${viewMode}`}
+                                onClick={() => handleLevelClick("advanced")}
+                                style={{
+                                  padding: isMobile ? "4px 6px" : "8px 10px",
+                                  width: isMobile ? "90%" : "100%",
+                                }}
+                              >
+                                <div className="level-thumbnail">
+                                  <div
+                                    className="level-icon"
+                                    style={{
+                                      fontSize: isMobile ? "18px" : "48px",
+                                    }}
+                                  >
+                                    ⚡
+                                  </div>
+                                </div>
+                                <i
+                                  className="fas fa-angle-right icon-indicator"
+                                  style={{ marginRight: "10px" }}
+                                />
+                                <div className="level-info">
+                                  <h4
+                                    className="level-title"
+                                    style={{
+                                      fontSize: isMobile ? "13px" : "20px",
+                                    }}
+                                  >
+                                    Advanced
+                                  </h4>
+                                  <div className="level-full-badges">
+                                    {(() => {
+                                      const staticSubModuleDataForPathology =
+                                        subModulesData[activeModuleName]?.find(
+                                          (sub) =>
+                                            sub.name ===
+                                            selectedSubModule.pathologyName
+                                        );
+                                      const staticAdvancedSessions =
+                                        staticSubModuleDataForPathology?.levels
+                                          ?.advanced || [];
+                                      const apiAdvancedSessions =
+                                        selectedSubModule.sessions?.filter(
+                                          (s) => s.difficulty === "Advanced"
+                                        ) || [];
+                                      const combinedAdvanced = [
+                                        ...staticAdvancedSessions,
+                                        ...apiAdvancedSessions,
+                                      ];
+                                      const levelCounts =
+                                        countTypes(combinedAdvanced);
+                                      return (
+                                        <>
+                                          <span
+                                            className="type-badge badge-lecture"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Lectures: {levelCounts.lecture}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-case"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Cases: {levelCounts.case}
+                                          </span>
+                                          <span
+                                            className="type-badge badge-live"
+                                            style={{
+                                              fontSize: isMobile ? "8px" : "",
+                                            }}
+                                          >
+                                            Live: {levelCounts.live}
+                                          </span>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )
+                          }
                         </div>
                       ) : (
-                        <div
-                          style={{
-                            textAlign: "center",
-                            padding: "40px",
-                            color: "#666",
-                          }}
-                        >
-                          Select a pathology to view its sessions.
-                        </div>
+                         
+                          <div
+                            className={
+                              viewMode === "list"
+                                ? "lecture-grid-view"
+                                : "lecture-grid-view"
+                            }
+                          >
+                            <div
+                              className="polished-filter-bar"
+                              style={{ gap: isMobile ? "1px" : "" }}
+                            >
+                              <label className="polished-filter-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.dicom}
+                                  onChange={() => handleFilterChange("dicom")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                DICOM
+                              </label>
+                              <label className="polished-filter-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.lecture}
+                                  onChange={() => handleFilterChange("lecture")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                Lectures
+                              </label>
+                              <label className="polished-filter-checkbox live">
+                                <input
+                                  type="checkbox"
+                                  checked={filters.live}
+                                  onChange={() => handleFilterChange("live")}
+                                />
+                                <span
+                                  className="polished-custom-checkbox"
+                                  style={{
+                                    width: isMobile ? "14px" : "18px",
+                                    height: isMobile ? "14px" : "18px",
+                                  }}
+                                />
+                                Live
+                              </label>
+                            </div>
+                            <div className="polished-grid-container">
+                              {loadingLevelSessions ? (
+                                <div
+                                  className="loading-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                  }}
+                                >
+                                  Loading {selectedLevel} sessions...
+                                </div>
+                              ) : levelSessionsError ? (
+                                <div
+                                  className="error-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                    color: "#d32f2f",
+                                  }}
+                                >
+                                  {levelSessionsError}
+                                </div>
+                              ) : levelSessions.length === 0 ? (
+                                <div
+                                  className="no-data-message"
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "20px",
+                                    color: "#666",
+                                  }}
+                                >
+                                  No {selectedLevel} sessions found for this
+                                  pathology.
+                                </div>
+                              ) : (
+                                levelSessions
+                                  .filter((session) => {
+                                    const sessionType =
+                                      session.sessionType?.toLowerCase() ||
+                                      session.type?.toLowerCase();
+                                    return (
+                                      ((sessionType === "dicom" ||
+                                        sessionType === "case") &&
+                                        filters.dicom) ||
+                                      ((sessionType === "vimeo" ||
+                                        sessionType === "lecture") &&
+                                        filters.lecture) ||
+                                      (sessionType === "live" && filters.live)
+                                    );
+                                  })
+                                  .map((session) => (
+                                    <div
+                                      key={session._id || session.id}
+                                      className={`lecture-card ${
+                                        viewMode === "list"
+                                          ? "polished-grid-view"
+                                          : "polished-grid-view"
+                                      }`}
+                                      onClick={() =>
+                                        handleSessionClick(session)
+                                      }
+                                      style={{
+                                        width: isMobile ? "120px" : "",
+                                        height: isMobile ? "78px" : "",
+                                      }}
+                                    >
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "polished-grid-thumbnail"
+                                            : "polished-grid-thumbnail"
+                                        }
+                                        style={{
+                                          width: isMobile ? "100%" : "",
+                                          height: isMobile ? "100%" : "",
+                                        }}
+                                      >
+                                        <img
+                                          src={`https://primerad-backend.onrender.com${
+                                            session.imageUrl_522x760 ||
+                                            session.imageUrl_1920x1080 ||
+                                            session.thumbnail
+                                          }`}
+                                          alt={session.title}
+                                        />
+                                      </div>
+                                      <div
+                                        className={
+                                          viewMode === "list"
+                                            ? "polished-grid-content"
+                                            : "polished-grid-content"
+                                        }
+                                      >
+                                        <div className="title-row">
+                                          <div
+                                            className={
+                                              viewMode === "list"
+                                                ? "polished-grid-title"
+                                                : "polished-grid-title"
+                                            }
+                                            style={{
+                                              whiteSpace: "nowrap",
+                                              overflow: "hidden",
+                                              textOverflow: "ellipsis",
+                                              fontSize: isMobile ? "12px" : "",
+                                            }}
+                                          >
+                                            {session.title}
+                                          </div>
+                                          {viewMode === "grid" && (
+                                            <div className="polished-list-desc">
+                                              {session.description}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                      {viewMode === "list" && (
+                                        <div
+                                          className={`type-badge ${
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.className || ""
+                                          } polished-grid-badge`}
+                                        >
+                                          {
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.icon
+                                          }{" "}
+                                          {
+                                            getSessionTypeBadge(
+                                              session.sessionType ||
+                                                session.type
+                                            )?.label
+                                          }
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))
+                              )}
+                            </div>
+                          </div>
+                        
                       )}
                     </div>
                   </>

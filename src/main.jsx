@@ -39,14 +39,14 @@ const router = createBrowserRouter([...IndexRouters], {
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <FilterProvider>
-        {/* <App> */}
-        <RouterProvider router={router} /> {/* ✅ main router */}
-        {/* </App> */}
-        {/* <ScrollToTop /> */}
-      </FilterProvider>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <FilterProvider>
+      {/* <App> */}
+      <RouterProvider router={router} /> {/* ✅ main router */}
+      {/* </App> */}
+      {/* <ScrollToTop /> */}
+    </FilterProvider>
+  </Provider>
+  // </React.StrictMode>
 );
