@@ -555,7 +555,6 @@ button:hover {
                       </button>
                     </div>
                   ) : isLocked ? (
-                    // 🔒 Locked Content
                     <div
                       style={{
                         position: "relative",
@@ -592,7 +591,6 @@ button:hover {
                       </button>
                     </div>
                   ) : vimeoVideoId ? (
-                    // ▶️ Video Player
                     <div
                       style={{
                         position: "relative",

@@ -75,7 +75,6 @@ const medicaiOrigin = "https://app.medicai.io";
 const CaseViewerPage = () => {
   const { caseId } = useParams();
   const { t } = useTranslation();
-  // Token and refresh logic
   const [token, setToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(
     () => localStorage.getItem("dicom_refresh_token") || null
@@ -96,13 +95,13 @@ const CaseViewerPage = () => {
 
   useEnterExit();
   const [submodule, setSubmodule] = useState("Knee Pathology");
-  const dicomName = "Anonymized00098"; // Set your DICOM name here
+  const dicomName = "Anonymized00098";
   const [showVideo, setShowVideo] = useState(false);
-  const videoUrl = "https://player.vimeo.com/video/1102457741"; // Replace with your Vimeo video ID
+  const videoUrl = "https://player.vimeo.com/video/1102457741";
   const [startDate, setStartDate] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   // const [faculty, setFaculty] = useState(null);
-  const isAuthenticated = useSelector(selectIsAuthenticated); // Auth status from Redux
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectUser);
   const [contentType, setContentType] = useState("dicom");
 
@@ -183,10 +182,8 @@ const CaseViewerPage = () => {
   }, []);
 
   useEffect(() => {
-    // This is just a placeholder, you would replace it with your actual data fetch.
     setStartDate("2025-07-15T10:00:00Z");
   }, []);
-  // Helper to save tokens
   const saveTokens = (access, refresh) => {
     setToken(access);
     setRefreshToken(refresh);
@@ -194,7 +191,6 @@ const CaseViewerPage = () => {
     if (refresh) localStorage.setItem("dicom_refresh_token", refresh);
   };
 
-  // Observation form state
   const [observations, setObservations] = useState({
     medialMeniscus: "",
     medialCartilage: "",
@@ -294,7 +290,6 @@ const CaseViewerPage = () => {
       setError(null);
       try {
         let data;
-        // Try refresh token grant if available
         if (refreshToken) {
           const params = new URLSearchParams();
           params.append("grant_type", "refresh_token");
