@@ -526,7 +526,7 @@ const SubModuleView = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/sessions/compare-observations",
+        "https://primerad-backend.onrender.com/api/sessions/compare-observations",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

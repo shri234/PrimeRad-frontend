@@ -12,10 +12,15 @@ import { selectIsAuthenticated } from "../../store/auth/selectors";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, Pagination } from "swiper";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import PeopleIcon from "@mui/icons-material/People";
+import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import "swiper/css";
 import "./IndexPage.css";
 import "swiper/css/navigation";
 import TestimonialsSection from "../../components/sections/TestimonialsSection";
+import SchoolIcon from "@mui/icons-material/School";
 
 const sectionBg = ["#fff", "#f5f7fa"];
 const THEME = {
@@ -200,9 +205,13 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#6d4c41", marginBottom: 18 }}>
-            🎓
-          </span>
+          <SchoolIcon
+            style={{
+              fontSize: 38,
+              color: "#6d4c41",
+              marginBottom: 18,
+            }}
+          />
           <div
             style={{
               fontWeight: 700,
@@ -238,9 +247,9 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#1976d2", marginBottom: 18 }}>
-            📖
-          </span>
+          <VideoLibraryIcon
+            style={{ fontSize: 38, color: "#1976d2", marginBottom: 18 }}
+          ></VideoLibraryIcon>
           <div
             style={{
               fontWeight: 700,
@@ -276,9 +285,9 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#ffb300", marginBottom: 18 }}>
-            💡
-          </span>
+          <AssessmentIcon
+            style={{ fontSize: 38, color: "#ffb300", marginBottom: 18 }}
+          ></AssessmentIcon>
           <div
             style={{
               fontWeight: 700,
@@ -314,9 +323,9 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#00bfae", marginBottom: 18 }}>
-            🤝
-          </span>
+          <PeopleIcon
+            style={{ fontSize: 38, color: "#00bfae", marginBottom: 18 }}
+          ></PeopleIcon>
           <div
             style={{
               fontWeight: 700,
@@ -353,9 +362,9 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#ff7043", marginBottom: 18 }}>
-            ⏰
-          </span>
+          <CastForEducationIcon
+            style={{ fontSize: 38, color: "#ff7043", marginBottom: 18 }}
+          ></CastForEducationIcon>
           <div
             style={{
               fontWeight: 700,
