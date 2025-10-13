@@ -141,6 +141,7 @@ const HomeHeroSlider = memo(() => {
     module: apiObj.moduleName || "General",
     submodule: apiObj.subCategoryId || "General",
     duration: apiObj.sessionDuration || "",
+    isFree: apiObj.isFree,
     startDate: apiObj.startDate,
     contentType:
       apiObj.sessionType === "Dicom"
@@ -153,7 +154,6 @@ const HomeHeroSlider = memo(() => {
   const currentSlideContent =
     slides.length > 0 ? mapSlideData(slides[currentSlideIndex]) : null;
 
-  // Navigation handler for "View Content" button
   const handleViewContentClick = useCallback(
     (card) => {
       if (card.contentType && card.contentType.toLowerCase() === "case") {
@@ -171,6 +171,7 @@ const HomeHeroSlider = memo(() => {
             faculty: card.faculty,
             module: card.module,
             submodule: card.submodule,
+            isFree: card.isFree,
             duration: card.duration,
             startDate: card.startDate,
             contentType: card.contentType,
@@ -249,7 +250,6 @@ const HomeHeroSlider = memo(() => {
           direction: themeSchemeDirection,
         }}
       >
-        {/* Current Slide Content */}
         <div
           className="slide-content"
           style={{
@@ -309,17 +309,16 @@ const HomeHeroSlider = memo(() => {
             <div className="slider-inner h-100" style={{ width: "100%" }}>
               <div className="row align-items-center mr-7 iq-ltr-direction h-100">
                 <div className="col-lg-7 col-md-12">
-                  <h1
-                    className="texture-text big-font-5 letter-spacing-1 line-count-1 text-uppercase mb-0"
+                  <h3
+                    className="texture-text big-font-5 letter-spacing-1 text-uppercase mb-0 fs-3 fs-md-2 fs-lg-1"
                     style={{
                       color: "ghostwhite",
                       fontWeight: 400,
                       textShadow: "0 4px 24px rgba(0,0,0,0.45)",
-                      fontSize: "clamp(2.2rem, 6vw, 4.5rem)",
                     }}
                   >
                     {currentSlideContent.title}
-                  </h1>
+                  </h3>
                   <div
                     className="d-flex flex-wrap align-items-center r-mb-23"
                     style={{
@@ -328,7 +327,6 @@ const HomeHeroSlider = memo(() => {
                       marginBottom: window.innerWidth <= 480 ? "5px" : "10px",
                     }}
                   >
-                    {/* CME / Assessment */}
                     {currentSlideContent.cmeCredits && (
                       <span
                         className="badge  text-white text-uppercase px-3 py-2"
@@ -344,12 +342,11 @@ const HomeHeroSlider = memo(() => {
                       </span>
                     )}
 
-                    {/* Duration */}
                     {currentSlideContent.movieTime && (
                       <span
                         className="badge  text-white text-uppercase px-3 py-2"
                         style={{
-                          background: "#6a1b9a", // Purple
+                          background: "#6a1b9a",
                           fontWeight: 500,
                           borderRadius: "10px",
                           fontSize: "0.8rem",
@@ -360,7 +357,6 @@ const HomeHeroSlider = memo(() => {
                       </span>
                     )}
 
-                    {/* Difficulty Level */}
                     {currentSlideContent.level && (
                       <span
                         className="badge text-black text-uppercase px-3 py-2"
@@ -404,18 +400,15 @@ const HomeHeroSlider = memo(() => {
                   >
                     {currentSlideContent.category && (
                       <span
-                        className="badge  text-white text-uppercase p-2 mx-2"
+                        className="badge text-white text-uppercase p-2"
                         style={{
-                          background: "#4caf50", // Green background for specialty
+                          background: "#4caf50",
                           fontWeight: 600,
                           letterSpacing: 0.5,
-                          color: "black",
-                          borderRadius: "10px",
-                          fontSize: "0.85rem",
+                          borderRadius: "8px",
                         }}
                       >
-                        {t("content.specialty")}:{" "}
-                        {t(currentSlideContent.category)}
+                        {t("Module")}: {t(currentSlideContent.category)}
                       </span>
                     )}
 
@@ -463,61 +456,6 @@ const HomeHeroSlider = memo(() => {
                     </div>
                   </div>
                 </div>
-                {/* Watch Preview/Trailer Section */}
-                {currentSlideContent.previewVideoUrl && (
-                  <div className="col-lg-5 col-md-12 trailor-video iq-slider d-none d-lg-block">
-                    <Link to="#" className="video-open playbtn" tabIndex="0">
-                      <svg
-                        onClick={() =>
-                          handleWatchPreviewClick(
-                            currentSlideContent.previewVideoUrl
-                          )
-                        }
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                        x="0px"
-                        y="0px"
-                        width="80px"
-                        height="80px"
-                        viewBox="0 0 213.7 213.7"
-                        enableBackground="new 0 0 213.7 213.7"
-                        xmlSpace="preserve"
-                      >
-                        <polygon
-                          className="triangle"
-                          fill="none"
-                          strokeWidth="7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeiterlimit="10"
-                          points="73.5,62.5 148.5,105.8 73.5,149.1 "
-                        ></polygon>
-                        <circle
-                          className="circle"
-                          fill="none"
-                          strokeWidth="7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeiterlimit="10"
-                          cx="106.8"
-                          cy="106.8"
-                          r="103.3"
-                        ></circle>
-                      </svg>
-                      <span
-                        className="w-trailor"
-                        onClick={() =>
-                          handleWatchPreviewClick(
-                            currentSlideContent.previewVideoUrl
-                          )
-                        }
-                      >
-                        {t("buttons.watch_preview")}{" "}
-                      </span>
-                    </Link>
-                  </div>
-                )}
               </div>
             </div>
           </div>

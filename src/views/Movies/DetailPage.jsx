@@ -168,6 +168,33 @@ const MovieDetail = memo(() => {
   };
 
   const tabStyles = `
+  /* Make row a flex container so columns stretch */
+.equal-height-row {
+  display: flex;
+  flex-wrap: wrap; /* important for stacking on mobile */
+}
+
+/* Make all direct columns flex children with equal height */
+.equal-height-row > .col-xxl-8,
+.equal-height-row > .col-xxl-4,
+.equal-height-row > .col-xl-8,
+.equal-height-row > .col-xl-4,
+.equal-height-row > .col-lg-8,
+.equal-height-row > .col-lg-4,
+.equal-height-row > .col-md-12,
+.equal-height-row > .col-sm-12 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make inner containers fill column height */
+.video-container,
+.sessions-sidebar {
+  flex: 1; /* grows to match sibling column height */
+  display: flex;
+  flex-direction: column;
+}
+
    .custom-nav-btn, .custom-nav-btn * {
       cursor: pointer !important;
     }
@@ -384,15 +411,17 @@ button:hover {
         <FixedBackButton customPath="/main-page"></FixedBackButton>
 
         <Container fluid className="py-3">
-          <Row className="g-2">
-            <Col lg={8} md={12}>
+          <Row className="g-2 align-items-stretch">
+            <Col lg={8} md={12} className="d-flex">
               <div
+                className="flex-grow-1 d-flex flex-column"
                 style={{
                   backgroundColor: "white",
                   borderRadius: "8px",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                   padding: "20px",
-                  marginBottom: "16px",
+                  height: "100%",
+                  // marginBottom: "16px",
                 }}
               >
                 <div
@@ -662,17 +691,21 @@ button:hover {
             <Col
               lg={4}
               md={12}
-              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+              className="d-flex"
+              // style={{ gap: "16px" }}
             >
               <div
-                className="sessions-sidebar"
+                className="flex-grow-1 d-flex flex-column sessions-sidebar"
                 style={{
                   background: "white",
                   borderRadius: "8px",
                   boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
                   padding: "20px",
+                  height: "100%",
+                  // maxHeight: "100%",
+                  // height: "580px",
 
-                  maxHeight: "calc(100vh - 245px)",
+                  // height: "90%",
                   overflowY: "auto",
                 }}
               >

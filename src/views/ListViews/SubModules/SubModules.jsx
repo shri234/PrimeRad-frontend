@@ -520,9 +520,9 @@ const SubModuleView = () => {
   };
 
   const handleAICompare = async () => {
-    setAiComparison(""); // Clear previous summary
+    setAiComparison("");
     setLoading(true);
-    setShowAISummary(true); // Open modal immediately
+    setShowAISummary(true);
 
     try {
       const response = await fetch(
@@ -1273,16 +1273,13 @@ const SubModuleView = () => {
           <button
             style={{
               position: "fixed",
-              top: "20px",
-              left: "20px",
-              marginTop: "35px",
-              marginLeft: "-10px",
+              top: "68px",
               zIndex: 1001,
-              width: "32px",
-              height: "32px",
+              width: "28px",
+              height: "28px",
               background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
               border: "none",
-              borderRadius: "12px",
+              borderRadius: "0 12px 12px 0",
               color: "white",
               cursor: "pointer",
               display: "flex",
@@ -1314,7 +1311,8 @@ const SubModuleView = () => {
             style={{
               width: isMobile ? (sidebarOpen ? "250px" : "0") : undefined,
               position: isMobile ? "fixed" : undefined,
-              top: isMobile ? 0 : undefined,
+              top: isMobile ? (sidebarOpen ? "32px" : "0") : undefined,
+              left: isMobile ? "0" : "10px",
               height: isMobile ? "100vh" : undefined,
               overflowY: isMobile ? "auto" : "auto",
               scrollbarWidth: isMobile ? "2px" : "4px",
@@ -1325,7 +1323,7 @@ const SubModuleView = () => {
           >
             <div
               style={{
-                padding: "16px",
+                padding: "14px",
                 borderBottom: "1px solid #e0e0e0",
                 marginTop: isAuthenticated ? "50px" : "40px",
                 background: "#fff",
@@ -1837,42 +1835,17 @@ const SubModuleView = () => {
               </div>
             ) : (
               <>
-                <div className="header">
-                  <button
-                    onClick={() => {
-                      setActiveModuleId(null);
-                      setActiveModuleName(null);
-                      setSelectedSubModuleId(null);
-                      setSelectedLevel(null);
-                      {
-                        activeModuleId === null
-                          ? navigate("/main-page")
-                          : navigate("/atlas");
-                      }
-                    }}
-                    className="back-link"
-                    style={{
-                      marginLeft: isMobile ? "25px" : "",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
-                      />
-                    </svg>
-                    {isMobile ? null : "Back"}
-                  </button>
+                <div
+                  className="header"
+                  style={{
+                    justifyContent: "space-between",
+                  }}
+                >
                   <h2
                     style={{
                       color: "darkslategray",
                       fontWeight: "bold",
+                      marginLeft: "16px",
                       fontSize:
                         isMobile && activeModuleName
                           ? "20px"
@@ -1885,16 +1858,45 @@ const SubModuleView = () => {
                       ? `${activeModuleName} Pathologies`
                       : "Select a Module"}
                   </h2>
+                  {activeModuleName && (
+                    <button
+                      onClick={() => {
+                        setActiveModuleId(null);
+                        setActiveModuleName(null);
+                        setSelectedSubModuleId(null);
+                        setSelectedLevel(null);
+                        {
+                          activeModuleId === null
+                            ? navigate("/main-page")
+                            : navigate("/atlas");
+                        }
+                      }}
+                      className="back-link"
+                      style={{
+                        marginLeft: isMobile ? "25px" : "",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
+                        />
+                      </svg>
+                      {activeModuleName
+                        ? `Back to Modules`
+                        : `Back to ${activeModuleName} Pathologies`}
+                    </button>
+                  )}
                 </div>
 
                 {initialView ? (
-                  <div
-                    className={
-                      viewMode === "list"
-                        ? "submodule-list-right"
-                        : "submodule-grid-right"
-                    }
-                  >
+                  <div className="submodule-grid-right">
                     {loadingModules ? (
                       <div className="loading-message">Loading modules...</div>
                     ) : modulesError ? (
@@ -1932,7 +1934,7 @@ const SubModuleView = () => {
                   </div>
                 ) : (
                   <>
-                    <div
+                    {/* <div
                       className="breadcrumb"
                       style={{
                         margin: isMobile ? "5px 0 4px 0" : "",
@@ -1976,16 +1978,10 @@ const SubModuleView = () => {
                           </span>
                         </>
                       )}
-                    </div>
-                    <div
-                      className={
-                        viewMode === "list"
-                          ? "submodule-list-right"
-                          : "submodule-grid-right"
-                      }
-                    >
-                      <div className="submodule-container">
-                        {/* <div
+                    </div> */}
+                    <div className="submodule-grid-right">
+                      {/* <div className="submodule-container"> */}
+                      {/* <div
                         className={`submodule-item ${viewMode}-view`}
                         onClick={handleAssessmentClick}
                       >
@@ -2020,26 +2016,28 @@ const SubModuleView = () => {
                           </span>
                         </div>
                       </div> */}
-                      </div>
+                    </div>
 
-                      {loadingPathologies ? (
-                        <div className="loading-message">
-                          Loading pathologies...
-                        </div>
-                      ) : pathologiesError ? (
-                        <div className="error-message">
-                          Error: {pathologiesError}
-                        </div>
-                      ) : modulePathologiesData.length === 0 ? (
-                        <div className="no-data-message">
-                          No pathologies found for this module.
-                        </div>
-                      ) : !selectedSubModuleId ? (
-                        modulePathologiesData.map((pathologyItem) => {
+                    {loadingPathologies ? (
+                      <div className="loading-message">
+                        Loading pathologies...
+                      </div>
+                    ) : pathologiesError ? (
+                      <div className="error-message">
+                        Error: {pathologiesError}
+                      </div>
+                    ) : modulePathologiesData.length === 0 ? (
+                      <div className="no-data-message">
+                        No pathologies found for this module.
+                      </div>
+                    ) : !selectedSubModuleId ? (
+                      <div className="submodule-container">
+                        {modulePathologiesData.map((pathologyItem) => {
                           const staticSubModuleDataForPathology =
                             subModulesData[activeModuleName]?.find(
                               (sub) => sub.name === pathologyItem.pathologyName
                             );
+
                           const apiSessionsForPathology =
                             pathologyItem.sessions || [];
                           const staticSessionsForPathology = [
@@ -2052,189 +2050,188 @@ const SubModuleView = () => {
                             ...apiSessionsForPathology,
                             ...staticSessionsForPathology,
                           ];
+
                           const counts = countTypes(combinedSessionsForCounts);
 
                           return (
                             <div
                               key={pathologyItem._id}
-                              className="submodule-container"
+                              className="submodule-item grid-view"
+                              onClick={() =>
+                                handleSubModuleClick(pathologyItem)
+                              }
                             >
-                              <div
-                                className={`submodule-item ${viewMode}-view`}
-                                onClick={() =>
-                                  handleSubModuleClick(pathologyItem)
+                              <img
+                                src={
+                                  `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
+                                  staticSubModuleDataForPathology?.thumbnail ||
+                                  getRandomImage()
                                 }
+                                alt={pathologyItem.pathologyName}
+                                className="submodule-thumbnail"
+                                style={{
+                                  width: isMobile ? "35px" : "",
+                                }}
+                              />
+
+                              <div
+                                className="submodule-title"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  fontWeight: 600,
+                                  fontSize: isMobile ? "14px" : "18px",
+                                }}
                               >
-                                <img
-                                  src={
-                                    `https://primerad-backend.onrender.com${pathologyItem.imageUrl}` ||
-                                    staticSubModuleDataForPathology?.thumbnail ||
-                                    getRandomImage()
-                                  }
-                                  alt={pathologyItem.pathologyName}
-                                  className="submodule-thumbnail"
+                                {/* <i
+                                  className="fas fa-angle-right icon-indicator"
                                   style={{
-                                    width: isMobile ? "35px" : "",
+                                    marginRight: isMobile ? "5px" : "10px",
                                   }}
-                                />
-                                <div
-                                  className="submodule-title"
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    fontWeight: "600",
-                                    fontSize: isMobile ? "14px" : "18px",
-                                  }}
+                                /> */}
+                                {pathologyItem.pathologyName}
+                              </div>
+
+                              <div
+                                className="submodule-type-badges"
+                                style={{
+                                  display: "flex",
+                                  gap: "6px",
+                                  marginTop: "8px",
+                                  marginLeft: isMobile ? "5px" : "10px",
+                                }}
+                              >
+                                <span
+                                  className="type-badge badge-lecture"
+                                  style={{ fontSize: isMobile ? "9px" : "" }}
                                 >
-                                  <i
-                                    className="fas fa-angle-right icon-indicator"
-                                    style={{
-                                      marginRight: isMobile ? "5px" : "10px",
-                                    }}
-                                  />
-                                  {pathologyItem.pathologyName}
-                                </div>
-                                <div
-                                  className="submodule-type-badges"
-                                  style={{
-                                    marginLeft: isMobile ? "5px" : "10px",
-                                  }}
+                                  Lectures: {counts.lecture}
+                                </span>
+                                <span
+                                  className="type-badge badge-case"
+                                  style={{ fontSize: isMobile ? "9px" : "" }}
                                 >
-                                  <span
-                                    className="type-badge badge-lecture"
-                                    style={{
-                                      fontSize: isMobile ? "9px" : "",
-                                    }}
-                                  >
-                                    Lectures: {counts.lecture}
-                                  </span>
-                                  <span
-                                    className="type-badge badge-case"
-                                    style={{
-                                      fontSize: isMobile ? "9px" : "",
-                                    }}
-                                  >
-                                    Cases: {counts.case}
-                                  </span>
-                                  <span
-                                    className="type-badge badge-live"
-                                    style={{
-                                      fontSize: isMobile ? "9px" : "",
-                                    }}
-                                  >
-                                    Live: {counts.live}
-                                  </span>
-                                </div>
+                                  Cases: {counts.case}
+                                </span>
+                                <span
+                                  className="type-badge badge-live"
+                                  style={{ fontSize: isMobile ? "9px" : "" }}
+                                >
+                                  Live: {counts.live}
+                                </span>
                               </div>
                             </div>
                           );
-                        })
-                      ) : selectedSubModuleId ? (
+                        })}
+                      </div>
+                    ) : selectedSubModuleId ? (
+                      <div
+                        className={
+                          viewMode === "list"
+                            ? "lecture-grid-view"
+                            : "lecture-grid-view"
+                        }
+                      >
                         <div
-                          className={
-                            viewMode === "list"
-                              ? "lecture-grid-view"
-                              : "lecture-grid-view"
-                          }
+                          className="polished-filter-bar"
+                          style={{ gap: isMobile ? "1px" : "" }}
                         >
-                          <div
-                            className="polished-filter-bar"
-                            style={{ gap: isMobile ? "1px" : "" }}
-                          >
-                            <label className="polished-filter-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={filters.dicom}
-                                onChange={() => handleFilterChange("dicom")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              DICOM
-                            </label>
-                            <label className="polished-filter-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={filters.lecture}
-                                onChange={() => handleFilterChange("lecture")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              Lectures
-                            </label>
-                            <label className="polished-filter-checkbox live">
-                              <input
-                                type="checkbox"
-                                checked={filters.live}
-                                onChange={() => handleFilterChange("live")}
-                              />
-                              <span
-                                className="polished-custom-checkbox"
-                                style={{
-                                  width: isMobile ? "14px" : "18px",
-                                  height: isMobile ? "14px" : "18px",
-                                }}
-                              />
-                              Live
-                            </label>
-                          </div>
+                          <label className="polished-filter-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={filters.dicom}
+                              onChange={() => handleFilterChange("dicom")}
+                            />
+                            <span
+                              className="polished-custom-checkbox"
+                              style={{
+                                width: isMobile ? "14px" : "18px",
+                                height: isMobile ? "14px" : "18px",
+                              }}
+                            />
+                            DICOM
+                          </label>
+                          <label className="polished-filter-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={filters.lecture}
+                              onChange={() => handleFilterChange("lecture")}
+                            />
+                            <span
+                              className="polished-custom-checkbox"
+                              style={{
+                                width: isMobile ? "14px" : "18px",
+                                height: isMobile ? "14px" : "18px",
+                              }}
+                            />
+                            Lectures
+                          </label>
+                          <label className="polished-filter-checkbox live">
+                            <input
+                              type="checkbox"
+                              checked={filters.live}
+                              onChange={() => handleFilterChange("live")}
+                            />
+                            <span
+                              className="polished-custom-checkbox"
+                              style={{
+                                width: isMobile ? "14px" : "18px",
+                                height: isMobile ? "14px" : "18px",
+                              }}
+                            />
+                            Live
+                          </label>
+                        </div>
 
-                          <div className="polished-grid-container">
-                            {loadingLevelSessions ? (
-                              <div
-                                className="loading-message"
-                                style={{ textAlign: "center", padding: "20px" }}
-                              >
-                                Loading sessions...
-                              </div>
-                            ) : levelSessionsError ? (
-                              <div
-                                className="error-message"
-                                style={{
-                                  textAlign: "center",
-                                  padding: "20px",
-                                  color: "#d32f2f",
-                                }}
-                              >
-                                {levelSessionsError}
-                              </div>
-                            ) : allSessions.length === 0 ? (
-                              <div
-                                className="no-data-message"
-                                style={{
-                                  textAlign: "center",
-                                  padding: "20px",
-                                  color: "#666",
-                                }}
-                              >
-                                No sessions found for this pathology.
-                              </div>
-                            ) : (
-                              allSessions
-                                .filter((session) => {
-                                  const sessionType =
-                                    session.sessionType?.toLowerCase() ||
-                                    session.type?.toLowerCase();
-                                  return (
-                                    ((sessionType === "dicom" ||
-                                      sessionType === "case") &&
-                                      filters.dicom) ||
-                                    ((sessionType === "vimeo" ||
-                                      sessionType === "lecture") &&
-                                      filters.lecture) ||
-                                    (sessionType === "live" && filters.live)
-                                  );
-                                })
-                                .map((session) => (
+                        <div className="polished-grid-container">
+                          {loadingLevelSessions ? (
+                            <div
+                              className="loading-message"
+                              style={{ textAlign: "center", padding: "20px" }}
+                            >
+                              Loading sessions...
+                            </div>
+                          ) : levelSessionsError ? (
+                            <div
+                              className="error-message"
+                              style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "#d32f2f",
+                              }}
+                            >
+                              {levelSessionsError}
+                            </div>
+                          ) : allSessions.length === 0 ? (
+                            <div
+                              className="no-data-message"
+                              style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "#666",
+                              }}
+                            >
+                              No sessions found for this pathology.
+                            </div>
+                          ) : (
+                            allSessions
+                              .filter((session) => {
+                                const sessionType =
+                                  session.sessionType?.toLowerCase() ||
+                                  session.type?.toLowerCase();
+                                return (
+                                  ((sessionType === "dicom" ||
+                                    sessionType === "case") &&
+                                    filters.dicom) ||
+                                  ((sessionType === "vimeo" ||
+                                    sessionType === "lecture") &&
+                                    filters.lecture) ||
+                                  (sessionType === "live" && filters.live)
+                                );
+                              })
+                              .map((session) => (
+                                <>
                                   <div
                                     key={session._id || session.id}
                                     className={`lecture-card polished-grid-view ${
@@ -2242,37 +2239,6 @@ const SubModuleView = () => {
                                     }`}
                                     onClick={() => handleSessionClick(session)}
                                   >
-                                    <div className="top-right-badges">
-                                      {session.difficulty && (
-                                        <span
-                                          className={`labell-badge level-${session.difficulty.toLowerCase()}`}
-                                        >
-                                          {session.difficulty}
-                                        </span>
-                                      )}
-
-                                      {session.sessionType && (
-                                        <span className="content-type-badge">
-                                          {session.sessionType === "Dicom" && (
-                                            <FaFolderOpen
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType === "Vimeo" && (
-                                            <FaChalkboardTeacher
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType === "Live" && (
-                                            <FaBroadcastTower
-                                              style={{ marginRight: 4 }}
-                                            />
-                                          )}
-                                          {session.sessionType}
-                                        </span>
-                                      )}
-                                    </div>
-
                                     <div className="polished-grid-thumbnail">
                                       <img
                                         src={`https://primerad-backend.onrender.com${
@@ -2292,22 +2258,26 @@ const SubModuleView = () => {
                                       </div>
                                     </div>
                                   </div>
-                                ))
-                            )}
-                          </div>
+                                  <div>
+                                    <span className="live-badge"></span>
+                                  </div>
+                                </>
+                              ))
+                          )}
                         </div>
-                      ) : (
-                        <div
-                          style={{
-                            textAlign: "center",
-                            padding: "40px",
-                            color: "#666",
-                          }}
-                        >
-                          Select a pathology to view its sessions.
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                          color: "#666",
+                        }}
+                      >
+                        Select a pathology to view its sessions.
+                      </div>
+                    )}
+                    {/* </div> */}
                   </>
                 )}
               </>

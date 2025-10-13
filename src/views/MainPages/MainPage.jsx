@@ -19,6 +19,7 @@ import {
 import NavCategories from "./NavCategories";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import LockIcon from "@mui/icons-material/Lock";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors"; // selectUser is not used but kept from original
 
@@ -785,16 +786,14 @@ const MainPage = memo(() => {
         <button
           style={{
             position: "fixed",
-            top: "20px",
-            left: "20px",
-            marginTop: "35px",
-            marginLeft: "-10px",
+            top: "68px",
+            // left: "0px",
             zIndex: 1001,
-            width: "32px",
-            height: "32px",
+            width: "28px",
+            height: "28px",
             background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
             border: "none",
-            borderRadius: "12px",
+            borderRadius: "0px 12px 12px 0px",
             color: "white",
             cursor: "pointer",
             display: "flex",
@@ -820,7 +819,8 @@ const MainPage = memo(() => {
           style={{
             width: isMobile ? (isMobileNavOpen ? "250px" : "0") : undefined,
             position: isMobile ? "fixed" : undefined,
-            top: isMobile ? 0 : undefined,
+            left: isMobile ? "0" : "10px",
+            top: isMobile ? (isMobileNavOpen ? "32px" : "0") : undefined,
             height: isMobile ? "100vh" : undefined,
             overflowY: isMobile ? "auto" : "hidden",
             background: isMobile ? THEME.card : undefined,
@@ -830,7 +830,7 @@ const MainPage = memo(() => {
         >
           <div
             style={{
-              padding: "16px",
+              padding: "14px",
               borderBottom: "1px solid #e0e0e0",
               marginTop: isAuthenticated ? "50px" : "40px",
               background: "#fff",
@@ -1332,7 +1332,11 @@ const MainPage = memo(() => {
                                   }}
                                 >
                                   <span role="img" aria-label="Locked">
-                                    🔒
+                                    <LockIcon
+                                      style={{
+                                        color: "#2563EB",
+                                      }}
+                                    ></LockIcon>
                                   </span>
                                   <ReactTooltip
                                     id={`locked-tip-${card.id}`}
@@ -1420,7 +1424,13 @@ const MainPage = memo(() => {
                                 }}
                               >
                                 <span role="img" aria-label="Locked">
-                                  🔒
+                                  <LockIcon
+                                    style={{
+                                      width: "20px",
+                                      height: "20px",
+                                      color: "#2563EB",
+                                    }}
+                                  ></LockIcon>
                                 </span>
                                 <ReactTooltip
                                   id={`locked-tip-${card.id}`}
@@ -1473,7 +1483,6 @@ const MainPage = memo(() => {
                 </div>
               </div>
             )}
-            {/* Loading indicator for fetching more data */}
             {isFetchingMore && (
               <div style={{ textAlign: "center", padding: "20px" }}>
                 Loading more sessions...

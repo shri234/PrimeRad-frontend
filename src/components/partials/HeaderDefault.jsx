@@ -168,6 +168,7 @@ const HeaderDefault = memo(() => {
                 style={{
                   transition: "transform 0.3s ease-in-out",
                   transformOrigin: "left center",
+                  height: "40px",
                 }}
               >
                 <Logo />
@@ -190,7 +191,7 @@ const HeaderDefault = memo(() => {
                       style={{ flexBasis: "auto", flexShrink: 0 }}
                     >
                       <Nav.Link
-                        className={`nav-link text-sm px-1 py-1 ${
+                        className={`nav-link text-sm px-2 py-2 ${
                           location.pathname === item.path ||
                           (item.path === "/atlas" &&
                             location.pathname.startsWith("/atlas"))
@@ -200,7 +201,7 @@ const HeaderDefault = memo(() => {
                         onClick={() => handleNavigation(item.path)}
                         style={{
                           transition: "all 0.3s ease-in-out",
-                          fontSize: "18px",
+                          fontSize: "20px",
                           display: "flex",
                           alignItems: "center",
                         }}

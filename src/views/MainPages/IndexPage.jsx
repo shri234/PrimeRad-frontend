@@ -167,9 +167,9 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span style={{ fontSize: 38, color: "#8e24aa", marginBottom: 18 }}>
-            ✔️
-          </span>
+          <span
+            style={{ fontSize: 38, color: "#8e24aa", marginBottom: 18 }}
+          ></span>
           <div
             style={{
               fontWeight: 700,
