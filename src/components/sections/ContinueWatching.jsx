@@ -46,7 +46,7 @@ const ContinueWatching = memo(() => {
             "userId"
           )}`
         );
-        const data = await res.json();
+        const data = res.data;
 
         if (data?.data) {
           console.log(data.data);

@@ -122,8 +122,8 @@ const HomePage = memo(() => {
 
   const whyChooseSection = (
     <div
+      className="why-choose"
       style={{
-        background: "linear-gradient(135deg, #2A2F42 0%, #3A405A 100%)",
         padding: "48px 20px 32px 20px",
         display: "flex",
         flexDirection: "column",
