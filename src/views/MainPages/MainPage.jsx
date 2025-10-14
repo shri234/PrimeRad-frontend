@@ -180,9 +180,9 @@ const videoCardStyles = `
   .content-type-badge {
     border-radius: 6px;
     padding: 2px 8px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     letter-spacing: 0.5px;
     background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
     color: navy;
@@ -193,9 +193,9 @@ const videoCardStyles = `
   .label-badge {
     border-radius: 6px;
     padding: 2px 8px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-block;
   }
@@ -1171,9 +1171,8 @@ const MainPage = memo(() => {
                       : isTablet
                       ? "7px 11px"
                       : "8px 12px",
-                    backgroundColor:
-                      view === "atlas" ? "darkslategrey" : "#f0f0f0",
-                    color: view === "atlas" ? "white" : "#333",
+                    backgroundColor: view === "atlas" ? "lightblue" : "#f0f0f0",
+                    color: view === "atlas" ? "black" : "#333",
                     border: "none",
                     borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
@@ -1199,9 +1198,8 @@ const MainPage = memo(() => {
                       : isTablet
                       ? "7px 11px"
                       : "8px 12px",
-                    backgroundColor:
-                      view === "list" ? "darkslategrey" : "#f0f0f0",
-                    color: view === "list" ? "white" : "#333",
+                    backgroundColor: view === "list" ? "lightblue" : "#f0f0f0",
+                    color: view === "list" ? "black" : "#333",
                     border: "none",
                     borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
