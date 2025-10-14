@@ -400,10 +400,11 @@ const HomeHeroSlider = memo(() => {
                   >
                     {currentSlideContent.category && (
                       <span
-                        className="badge text-white text-uppercase p-2"
+                        className="badge text-black text-uppercase p-2"
                         style={{
-                          background: "#4caf50",
-                          fontWeight: 600,
+                          backgroundColor: "limegreen ",
+                          fontWeight: "bold",
+                          color: "black",
                           letterSpacing: 0.5,
                           borderRadius: "8px",
                         }}

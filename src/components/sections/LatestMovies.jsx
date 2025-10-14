@@ -185,7 +185,7 @@ const LatestMovies = (props) => {
         title={props.title}
         list={listToRender}
         className="latest-block streamit-block"
-        slidesPerView={5}
+        slidesPerView={4}
         titleLink={
           props.title?.toLowerCase().includes("trending")
             ? "/trending-view-all"

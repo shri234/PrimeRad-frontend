@@ -101,7 +101,7 @@ const videoCardStyles = `
     font-size: 14px;
     margin-top: 0;
     margin-bottom: 6px;
-    font-weight: 700;
+    font-weight: 600;
     color: #222;
     white-space: normal;
     overflow: hidden;
@@ -1280,7 +1280,7 @@ const MainPage = memo(() => {
                             className="video-title"
                             style={{
                               fontSize: 16,
-                              fontWeight: 700,
+                              fontWeight: 600,
                               color: "#222",
                               // marginBottom: 6,
                             }}

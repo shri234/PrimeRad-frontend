@@ -249,7 +249,7 @@ const HeaderDefault = memo(() => {
                         background:
                           "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
                         color: "white",
-                        fontWeight: "700",
+                        fontWeight: "500",
                         borderRadius: "10px",
                         padding: "8px 16px",
                         fontSize: "1rem",
@@ -275,13 +275,6 @@ const HeaderDefault = memo(() => {
                         e.currentTarget.style.filter = "brightness(1)";
                       }}
                     >
-                      <i
-                        className="fas fa-star"
-                        style={{
-                          color: "gold",
-                          fontSize: "0.9rem",
-                        }}
-                      ></i>
                       <span>Subscribe</span>
                     </Button>
                   </Nav.Item>

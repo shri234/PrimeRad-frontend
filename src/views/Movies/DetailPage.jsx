@@ -640,6 +640,7 @@ button:hover {
                         width: "100%",
                         aspectRatio: "16/9",
                         minHeight: "500px",
+                        maxHeight: "500px",
                         pointerEvents: isVideoLoading ? "none" : "auto",
                       }}
                     >
