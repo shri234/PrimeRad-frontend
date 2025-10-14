@@ -4,6 +4,9 @@ import NavCategories from "../../MainPages/NavCategories";
 import { FaArrowRight, FaArrowLeft, FaFilter } from "react-icons/fa";
 import AssessmentView from "./AssessmentView";
 import { FixedBackButton } from "../../../utilities/BackButton";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { OpenAI } from "openai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -1324,15 +1327,15 @@ const SubModuleView = () => {
             <div
               style={{
                 padding: "14px",
-                borderBottom: "1px solid #e0e0e0",
+                // borderBottom: "1px solid #e0e0e0",
                 marginTop: isAuthenticated ? "50px" : "40px",
-                background: "#fff",
+                // background: "#fff",
               }}
             >
               <div
                 style={{
                   display: "flex",
-                  background: "#f5f5f5",
+                  // background: "#f5f5f5",
                   borderRadius: "12px",
                   padding: "4px",
                   // marginTop: 90,
@@ -1343,8 +1346,7 @@ const SubModuleView = () => {
                   style={{
                     flex: 1,
                     padding: "8px 8px",
-                    backgroundColor:
-                      view === "list" ? "	#B0E0E6" : "transparent",
+                    backgroundColor: view === "list" ? "	#B0E0E6" : "white",
                     color: view === "list" ? "black" : "black",
                     border: "none",
                     borderRadius: "8px",
@@ -1451,7 +1453,7 @@ const SubModuleView = () => {
                                           : ""
                                       }`}
                                     >
-                                      ▶
+                                      <KeyboardDoubleArrowRightIcon />
                                     </span>
                                     {pathology.pathologyName}
                                   </div>
@@ -1854,21 +1856,23 @@ const SubModuleView = () => {
                           : "28px",
                     }}
                   >
-                    {activeModuleName
-                      ? `${activeModuleName} Pathologies`
-                      : "Select a Module"}
+                    {!activeModuleName
+                      ? "Select a Module"
+                      : selectedSubModuleId
+                      ? `${activeModuleName} Sessions`
+                      : `${activeModuleName} Pathologies`}
                   </h2>
+
                   {activeModuleName && (
                     <button
                       onClick={() => {
-                        setActiveModuleId(null);
-                        setActiveModuleName(null);
-                        setSelectedSubModuleId(null);
-                        setSelectedLevel(null);
-                        {
-                          activeModuleId === null
-                            ? navigate("/main-page")
-                            : navigate("/atlas");
+                        if (selectedSubModuleId) {
+                          setSelectedSubModuleId(null);
+                          setSelectedLevel(null);
+                        } else {
+                          setActiveModuleId(null);
+                          setActiveModuleName(null);
+                          setSelectedLevel(null);
                         }
                       }}
                       className="back-link"
@@ -1876,21 +1880,10 @@ const SubModuleView = () => {
                         marginLeft: isMobile ? "25px" : "",
                       }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M15 8a.5.5 0 0 1-.5.5H2.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"
-                        />
-                      </svg>
-                      {activeModuleName
-                        ? `Back to Modules`
-                        : `Back to ${activeModuleName} Pathologies`}
+                      <KeyboardDoubleArrowLeftIcon />
+                      {selectedSubModuleId
+                        ? `Back to ${activeModuleName} Pathologies`
+                        : `Back to Modules`}
                     </button>
                   )}
                 </div>
@@ -2234,22 +2227,31 @@ const SubModuleView = () => {
                                 <>
                                   <div
                                     key={session._id || session.id}
-                                    className={`lecture-card polished-grid-view ${
-                                      isMobile ? "mobile" : ""
-                                    }`}
-                                    onClick={() => handleSessionClick(session)}
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "3px",
+                                    }}
                                   >
-                                    <div className="polished-grid-thumbnail">
-                                      <img
-                                        src={`https://primerad-backend.onrender.com${
-                                          session.imageUrl_522x760 ||
-                                          session.imageUrl_1920x1080 ||
-                                          session.thumbnail
-                                        }`}
-                                        alt={session.title}
-                                      />
+                                    <div
+                                      className={`lecture-card polished-grid-view ${
+                                        isMobile ? "mobile" : ""
+                                      }`}
+                                      onClick={() =>
+                                        handleSessionClick(session)
+                                      }
+                                    >
+                                      <div className="polished-grid-thumbnail">
+                                        <img
+                                          src={`https://primerad-backend.onrender.com${
+                                            session.imageUrl_522x760 ||
+                                            session.imageUrl_1920x1080 ||
+                                            session.thumbnail
+                                          }`}
+                                          alt={session.title}
+                                        />
+                                      </div>
                                     </div>
-
                                     <div className="polished-grid-content">
                                       <div className="title-row">
                                         <div className="polished-grid-title">
@@ -2257,9 +2259,26 @@ const SubModuleView = () => {
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <div>
-                                    <span className="live-badge"></span>
+                                    <div className="group-tags">
+                                      <div className="label-tag">
+                                        <OndemandVideoIcon
+                                          style={{
+                                            width: "15px",
+                                            height: "20px",
+                                            marginRight: 4,
+                                          }}
+                                        ></OndemandVideoIcon>
+                                        {session.sessionType === "Vimeo"
+                                          ? "Lecture"
+                                          : "Case"}
+                                      </div>
+                                      <div className="label-tag">
+                                        {session.difficulty}
+                                      </div>
+                                      {/* <div className="label-tag">
+                                            {session.sessionType}
+                                          </div> */}
+                                    </div>
                                   </div>
                                 </>
                               ))

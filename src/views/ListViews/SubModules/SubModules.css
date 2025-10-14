@@ -851,20 +851,34 @@
 }
 
 .badge-lecture {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%) ;
+  color: navy;
   border: 1px solid #c7d2fe;
 }
 
 .badge-case {
-  background: #fef9c3;
-  color: #b45309;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  color: navy;
   border: 1px solid #fde68a;
 }
 .badge-live {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  color: navy;
   border: 1px solid #fecaca;
+}
+
+.group-tags {
+  display: flex;
+  flex-direction: row;
+  gap: 8px; 
+}
+
+
+.label-tag{
+  padding: 2px 4px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  border-radius: 6px;
+  font-size: 12px;
 }
 
 .submodule-type-badges {
@@ -1030,21 +1044,12 @@
 /* Thumbnail */
 .polished-grid-thumbnail img {
   width: 100%;
-  height: 80px;
+  height: 100px;
   object-fit: cover;
 }
 
 /* Title section */
-.polished-grid-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  padding: 4px 6px;
-}
+
 
 /* Badges */
 .top-right-badges {
@@ -1076,9 +1081,7 @@
     height: 60px;
   }
 
-  .polished-grid-title {
-    font-size: 0.75rem;
-  }
+ 
 
   .top-right-badges {
     top: 4px;
@@ -1096,10 +1099,7 @@
     height: 50px;
   }
 
-  .polished-grid-title {
-    font-size: 0.7rem;
-    padding: 2px;
-  }
+
 
   .labell-badge,
   .content-type-badge {
@@ -1338,8 +1338,8 @@
 }
 .polished-grid-view {
   width: 250px;
-  height: 180px;
-  background: white;
+  height: 140px;
+  /* background: white; */
    gap: 8px;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -1375,15 +1375,17 @@
 }
 
 .polished-grid-title {
-   font-weight: 600; 
+  font-weight: 600;
   color: #1e293b;
-  
+  width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  text-align: center;
   -webkit-box-orient: vertical;
-  overflow: hidden; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 }
+
 
 .polished-grid-badge {
   position: absolute;

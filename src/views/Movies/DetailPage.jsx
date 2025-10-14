@@ -411,7 +411,7 @@ button:hover {
         <FixedBackButton customPath="/main-page"></FixedBackButton>
 
         <Container fluid className="py-3">
-          <Row className="g-2 align-items-stretch">
+          <div style={{}}>
             <Col lg={8} md={12} className="d-flex">
               <div
                 className="flex-grow-1 d-flex flex-column"
@@ -919,7 +919,7 @@ button:hover {
                 )}
               </div>
             </Col>
-          </Row>
+          </div>
           <div
             style={{
               background: "white",

@@ -6,6 +6,8 @@ import LatestMovies from "../../components/sections/LatestMovies";
 import ParallexSection from "../../components/sections/ParallexSection";
 import { getRandomImage } from "../../utilities/random-image";
 import { latestMovie } from "../../StaticData/data";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import FeedbackIcon from "@mui/icons-material/Feedback";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
@@ -167,9 +169,13 @@ const HomePage = memo(() => {
             minHeight: "200px",
           }}
         >
-          <span
-            style={{ fontSize: 38, color: "#8e24aa", marginBottom: 18 }}
-          ></span>
+          <WorkspacePremiumIcon
+            style={{
+              fontSize: 38,
+              color: "blue",
+              marginBottom: 18,
+            }}
+          />
           <div
             style={{
               fontWeight: 700,
@@ -488,8 +494,8 @@ const HomePage = memo(() => {
               src="/assets/images/assessment.jpeg"
               alt="Assessment Thumbnail"
               style={{
-                width: window.innerWidth <= 768 ? "100px" : "160px",
-                height: window.innerWidth <= 768 ? "100px" : "120px",
+                width: window.innerWidth <= 768 ? "100px" : "200px",
+                height: window.innerWidth <= 768 ? "100px" : "160px",
                 objectFit: "cover",
                 borderRadius: 18,
                 boxShadow: "0 2px 12px #ffe08288",
@@ -519,11 +525,7 @@ const HomePage = memo(() => {
                 letterSpacing: 1,
                 textShadow: "0 2px 8px #fffde4",
               }}
-            >
-              <span role="img" aria-label="Assessment">
-                📝
-              </span>
-            </div>
+            ></div>
             <h2
               style={{
                 fontWeight: 800,

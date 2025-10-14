@@ -6,7 +6,7 @@ import { GiAtlas } from "react-icons/gi";
 import isFirstRender from "./hooks/useIsFirstRender";
 import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
 import FloatingActionButton from "../ExtraPages/FloatingActionButton";
-import { FaPlay, FaUnlockAlt, FaSignInAlt } from "react-icons/fa"; // Not used but kept from original
+import { FaPlay, FaUnlockAlt, FaSignInAlt } from "react-icons/fa";
 import {
   FaFolderOpen,
   FaChalkboardTeacher,
@@ -16,6 +16,7 @@ import {
   FaTimes,
   FaList,
 } from "react-icons/fa";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import NavCategories from "./NavCategories";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -157,12 +158,12 @@ const videoCardStyles = `
     position: absolute;
     top: 12px;
     right: 16px;
-    background: #1976d2;
-    color: #fff;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    color: navy;
     border-radius: 8px;
     padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     z-index: 2;
     box-shadow: 0 2px 8px rgba(25,118,210,0.10);
     letter-spacing: 0.5px;
@@ -180,11 +181,11 @@ const videoCardStyles = `
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #ede7f6;
-    color: #512da8;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    color: navy;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -193,22 +194,22 @@ const videoCardStyles = `
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-block;
   }
   .label-badge.level-beginner {
-    background: #e3f2fd;
-    color: #1976d2;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    color: navy;
   }
   .label-badge.level-advanced {
-    background: #fde8e8;
-    color: #d32f2f;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    color: navy;
   }
   .label-badge.status-free {
-    background: #e0f7fa;
-    color: #00bfae;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    color: navy;
   }
   .label-badge.status-locked {
     background: #ffe0b2;
@@ -216,7 +217,7 @@ const videoCardStyles = `
   }
   .days-ago {
     color: #666;
-    font-size: 15px;
+    font-size: 13px;
     margin-top: 2px;
     margin-bottom: 0;
     font-weight: 500;
@@ -437,11 +438,10 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgLoaded(true)}
             />
-            {card.isLive ? (
-              <span className="live-badge">LIVE</span>
-            ) : (
-              <span className="duration-badge">{card.duration}</span>
-            )}
+            {
+              card.isLive ? <span className="live-badge">LIVE</span> : null
+              // <span className="duration-badge">{card.duration}</span>
+            }
             <span className="category-badge">{card.category}</span>
           </div>
           {children}
@@ -831,15 +831,15 @@ const MainPage = memo(() => {
           <div
             style={{
               padding: "14px",
-              borderBottom: "1px solid #e0e0e0",
+              // borderBottom: "1px solid #e0e0e0",
               marginTop: isAuthenticated ? "50px" : "40px",
-              background: "#fff",
+              // background: "#fff",
             }}
           >
             <div
               style={{
                 display: "flex",
-                background: "#f5f5f5",
+                // background: "#f5f5f5",
                 borderRadius: "12px",
                 padding: "4px",
                 // marginTop: 90,
@@ -874,7 +874,7 @@ const MainPage = memo(() => {
                 style={{
                   flex: 1,
                   padding: "8px 8px",
-                  backgroundColor: "transparent",
+                  backgroundColor: "white",
                   color: "black",
                   border: "none",
                   borderRadius: "8px",
@@ -1305,7 +1305,7 @@ const MainPage = memo(() => {
                                   <FaFolderOpen style={{ marginRight: 4 }} />
                                 )}
                                 {card.contentType === "Lecture" && (
-                                  <FaChalkboardTeacher
+                                  <OndemandVideoIcon
                                     style={{ marginRight: 4 }}
                                   />
                                 )}
@@ -1399,8 +1399,12 @@ const MainPage = memo(() => {
                                 <FaFolderOpen style={{ marginRight: 4 }} />
                               )}
                               {card.contentType === "Lecture" && (
-                                <FaChalkboardTeacher
-                                  style={{ marginRight: 4 }}
+                                <OndemandVideoIcon
+                                  style={{
+                                    width: "15px",
+                                    height: "20px",
+                                    // marginRight: 4,
+                                  }}
                                 />
                               )}
                               {card.contentType === "Live" && (

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import FeedbackIcon from "@mui/icons-material/Feedback";
 import AOS from "aos";
 
 const testimonials = [
@@ -73,31 +74,11 @@ export default function TestimonialsSection() {
           >
             {/* Quote Icon */}
             <div style={{ marginBottom: 18 }}>
-              <svg
-                width="48"
-                height="48"
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <rect
-                  x="4"
-                  y="4"
-                  width="16"
-                  height="16"
-                  rx="4"
-                  stroke="#2563eb"
-                  strokeWidth="2"
-                  fill="none"
-                />
-                <path
-                  d="M8 12h8M8 16h4"
-                  stroke="#2563eb"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <FeedbackIcon
+                style={{
+                  color: "blue",
+                }}
+              />
             </div>
             <div
               style={{

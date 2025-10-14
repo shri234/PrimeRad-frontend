@@ -240,6 +240,7 @@ const LatestMovies = (props) => {
             movieTime: data.sessionDuration || "",
             level: data.difficulty,
             category: data.moduleName,
+            isFree: data.isFree,
             status: data.isFree ? "Free" : "Locked",
             tags: data.tags || [],
             instructor: data.instructor,
@@ -262,6 +263,7 @@ const LatestMovies = (props) => {
               level={card.level}
               category={card.category}
               status={card.status}
+              isFree={card.isFree}
               tags={card.tags}
               difficulty={card.difficulty}
               instructor={card.instructor}

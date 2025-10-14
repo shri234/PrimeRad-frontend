@@ -15,6 +15,7 @@ const CardStyle = memo(
     image,
     level,
     category,
+    isFree,
     status,
     tags,
     difficulty,
@@ -116,12 +117,30 @@ const CardStyle = memo(
                 zIndex: 2,
               }}
             >
+              {sectionType && (
+                <span
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+                    color: "navy",
+                    fontWeight: 400,
+                    fontSize: "0.82rem",
+                    borderRadius: "8px",
+                    padding: "2px 10px",
+                    letterSpacing: "0.5px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  {sectionType}
+                </span>
+              )}
               {category && (
                 <span
                   style={{
-                    background: "#1976d2",
-                    color: "#fff",
-                    fontWeight: 600,
+                    background:
+                      "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+                    color: "navy",
+                    fontWeight: 400,
                     fontSize: "0.82rem",
                     borderRadius: "8px",
                     padding: "2px 10px",
@@ -133,22 +152,22 @@ const CardStyle = memo(
                   {category}
                 </span>
               )}
-              {sectionType && (
-                <span
-                  style={{
-                    background: "#e0e7ef",
-                    color: "#003366",
-                    fontWeight: 600,
-                    fontSize: "0.82rem",
-                    borderRadius: "8px",
-                    padding: "2px 10px",
-                    letterSpacing: "0.5px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  }}
-                >
-                  {sectionType}
-                </span>
-              )}
+
+              <span
+                style={{
+                  background:
+                    "linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)",
+                  color: "navy",
+                  fontWeight: 400,
+                  fontSize: "0.82rem",
+                  borderRadius: "8px",
+                  padding: "2px 10px",
+                  letterSpacing: "0.5px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                }}
+              >
+                {isFree === true ? "Free" : "Locked"}
+              </span>
             </div>
 
             {/* Play button overlay */}

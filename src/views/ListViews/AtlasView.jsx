@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// Static module assets and icons (these can remain static if not dynamic from API)
 const moduleAssets = {
   Knee: "/assets/images/knee1.jpg",
   Shoulder: "/assets/images/rotator-cuff.jpg",
@@ -159,7 +158,6 @@ const AtlasView = () => {
                       tabIndex={0}
                       onClick={(e) => {
                         e.stopPropagation();
-                        // MODIFIED: Pass mod._id to handleCardClick
                         handleCardClick(mod.moduleName, mod._id);
                       }}
                     >
