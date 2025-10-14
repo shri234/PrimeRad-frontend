@@ -411,8 +411,22 @@ button:hover {
         <FixedBackButton customPath="/main-page"></FixedBackButton>
 
         <Container fluid className="py-3">
-          <div style={{}}>
-            <Col lg={8} md={12} className="d-flex">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "6px",
+              marginBottom: "10px",
+              maxHeight: "600px",
+            }}
+          >
+            <div
+              className="flex-grow-1"
+              style={{
+                display: "flex",
+                flexDirection: "Column",
+              }}
+            >
               <div
                 className="flex-grow-1 d-flex flex-column"
                 style={{
@@ -625,7 +639,7 @@ button:hover {
                         position: "relative",
                         width: "100%",
                         aspectRatio: "16/9",
-                        minHeight,
+                        minHeight: "500px",
                         pointerEvents: isVideoLoading ? "none" : "auto",
                       }}
                     >
@@ -686,12 +700,14 @@ button:hover {
                   )}
                 </div>
               </div>
-            </Col>
+            </div>
 
-            <Col
-              lg={4}
-              md={12}
-              className="d-flex"
+            <div
+              className="flex-grow-1"
+              style={{
+                display: "flex",
+                // flexDirection: "column",
+              }}
               // style={{ gap: "16px" }}
             >
               <div
@@ -918,7 +934,7 @@ button:hover {
                   </div>
                 )}
               </div>
-            </Col>
+            </div>
           </div>
           <div
             style={{

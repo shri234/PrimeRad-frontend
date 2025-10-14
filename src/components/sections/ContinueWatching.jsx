@@ -10,6 +10,7 @@ import ContinueWatchCard from "../cards/ContinueWatchCard";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
+import axios from "axios";
 
 const ContinueWatching = memo(() => {
   const {
@@ -40,7 +41,7 @@ const ContinueWatching = memo(() => {
 
     const fetchWatchedSessions = async () => {
       try {
-        const res = await fetch(
+        const res = await axios.get(
           `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${localStorage.getItem(
             "userId"
           )}`

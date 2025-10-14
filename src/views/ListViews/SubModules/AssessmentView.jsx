@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import { FixedBackButton } from "../../../utilities/BackButton";
 import { useLocation } from "react-router-dom";
 import CompareObservationsModal from "./CompareObservationsModal";
+import axios from "axios";
 
 const AssessmentView = ({}) => {
   const location = useLocation();
@@ -35,21 +36,20 @@ const AssessmentView = ({}) => {
     setShowAISummary(true); // Open modal immediately
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "https://primerad-backend.onrender.com/api/sessions/compare-observations",
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userObservations: userObs,
-            facultyObservations: facultyObs,
-          }),
+          userObservations: userObs,
+          facultyObservations: facultyObs,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
-      if (!response.ok) throw new Error("Failed to fetch AI report");
-
-      const data = await response.json();
+      const data = response.data;
 
       setAiComparison(data.report || "<p>No summary generated.</p>");
     } catch (err) {
@@ -61,6 +61,7 @@ const AssessmentView = ({}) => {
       setLoading(false);
     }
   };
+
   return (
     <Fragment>
       <div

@@ -4,6 +4,7 @@ import CardStyle from "../../components/cards/CardStyle";
 import { useTranslation } from "react-i18next";
 import { getRandomImage } from "../../utilities/random-image";
 import { useNavigate } from "react-router-dom"; // <--- Import useNavigate
+import axios from "axios";
 
 const LatestMovies = (props) => {
   const { t } = useTranslation();
@@ -33,10 +34,10 @@ const LatestMovies = (props) => {
 
   const fetchSessions = useCallback(async () => {
     try {
-      const res = await fetch(
+      const res = await axios.get(
         "https://primerad-backend.onrender.com/api/sessions/getTopWatchedSessions"
       );
-      const data = await res.json();
+      const data = res.data;
       if (data?.data) {
         setSessions(data.data);
       }
@@ -49,10 +50,10 @@ const LatestMovies = (props) => {
 
   const fetchRecentItems = useCallback(async () => {
     try {
-      const res = await fetch(
+      const res = await axios.get(
         "https://primerad-backend.onrender.com/api/sessions/getRecentItems"
       );
-      const data = await res.json();
+      const data = res.data;
       if (data?.data) {
         setSessions(data.data);
       }
@@ -65,10 +66,10 @@ const LatestMovies = (props) => {
 
   const fetchRecommendedLectures = useCallback(async () => {
     try {
-      const res = await fetch(
+      const res = await axios.get(
         "https://primerad-backend.onrender.com/api/sessions/getTopRatedLectures"
       );
-      const data = await res.json();
+      const data = res.data;
       if (data?.data) {
         setSessions(data.data);
       }
@@ -81,10 +82,10 @@ const LatestMovies = (props) => {
 
   const fetchRecommendedCases = useCallback(async () => {
     try {
-      const res = await fetch(
+      const res = await axios.get(
         "https://primerad-backend.onrender.com/api/sessions/getTopRatedCases"
       );
-      const data = await res.json();
+      const data = res.data;
       if (data?.data) {
         setSessions(data.data);
       }
@@ -122,7 +123,6 @@ const LatestMovies = (props) => {
 
   const handleCardClick = useCallback(
     (cardData) => {
-      // Scroll to top before navigation
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       if (

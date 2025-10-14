@@ -541,12 +541,12 @@ const MainPage = memo(() => {
 
     const fetchPoints = async () => {
       try {
-        const res = await fetch(
+        const res = await axios.get(
           `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
-        const data = await res.json();
+        const data = res.data;
         if (data?.totalPoints !== undefined) {
           setTotalPoints(data.totalPoints);
         }

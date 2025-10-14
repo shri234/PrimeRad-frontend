@@ -90,26 +90,26 @@
   padding: 15px;
   overflow-y: auto;
   flex-grow: 1;
-  margin-top: 0;
+  margin-top: 5px;
   padding-top: 0;
 }
 
 .filter-group {
-  margin-bottom: 10px;
+  /* margin-bottom: 5px; */
 }
 
 .filter-group-title {
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 10px;
-  display: flex;
+  margin-bottom: 2px;
+  /* display: flex; */
   align-items: center;
-  position: sticky;
-  top: 0;
+  /* position: sticky; */
+  /* top: 0; */
   /* background: white; */
   /* background: linear-gradient(135deg, #e8e3ff 0%, #d4c5ff 50%, #c4b5fd 100%); */
-  padding: 8px 0;
-  z-index: 1;
+  padding: 4px 0;
+  /* z-index: 1; */
 }
 
 .selection-count {
@@ -122,7 +122,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-top: 5px; /* Small gap after sticky title */
+  margin-bottom: 8px;
+  /* padding-top: 5px;  */
 }
 
 .filter-item {
@@ -130,22 +131,18 @@
   border-radius: 50px;
   border: 1px solid #ddd;
   background-color: #f8f8f8;
-  color: #555;
+  color: black;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
-/* Add these new styles to your existing CSS file */
-
-/* Styles for the disabled filter group */
 .filter-group.disabled {
-  pointer-events: none; /* Disables all click events inside this group */
-  opacity: 0.5; /* Makes the entire section look faded and inactive */
+  pointer-events: none; 
+  opacity: 0.5; 
 }
 
-/* Styles for the message shown when the pathology section is disabled */
 .disabled-message {
   color: black;
   padding: 10px;

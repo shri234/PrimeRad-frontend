@@ -522,38 +522,38 @@ const SubModuleView = () => {
     }
   };
 
-  const handleAICompare = async () => {
-    setAiComparison("");
-    setLoading(true);
-    setShowAISummary(true);
+  // const handleAICompare = async () => {
+  //   setAiComparison("");
+  //   setLoading(true);
+  //   setShowAISummary(true);
 
-    try {
-      const response = await fetch(
-        "https://primerad-backend.onrender.com/api/sessions/compare-observations",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userObservations: userObs,
-            facultyObservations: facultyObs,
-          }),
-        }
-      );
+  //   try {
+  //     const response = await axios.post(
+  //       "https://primerad-backend.onrender.com/api/sessions/compare-observations",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           userObservations: userObs,
+  //           facultyObservations: facultyObs,
+  //         }),
+  //       }
+  //     );
 
-      if (!response.ok) throw new Error("Failed to fetch AI report");
+  //     if (!response.ok) throw new Error("Failed to fetch AI report");
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      setAiComparison(data.report || "<p>No summary generated.</p>");
-    } catch (err) {
-      console.error("AI Summary Error:", err);
-      setAiComparison(
-        "<p>⚠️ Failed to generate AI report. Please try again later.</p>"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setAiComparison(data.report || "<p>No summary generated.</p>");
+  //   } catch (err) {
+  //     console.error("AI Summary Error:", err);
+  //     setAiComparison(
+  //       "<p>⚠️ Failed to generate AI report. Please try again later.</p>"
+  //     );
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleAnswerSelect = (questionId, selectedAnswer) => {
     setSelectedAnswers((prev) => ({

@@ -4,6 +4,7 @@ import { useFilter } from "../../context/FilterContext";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "../../store/auth/selectors";
 import { Button } from "react-bootstrap";
+import axios from "axios";
 import {
   FaExclamationCircle,
   FaBars,
@@ -897,12 +898,12 @@ const MySpacePage = memo(() => {
 
     const fetchPoints = async () => {
       try {
-        const res = await fetch(
+        const res = await axios.get(
           `https://primerad-backend.onrender.com/api/assessments/getUserPoints?userId=${localStorage.getItem(
             "userId"
           )}`
         );
-        const data = await res.json();
+        const data = res.data;
         if (data?.totalPoints !== undefined) {
           setTotalPoints(data.totalPoints);
         }
@@ -942,15 +943,11 @@ const MySpacePage = memo(() => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
+        const response = await axios.get(
           `https://primerad-backend.onrender.com/api/sessions/getWatchedSessions?userId=${userId}`
         );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = response.data;
         const sessions = data.data || [];
         setWatchedSessions(sessions);
         setModuleProgress(getModuleProgress(sessions));
@@ -973,15 +970,11 @@ const MySpacePage = memo(() => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
+        const response = await axios.get(
           `https://primerad-backend.onrender.com/api/sessions/getCompletedSessions?userId=${userId}`
         );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = response.data;
         const sessions = data.data || [];
         console.log(data, data.count);
         setCompletedCount(parseInt(data.count));
@@ -1006,15 +999,11 @@ const MySpacePage = memo(() => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
+        const response = await axios.get(
           `https://primerad-backend.onrender.com/api/modules/getModulesSessionCount`
         );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = response.data;
         const sessions = data.data || [];
         console.log(sessions, typeof sessions);
         // sessions[0].completedCount = completedCount;
@@ -1080,8 +1069,6 @@ const MySpacePage = memo(() => {
 
   const watchingCards = transformedCards.filter((card) => card.progress < 1);
   const completedCards = transformedCards.filter((card) => card.progress >= 1);
-
-  // Apply filters
   const savedCards = savedSessions.map(transformSessionData);
   const filteredCards = (
     view === "watching"
@@ -1175,7 +1162,6 @@ const MySpacePage = memo(() => {
   if (!isAuthenticated) {
     return (
       <div>
-        {/* <style>{styles}</style> */}
         <div
           style={{
             minHeight: "100vh",
@@ -1308,9 +1294,11 @@ const MySpacePage = memo(() => {
             className="sidebar-wrapper"
             style={{
               width: "250px",
+              // display: "flex",
               flexShrink: 0,
               position: isResponsiveRange ? "fixed" : "sticky",
-              marginTop: isMobile ? "80px" : "50px",
+              top: isMobile ? "80px" : "90px",
+              marginLeft: "5px",
               left: isResponsiveRange && !sidebarOpen ? "-250px" : "0",
               height: "100vh",
               overflowY: "hidden",
@@ -1381,7 +1369,7 @@ const MySpacePage = memo(() => {
                   alignItems: "center",
                   gap: isProgressBarMobile ? 16 : 24,
                   marginTop: isMobile ? "10px" : "-20px",
-                  maxWidth: 900,
+                  // maxWidth: 900,
                   width: "100%",
                   minWidth: isProgressBarMobile ? 280 : 320,
                   flex: 1,
@@ -1566,60 +1554,102 @@ const MySpacePage = memo(() => {
                   <span style={{ fontWeight: 700, color: "#222" }}>Black</span>
                 </div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: isProgressBarMobile ? "6px" : "8px",
-                }}
-              >
-                <button
-                  style={{
-                    padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                    backgroundColor:
-                      view === "watching" ? "darkslategray" : "lightgray",
-                    color: view === "watching" ? "white" : "black",
-                    border: "none",
-                    borderRadius: isProgressBarMobile ? "8px" : "10px",
-                    fontSize: isProgressBarMobile ? "12px" : "14px",
-                    fontWeight: "600",
-                  }}
-                  onClick={() => setView("watching")}
-                >
-                  Watching ({watchingCards.length})
-                </button>
-                <button
-                  style={{
-                    padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                    backgroundColor:
-                      view === "completed" ? "darkslategray" : "lightgray",
-                    color: view === "completed" ? "white" : "black",
-                    border: "none",
-                    borderRadius: isProgressBarMobile ? "8px" : "10px",
-                    fontSize: isProgressBarMobile ? "12px" : "14px",
-                    fontWeight: "600",
-                  }}
-                  onClick={() => setView("completed")}
-                >
-                  Completed ({completedCards.length})
-                </button>
-                <button
-                  style={{
-                    padding: isProgressBarMobile ? "6px 8px" : "8px 10px",
-                    backgroundColor:
-                      view === "saved" ? "darkslategray" : "lightgray",
-                    color: view === "saved" ? "white" : "black",
-                    border: "none",
-                    borderRadius: isProgressBarMobile ? "8px" : "10px",
-                    fontSize: isProgressBarMobile ? "12px" : "14px",
-                    fontWeight: "600",
-                  }}
-                  onClick={() => setView("saved")}
-                >
-                  Saved ({savedCards.length})
-                </button>
-              </div>
             </div>
 
+            {moduleProgress.length > 0 && view !== "saved" && viewMode && (
+              <div
+                style={{
+                  marginBottom: isMobile ? "24px" : "32px",
+                  padding: isMobile ? "12px" : "18px",
+                  background: "#e5eaf0",
+                  borderRadius: isMobile ? "12px" : "16px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: isMobile ? "20px" : "24px",
+                    marginBottom: "16px",
+                    fontWeight: 700,
+                    color: THEME.text,
+                  }}
+                >
+                  Module Progress
+                </h3>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: isMobile ? "12px" : "20px",
+                  }}
+                >
+                  {moduleSessions.map((mod) => (
+                    <ModuleStatusCard key={mod.moduleName} module={mod} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            > */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: isProgressBarMobile ? "6px" : "8px",
+                marginBottom: "10px",
+              }}
+            >
+              <button
+                style={{
+                  padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
+                  backgroundColor:
+                    view === "watching" ? "darkslategray" : "lightgray",
+                  color: view === "watching" ? "white" : "black",
+                  border: "none",
+                  borderRadius: isProgressBarMobile ? "8px" : "10px",
+                  fontSize: isProgressBarMobile ? "12px" : "14px",
+                  fontWeight: "600",
+                }}
+                onClick={() => setView("watching")}
+              >
+                Watching ({watchingCards.length})
+              </button>
+              <button
+                style={{
+                  padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
+                  backgroundColor:
+                    view === "completed" ? "darkslategray" : "lightgray",
+                  color: view === "completed" ? "white" : "black",
+                  border: "none",
+                  borderRadius: isProgressBarMobile ? "8px" : "10px",
+                  fontSize: isProgressBarMobile ? "12px" : "14px",
+                  fontWeight: "600",
+                }}
+                onClick={() => setView("completed")}
+              >
+                Completed ({completedCards.length})
+              </button>
+              <button
+                style={{
+                  padding: isProgressBarMobile ? "6px 8px" : "8px 10px",
+                  backgroundColor:
+                    view === "saved" ? "darkslategray" : "lightgray",
+                  color: view === "saved" ? "white" : "black",
+                  border: "none",
+                  borderRadius: isProgressBarMobile ? "8px" : "10px",
+                  fontSize: isProgressBarMobile ? "12px" : "14px",
+                  fontWeight: "600",
+                }}
+                onClick={() => setView("saved")}
+              >
+                Saved ({savedCards.length})
+              </button>
+            </div>
             <div
               style={{
                 marginBottom: isMobile ? "16px" : "20px",
@@ -1672,43 +1702,7 @@ const MySpacePage = memo(() => {
                 List
               </button>
             </div>
-
-            {moduleProgress.length > 0 &&
-              view !== "saved" &&
-              viewMode === "grid" && (
-                <div
-                  style={{
-                    marginBottom: isMobile ? "24px" : "32px",
-                    padding: isMobile ? "12px" : "18px",
-                    background: "#e5eaf0",
-                    borderRadius: isMobile ? "12px" : "16px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <h3
-                    style={{
-                      fontSize: isMobile ? "20px" : "24px",
-                      marginBottom: "16px",
-                      fontWeight: 700,
-                      color: THEME.text,
-                    }}
-                  >
-                    Module Progress
-                  </h3>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(200px, 1fr))",
-                      gap: isMobile ? "12px" : "20px",
-                    }}
-                  >
-                    {moduleSessions.map((mod) => (
-                      <ModuleStatusCard key={mod.moduleName} module={mod} />
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* </div> */}
 
             {/* Content Area */}
             <div className="video-cards-outer-card">

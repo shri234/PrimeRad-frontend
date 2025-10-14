@@ -123,7 +123,7 @@ const HomePage = memo(() => {
   const whyChooseSection = (
     <div
       style={{
-        background: "#2A2F42",
+        background: "linear-gradient(135deg, #2A2F42 0%, #3A405A 100%)",
         padding: "48px 20px 32px 20px",
         display: "flex",
         flexDirection: "column",
@@ -133,7 +133,7 @@ const HomePage = memo(() => {
       <h2
         data-aos="fade-up"
         style={{
-          fontWeight: 430,
+          fontWeight: 600,
           fontSize: "clamp(24px, 5vw, 34px)",
           marginBottom: 36,
           color: "ghostwhite",

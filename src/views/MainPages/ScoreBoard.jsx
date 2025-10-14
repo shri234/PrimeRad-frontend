@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 const AREAS = [
   "All",
@@ -86,10 +87,10 @@ export default function ScoreBoard() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const res = await fetch(
+        const res = await axios.get(
           `http://localhost:5000/api/assessments/getUserPoints?userId=${userId}`
         );
-        const data = await res.json();
+        const data = res.data;
         setApiUserPoints(data.totalPoints);
       } catch (err) {
         console.error("Failed to fetch points", err);
