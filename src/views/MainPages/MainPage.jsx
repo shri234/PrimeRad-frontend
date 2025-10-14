@@ -163,7 +163,7 @@ const videoCardStyles = `
     border-radius: 8px;
     padding: 4px 14px;
     font-size: 12px;
-    font-weight: 500;
+    // font-weight: 500;
     z-index: 2;
     box-shadow: 0 2px 8px rgba(25,118,210,0.10);
     letter-spacing: 0.5px;
@@ -181,7 +181,7 @@ const videoCardStyles = `
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 12px;
-    font-weight: 400;
+    // font-weight: 500;
     // text-transform: uppercase;
     letter-spacing: 0.5px;
     background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
@@ -194,7 +194,7 @@ const videoCardStyles = `
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 12px;
-    font-weight: 400;
+    // font-weight: 500;
     // text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-block;
@@ -224,7 +224,7 @@ const videoCardStyles = `
     letter-spacing: 0.2px;
   }
   .video-title {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 18px;
     color: #222;
     margin-top: 14px;
