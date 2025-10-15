@@ -323,6 +323,7 @@ const BreadcrumbBack = ({
         marginBottom: "24px",
         fontSize: "14px",
         color: THEME.lightGray,
+        width:"20%",
       }}
     >
       <button
