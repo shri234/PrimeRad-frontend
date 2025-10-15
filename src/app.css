@@ -55,3 +55,36 @@ body {
   object-fit: cover !important;
   display: none;
 }
+
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 75% 25%;
+  gap: 6px;
+  margin-bottom: 10px;
+  max-height: 600px;
+  margin-top: 25px;
+}
+
+.course-video-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 500px;
+  max-height: 500px;
+}
+
+/* Responsive for smaller screens (mobile-first) */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 100%;
+     max-height: none;
+  }
+  .course-video-card {
+    min-height: unset;
+    max-height: unset;
+  }
+}
+
+

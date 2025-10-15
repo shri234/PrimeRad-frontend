@@ -412,19 +412,14 @@ button:hover {
 
         <Container fluid className="py-3">
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "6px",
-              marginBottom: "10px",
-              maxHeight: "600px",
-            }}
+            className="grid-container"
           >
             <div
               className="flex-grow-1"
               style={{
                 display: "flex",
                 flexDirection: "Column",
+              maxHeight: "600px",
               }}
             >
               <div
@@ -492,17 +487,17 @@ button:hover {
                     >
                       <button
                         style={{
-                          color: "black",
-                          backgroundColor: "lightblue",
+                          color: "#fff",
+                          background: "linear-gradient(135deg, rgb(25, 118, 210) 0%, rgb(21, 101, 192) 100%)",
                           padding:
-                            window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                            window.innerWidth < 568 ? "4x 6x" : "6px 20px",
                           borderRadius: "10px",
                           border: "none",
                           cursor: "pointer",
                           position: "relative",
                           zIndex: 1000,
                           display: "inline-block",
-                          fontWeight: 600,
+                          fontWeight: 400,
                         }}
                         onClick={() => {
                           if (!relatedSessions.length) return;
@@ -522,13 +517,13 @@ button:hover {
 
                       <button
                         style={{
-                          color: "black",
-                          backgroundColor: "lightblue",
+                          color: "#fff",
+                          background: "linear-gradient(135deg, rgb(25, 118, 210) 0%, rgb(21, 101, 192) 100%)",
                           padding:
-                            window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                            window.innerWidth < 568 ? "4x 6x" : "6px 20px",
                           borderRadius: "10px",
                           border: "none",
-                          fontWeight: 600,
+                          fontWeight: 400,
                           position: "relative",
                           zIndex: 1000,
                           display: "inline-block",
@@ -636,13 +631,9 @@ button:hover {
                   ) : vimeoVideoId ? (
                     <div
                       style={{
-                        position: "relative",
-                        width: "100%",
-                        aspectRatio: "16/9",
-                        minHeight: "500px",
-                        maxHeight: "500px",
                         pointerEvents: isVideoLoading ? "none" : "auto",
                       }}
+                      className="course-video-card"
                     >
                       {isVideoLoading && (
                         <div
@@ -707,6 +698,8 @@ button:hover {
               className="flex-grow-1"
               style={{
                 display: "flex",
+                
+              maxHeight: "600px",
                 // flexDirection: "column",
               }}
               // style={{ gap: "16px" }}
