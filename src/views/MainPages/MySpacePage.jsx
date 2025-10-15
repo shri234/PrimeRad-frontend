@@ -139,8 +139,8 @@ const videoCardStyles = `
     position: absolute;
     top: 12px;
     right: 16px;
-    background: #1976d2;
-    color: #fff;
+    // background: #1976d2;
+    // color: #fff;
     border-radius: 8px;
     padding: 4px 14px;
     font-size: 13px;
@@ -165,8 +165,8 @@ const videoCardStyles = `
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #e3f2fd;
-    color: #1976d2;
+    // background: #e3f2fd;
+    // color: #1976d2;
     display: inline-block;
   }
   .label-badge.status-free {
@@ -188,7 +188,7 @@ const videoCardStyles = `
   .video-title {
     font-weight: 700;
     font-size: 20px;
-    color: #222;
+    // color: #222;
     margin-top: 14px;
     margin-bottom: 0;
     line-height: 1.2;
@@ -302,7 +302,7 @@ const videoCardStyles = `
   .module-title {
     font-size: 18px;
     font-weight: 700;
-    color: #1976d2;
+    // color: #1976d2;
     margin: 0;
   }
 
@@ -347,7 +347,7 @@ const videoCardStyles = `
   .pathology-title {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    // color: #333;
     margin: 0;
   }
 
@@ -378,7 +378,7 @@ const videoCardStyles = `
   }
 
   .session-item:hover {
-    border-color: #1976d2;
+    // border-color: #1976d2;
     box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
     transform: translateY(-1px);
   }
@@ -476,15 +476,15 @@ const videoCardStyles = `
   }
 `;
 
-const THEME = {
-  primary: "#1976d2", // blue
-  secondary: "#00bfae", // teal
-  background: "#f4f8fb", // light blue/gray
-  card: "#fff",
-  accent: "#ffb300", // amber
-  text: "#263238", // dark blue-gray
-  border: "#e0e0e0",
-};
+// const THEME = {
+//   primary: "#1976d2", // blue
+//   secondary: "#00bfae", // teal
+//   background: "#f4f8fb", // light blue/gray
+//   card: "#fff",
+//   accent: "#ffb300", // amber
+//   text: "#263238", // dark blue-gray
+//   border: "#e0e0e0",
+// };
 
 const ModuleStatusCard = memo(({ module }) => {
   console.log(module);
@@ -524,7 +524,7 @@ const ModuleStatusCard = memo(({ module }) => {
           style={{
             fontSize: "14px",
             fontWeight: "500",
-            color: "darkslategrey",
+            // color: "darkslategrey",
           }}
         >
           1 / {module.totalSessionsCount} Sessions
@@ -1178,7 +1178,7 @@ const MySpacePage = memo(() => {
               style={{
                 fontSize: isMobile ? "24px" : "32px",
                 fontWeight: "bold",
-                color: "#1565c0",
+                // color: "#1565c0",
                 marginBottom: "16px",
                 fontFamily: "system-ui, -apple-system, sans-serif",
               }}
@@ -1187,7 +1187,7 @@ const MySpacePage = memo(() => {
             </h2>
             <p
               style={{
-                color: "#546e7a",
+                // color: "#546e7a",
                 marginBottom: "32px",
                 fontSize: "16px",
                 lineHeight: "1.5",
@@ -1199,8 +1199,8 @@ const MySpacePage = memo(() => {
               onClick={() => navigate("/login")}
               style={{
                 padding: "12px 24px",
-                background: "linear-gradient(135deg, #1976d2, #1565c0)",
-                color: "white",
+                // background: "linear-gradient(135deg, #1976d2, #1565c0)",
+                // color: "white",
                 border: "none",
                 borderRadius: "8px",
                 fontSize: "16px",
@@ -1504,10 +1504,7 @@ const MySpacePage = memo(() => {
                     textAlign: isProgressBarMobile ? "center" : "left",
                   }}
                 >
-                  Current Belt:{" "}
-                  <span style={{ fontWeight: 700, color: "#1976d2" }}>
-                    Green
-                  </span>
+                  Current Belt: <span style={{ fontWeight: 700 }}>Green</span>
                 </div>
 
                 <div
@@ -1571,7 +1568,7 @@ const MySpacePage = memo(() => {
                     fontSize: isMobile ? "20px" : "24px",
                     marginBottom: "16px",
                     fontWeight: 700,
-                    color: THEME.text,
+                    // color: THEME.text,
                   }}
                 >
                   Module Progress
@@ -1607,9 +1604,9 @@ const MySpacePage = memo(() => {
               <button
                 style={{
                   padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                  backgroundColor:
-                    view === "watching" ? "darkslategray" : "lightgray",
-                  color: view === "watching" ? "white" : "black",
+                  // backgroundColor:
+                  // view === "watching" ? "darkslategray" : "lightgray",
+                  // color: view === "watching" ? "white" : "black",
                   border: "none",
                   borderRadius: isProgressBarMobile ? "8px" : "10px",
                   fontSize: isProgressBarMobile ? "12px" : "14px",
@@ -1622,9 +1619,9 @@ const MySpacePage = memo(() => {
               <button
                 style={{
                   padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                  backgroundColor:
-                    view === "completed" ? "darkslategray" : "lightgray",
-                  color: view === "completed" ? "white" : "black",
+                  // backgroundColor:
+                  // view === "completed" ? "darkslategray" : "lightgray",
+                  // color: view === "completed" ? "white" : "black",
                   border: "none",
                   borderRadius: isProgressBarMobile ? "8px" : "10px",
                   fontSize: isProgressBarMobile ? "12px" : "14px",
@@ -1637,9 +1634,9 @@ const MySpacePage = memo(() => {
               <button
                 style={{
                   padding: isProgressBarMobile ? "6px 8px" : "8px 10px",
-                  backgroundColor:
-                    view === "saved" ? "darkslategray" : "lightgray",
-                  color: view === "saved" ? "white" : "black",
+                  // backgroundColor:
+                  // view === "saved" ? "darkslategray" : "lightgray",
+                  // color: view === "saved" ? "white" : "black",
                   border: "none",
                   borderRadius: isProgressBarMobile ? "8px" : "10px",
                   fontSize: isProgressBarMobile ? "12px" : "14px",
@@ -1662,9 +1659,9 @@ const MySpacePage = memo(() => {
               <button
                 style={{
                   padding: "8px 12px",
-                  backgroundColor:
-                    viewMode === "grid" ? "darkslategrey" : "#f0f0f0",
-                  color: viewMode === "grid" ? "white" : "#333",
+                  // backgroundColor:
+                  // viewMode === "grid" ? "darkslategrey" : "#f0f0f0",
+                  // color: viewMode === "grid" ? "white" : "#333",
                   border: "none",
                   borderRadius: "8px",
                   display: "flex",
@@ -1683,9 +1680,9 @@ const MySpacePage = memo(() => {
               <button
                 style={{
                   padding: "8px 12px",
-                  backgroundColor:
-                    viewMode === "list" ? "darkslategrey" : "#f0f0f0",
-                  color: viewMode === "list" ? "white" : "#333",
+                  // backgroundColor:
+                  // viewMode === "list" ? "darkslategrey" : "#f0f0f0",
+                  // color: viewMode === "list" ? "white" : "#333",
                   border: "none",
                   borderRadius: "8px",
                   display: "flex",
@@ -1721,8 +1718,8 @@ const MySpacePage = memo(() => {
                     style={{
                       marginTop: 16,
                       padding: "8px 16px",
-                      background: "#1976d2",
-                      color: "white",
+                      // background: "#1976d2",
+                      // color: "white",
                       border: "none",
                       borderRadius: 8,
                       cursor: "pointer",
@@ -1841,8 +1838,8 @@ const MySpacePage = memo(() => {
                                 </div>
                                 <button
                                   style={{
-                                    background: "#1976d2",
-                                    color: "#fff",
+                                    // background: "#1976d2",
+                                    // color: "#fff",
                                     border: "none",
                                     borderRadius: 6,
                                     padding: "6px 18px",

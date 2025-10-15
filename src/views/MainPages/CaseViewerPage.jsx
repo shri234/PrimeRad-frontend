@@ -38,38 +38,38 @@ const DICOM_USERNAME = "info@vidocto.com";
 const DICOM_PASSWORD = "dic@vid123";
 const DICOM_WORKSPACE_ID = 40426;
 
-// THEME COLORS
-const THEME = {
-  primary: "#1976d2", // blue
-  secondary: "#00bfae", // teal
-  background: "#f4f8fb", // light blue/gray
-  card: "#fff",
-  accent: "#ffb300", // amber
-  text: "#263238", // dark blue-gray
-  border: "#e0e0e0",
-};
+// // THEME COLORS
+// const THEME = {
+//   primary: "#1976d2", // blue
+//   secondary: "#00bfae", // teal
+//   background: "#f4f8fb", // light blue/gray
+//   card: "#fff",
+//   accent: "#ffb300", // amber
+//   text: "#263238", // dark blue-gray
+//   border: "#e0e0e0",
+// };
 
-const tabStyles = `
-   .custom-nav-btn, .custom-nav-btn * {
-      cursor: pointer !important;
-    }
-      button {
-  transition: all 0.25s ease;
-}
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+// const tabStyles = `
+//    .custom-nav-btn, .custom-nav-btn * {
+//       cursor: pointer !important;
+//     }
+//       button {
+//   transition: all 0.25s ease;
+// }
+// button:hover {
+//   transform: translateY(-1px);
+//   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+// }
 
-    .nav-pills .nav-link { transition: all 0.3s ease; }
-    .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
-    .nav-pills .nav-link.active { background: ${THEME.primary} !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
-    .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
-    // .sessions-sidebar::-webkit-scrollbar { width: 2px; }
-    // .sessions-sidebar::-webkit-scrollbar-track {  }
-    // .sessions-sidebar::-webkit-scrollbar-thumb { background: ${THEME.primary}; border-radius: 10px; }
-    // .sessions-sidebar::-webkit-scrollbar-thumb:hover { background: #1565c0; }
-  `;
+//     // .nav-pills .nav-link { transition: all 0.3s ease; }
+//     // .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
+//     // .nav-pills .nav-link.active { background: ${THEME.primary} !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
+//     // .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
+//     // .sessions-sidebar::-webkit-scrollbar { width: 2px; }
+//     // .sessions-sidebar::-webkit-scrollbar-track {  }
+//     // .sessions-sidebar::-webkit-scrollbar-thumb { background: ${THEME.primary}; border-radius: 10px; }
+//     // .sessions-sidebar::-webkit-scrollbar-thumb:hover { background: #1565c0; }
+//   `;
 const medicaiOrigin = "https://app.medicai.io";
 
 const CaseViewerPage = () => {
@@ -90,6 +90,7 @@ const CaseViewerPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSessions, setTotalSessions] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const sessionsPerPage = 12;
 
@@ -505,6 +506,43 @@ const CaseViewerPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const questions = [
+    "What abnormalities do you notice?",
+    "Describe the region of interest.",
+    "Any additional notes or comments?",
+    "Any suggestions for diagnosis?",
+    "Any additional notes or comments?",
+  ];
+
+  const [answers, setAnswers] = useState(Array(questions.length).fill(""));
+  const [touched, setTouched] = useState(Array(questions.length).fill(false)); // tracks which were interacted with
+  // const [showErrors, setShowErrors] = useState(false);
+
+  const handleChange = (index, value) => {
+    const updated = [...answers];
+    updated[index] = value;
+    setAnswers(updated);
+  };
+
+  const handleBlur = (index) => {
+    const updated = [...touched];
+    updated[index] = true;
+    setTouched(updated);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowErrors(true);
+
+    const hasEmpty = answers.some((ans) => ans.trim() === "");
+    if (hasEmpty) {
+      return; // prevent submission
+    }
+
+    alert("✅ All observations saved successfully!");
+    console.log("Saved Observations:", answers);
+  };
+
   const viewerUrl = token
     ? `https://viewer.medicai.io/?token=${token}&caseId=${caseId}&workspaceId=${DICOM_WORKSPACE_ID}`
     : "";
@@ -571,10 +609,10 @@ const CaseViewerPage = () => {
     },
   ];
 
-  // Filter DICOM cases based on displayCaseCount
+  const [showErrors, setShowErrors] = useState(false);
+
   const casesToDisplay = dicomCases.slice(0, displayCaseCount);
 
-  // Scroll to more cases
   const handleScrollToCases = () => {
     if (moreCasesRef.current) {
       moreCasesRef.current.scrollIntoView({ behavior: "smooth" });
@@ -596,10 +634,10 @@ const CaseViewerPage = () => {
 
   return (
     <Fragment>
-      <style>{tabStyles}</style>
+      {/* <style>{tabStyles}</style> */}
       <div
         style={{
-          backgroundColor: THEME.background,
+          // backgroundColor: THEME.background,
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
@@ -615,19 +653,18 @@ const CaseViewerPage = () => {
           //   flexDirection: "column",
           // }}
         >
-          <Row
+          <div
             className="g-2"
-            style={
-              {
-                // display: "flex",
-                // // flexDirection: "column",
-                // flex: 1,
-                // alignItems: "stretch",
-                // flexWrap: "nowrap",
-              }
-            }
+            style={{
+              display: "flex",
+              // flexDirection: "column",
+              flex: 1,
+              gap: "4px",
+              alignItems: "stretch",
+              flexWrap: "nowrap",
+            }}
           >
-            <Col lg={9} md={12} className="d-flex flex-column">
+            <div className="flex-grow-2 d-flex flex-column">
               <div
                 style={{
                   background: "white",
@@ -636,9 +673,6 @@ const CaseViewerPage = () => {
                   // marginTop: "20px",
                   borderRadius: "12px",
                   height: "100%",
-
-                  display: "flex",
-                  flexDirection: "column",
                 }}
               >
                 <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
@@ -722,13 +756,15 @@ const CaseViewerPage = () => {
                   style={{
                     position: "relative",
                     backgroundColor: "black",
+                    marginTop: "5px",
                     // width: "100%",
-                    aspectRatio: "16/9",
+                    // aspectRatio: "16/9",
                     borderRadius: "10px",
                     overflow: "hidden",
                     display: "flex",
                     justifyContent: "center",
-                    minHeight,
+                    minHeight: "550px",
+                    maxHeight: "550px",
                     alignItems: "center",
                     flexGrow: 1,
                   }}
@@ -785,9 +821,9 @@ const CaseViewerPage = () => {
                   />
                 </div>
               </div>
-            </Col>
+            </div>
 
-            <Col lg={3} md={12} className="d-flex flex-column">
+            <Col lg={4} md={12} className="d-flex flex-column">
               <div
                 style={{
                   backgroundColor: "white",
@@ -811,37 +847,58 @@ const CaseViewerPage = () => {
                   User Observations
                 </h2>
 
-                <div className="d-flex flex-column gap-3">
-                  {[
-                    "What abnormalities do you notice?",
-                    "Describe the region of interest.",
-                    "Any additional notes or comments?",
-                    "Any suggestions for diagnosis?",
-                    "Any additional notes or comments?",
-                  ].map((question, index) => (
-                    <div key={index}>
-                      <label
-                        style={{
-                          fontWeight: "500",
-                          fontSize: "14px",
-                          marginBottom: "6px",
-                          display: "block",
-                        }}
-                      >
-                        {question}
-                      </label>
-                      <textarea
-                        className="form-control"
-                        rows={3}
-                        placeholder="Type your answer here..."
-                        style={{
-                          fontSize: "14px",
-                          borderRadius: "8px",
-                          resize: "none",
-                        }}
-                      ></textarea>
-                    </div>
-                  ))}
+                <form
+                  onSubmit={handleSubmit}
+                  className="d-flex flex-column gap-3"
+                  style={{ width: "100%" }}
+                >
+                  {questions.map((question, index) => {
+                    const isEmpty = answers[index].trim() === "";
+                    const showError = showErrors && isEmpty;
+
+                    return (
+                      <div key={index}>
+                        <label
+                          style={{
+                            fontWeight: "500",
+                            fontSize: "14px",
+                            marginBottom: "6px",
+                            display: "block",
+                          }}
+                        >
+                          {question}
+                        </label>
+
+                        <textarea
+                          className="form-control"
+                          rows={3}
+                          placeholder="Type your answer here..."
+                          value={answers[index]}
+                          onChange={(e) => handleChange(index, e.target.value)}
+                          onBlur={() => handleBlur(index)}
+                          style={{
+                            fontSize: "14px",
+                            borderRadius: "8px",
+                            height: "100px",
+                            resize: "none",
+                            borderColor: showError ? "red" : "#ced4da",
+                          }}
+                        ></textarea>
+
+                        {showError && (
+                          <div
+                            style={{
+                              color: "red",
+                              fontSize: "12px",
+                              marginTop: "4px",
+                            }}
+                          >
+                            ⚠️ Please fill out this field.
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
 
                   <div
                     style={{
@@ -851,6 +908,7 @@ const CaseViewerPage = () => {
                     }}
                   >
                     <button
+                      type="submit"
                       className="btn btn-primary mt-2"
                       style={{
                         backgroundColor: "lightblue",
@@ -866,10 +924,10 @@ const CaseViewerPage = () => {
                       Save Observations
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
             </Col>
-          </Row>
+          </div>
           <div
             style={{
               background: "white",
@@ -924,11 +982,9 @@ const CaseViewerPage = () => {
 
               <Tab.Content>
                 <Tab.Pane eventKey="overview">
-                  <div style={{ color: THEME.text, lineHeight: 1.8 }}>
+                  <div style={{ lineHeight: 1.8 }}>
                     <h5 className="fw-bold mb-3">{t("About this Session")}</h5>
-                    <p style={{ fontSize: "1rem", color: THEME.lightText }}>
-                      {description}
-                    </p>
+                    <p style={{ fontSize: "1rem" }}>{description}</p>
                     <div
                       style={{
                         background: "white",
@@ -940,10 +996,7 @@ const CaseViewerPage = () => {
                       }}
                     >
                       <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5
-                          className="fw-bold mb-0"
-                          style={{ color: THEME.darkText }}
-                        >
+                        <h5 className="fw-bold mb-0" style={{}}>
                           {t("Meet Your Instructor")}
                         </h5>
                       </div>
@@ -957,7 +1010,7 @@ const CaseViewerPage = () => {
                               borderRadius: "50%",
                               overflow: "hidden",
                               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                              border: `3px solid ${THEME.primary}`,
+                              // border: `3px solid ${THEME.primary}`,
                               flexShrink: 0,
                             }}
                           >
@@ -975,7 +1028,7 @@ const CaseViewerPage = () => {
                             <h6
                               className="fw-bold mb-1"
                               style={{
-                                color: THEME.darkText,
+                                // color: THEME.darkText,
                                 fontSize: "1rem",
                               }}
                             >
@@ -990,7 +1043,7 @@ const CaseViewerPage = () => {
                             <div
                               style={{
                                 fontSize: "0.85rem",
-                                color: THEME.lightText,
+                                // color: THEME.lightText,
                               }}
                             >
                               <span
@@ -1003,7 +1056,7 @@ const CaseViewerPage = () => {
                               </span>
                               <strong
                                 style={{
-                                  color: THEME.darkText,
+                                  // color: THEME.darkText,
                                   marginRight: "4px",
                                 }}
                               >
