@@ -16,13 +16,13 @@
 .stop-nav-overlap {
   position: relative;
   z-index: 997;
-  margin-top: 100px; /* Adjust based on your footer height */
+  margin-top: 100px; 
 }
 .nav-categories-container {
   width: 100%;
   height: 100%;
-  /* background-color: #fff; */
-   background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  background: linear-gradient(135deg, #f0b79d 0%, #f4e0b9 100%);
+
   display: flex;
   flex-direction: column;
 }
@@ -38,7 +38,7 @@
 
     .sidebar {
   width: 260px;
-  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  /* background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%); */
   border-right: 1px solid #ddd;
   padding: 8px 26px 20px 12px;
   position: relative;
@@ -62,7 +62,7 @@
   margin-bottom: 18px;
   font-size: 20px;
   font-weight: 700;
-  color: #3730a3;
+  /* color: #3730a3; */
   letter-spacing: 0.01em;
 }
 .sidebar-item {
@@ -102,6 +102,8 @@
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 2px;
+  letter-spacing: 1px;
+  color: black;
   /* display: flex; */
   align-items: center;
   /* position: sticky; */
@@ -131,7 +133,7 @@
   border-radius: 50px;
   border: 1px solid #ddd;
   background-color: #f8f8f8;
-  color: black;
+  /* color: black; */
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -144,6 +146,7 @@
 }
 
 .disabled-message {
+  /* color: black; */
   color: black;
   padding: 10px;
   text-align: center;

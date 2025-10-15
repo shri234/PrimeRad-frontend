@@ -24,11 +24,11 @@ import "swiper/css/navigation";
 import TestimonialsSection from "../../components/sections/TestimonialsSection";
 import SchoolIcon from "@mui/icons-material/School";
 
-const sectionBg = ["#fff", "#f5f7fa"];
+// const sectionBg = ["#fff", "#f5f7fa"];
 const THEME = {
   primary: "#1976d2", // blue
   secondary: "#00bfae", // teal
-  background: "#f4f8fb", // light blue/gray
+  // background: "#f4f8fb", // light blue/gray
   card: "#fff",
   accent: "#ffb300", // amber
   text: "#263238", // dark blue-gray
@@ -406,7 +406,7 @@ const HomePage = memo(() => {
           data-aos="fade-left"
           data-aos-duration="1000"
           style={{
-            background: sectionBg[0],
+            // background: sectionBg[0],
             padding: "clamp(30px, 6vw, 48px) 0",
           }}
         >
@@ -421,7 +421,7 @@ const HomePage = memo(() => {
         data-aos="fade-right"
         data-aos-duration="1000"
         style={{
-          background: sectionBg[1],
+          // background: sectionBg[1],
           padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
@@ -591,7 +591,7 @@ const HomePage = memo(() => {
         data-aos="fade-up"
         data-aos-duration="2000"
         style={{
-          background: sectionBg[0],
+          // background: sectionBg[0],
           padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
@@ -755,7 +755,7 @@ const HomePage = memo(() => {
         data-aos="zoom-in"
         data-aos-duration="1000"
         style={{
-          background: sectionBg[1],
+          // background: sectionBg[1],
           padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >
@@ -768,7 +768,7 @@ const HomePage = memo(() => {
         data-aos="slide-up"
         data-aos-duration="1000"
         style={{
-          background: sectionBg[0],
+          // background: sectionBg[0],
           padding: "clamp(30px, 6vw, 48px) 0",
         }}
       >

@@ -1493,7 +1493,7 @@ const NavCategories = (props) => {
                       : ""
                   }`}
                 >
-                  <h3 className="filter-group-title" style={{ color: "navy" }}>
+                  <h3 className="filter-group-title">
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                     {activeFilters[category].length > 0 && (
                       <span className="selection-count">

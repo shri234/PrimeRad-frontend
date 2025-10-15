@@ -20,7 +20,6 @@
 }
 
 
-
 body {
   font-family: 'Gilroy', 'Jost', sans-serif;
   background-color: var(--primary-bg);
@@ -28,9 +27,6 @@ body {
   min-height: 100vh;
   box-sizing: border-box;
 }
-
-
-
 
 .streamit-block .swiper-wrapper {
   margin: 0 !important;

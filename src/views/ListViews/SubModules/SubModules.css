@@ -29,7 +29,7 @@
   width: 100%;
   height: 100%;
   /* background-color: #fff; */
-   background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  background: linear-gradient(135deg, #d5896f 0%, #dab785 100%);
   display: flex;
   flex-direction: column;
 }
@@ -171,7 +171,7 @@
   margin-bottom: 18px;
   font-size: 20px;
   font-weight: 700;
-  color: #3730a3;
+  color: black;
   letter-spacing: 0.01em;
 }
 .sidebar-item {
@@ -245,17 +245,17 @@
   text-overflow: ellipsis; /* Add ellipsis if title is too long */
 }
 .sidebar-item.active {
-  background: #c7d2fe;
+  /* background: #c7d2fe; */
   font-weight: 700;
-  border-left: 5px solid #6366f1;
-  color: #3730a3;
+  border-left: 5px solid gray;
+  color: black;
   box-shadow: 0 2px 12px 0 rgba(80, 120, 255, 0.10);
 }
 
 .sidebar-number {
   font-size: 1.1em;
-  color: #6366f1;
-  font-weight: 700;
+  color: black;
+  font-weight: 500;
   margin-right: 0.2em;
 }
 
@@ -267,7 +267,7 @@
 }
 
 .count {
-  background-color: #e1ecf4;
+  /* background-color: ; */
   padding: 2px 8px;
   font-size: 12px;
   border-radius: 12px;
@@ -435,14 +435,14 @@
 
 .back-link {
   font-size: 15px;
-  background: #e0e7ff;
+  /* background: #e0e7ff; */
   border: none;
   padding: 7px 16px;
   border-radius: 8px;
-  color: #6366f1;
+  color: white;
   cursor: pointer;
   margin-bottom: 0;
-  font-weight: 600;
+  font-weight: 500;
   box-shadow: 0 2px 8px 0 rgba(80, 120, 255, 0.08);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
   display: flex;
@@ -450,8 +450,8 @@
   gap: 6px;
 }
 .back-link:hover, .back-link:focus {
-  background: #c7d2fe;
-  color: #3730a3;
+  /* background: #c7d2fe; */
+  /* color: #3730a3; */
   box-shadow: 0 4px 16px 0 rgba(80, 120, 255, 0.12);
 }
 
@@ -851,7 +851,8 @@
 }
 
 .badge-lecture {
-  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%) ;
+  background: linear-gradient(135deg, #d5896f 0%, #dab785 100%);
+
   color: navy;
   border: 1px solid #c7d2fe;
 }
@@ -931,13 +932,13 @@
 }
 
 .assessment-card-button {
-  background-color: lightblue;
-  color: navy;
+  /* background-color: lightblue; */
+  color: white;
   padding: 10px 16px;
   margin-top: 0;
   border: none;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s ease;
 }

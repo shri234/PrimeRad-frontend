@@ -242,13 +242,10 @@ const HeaderDefault = memo(() => {
                     style={{ flexShrink: 0 }}
                   >
                     <Button
-                      variant="primary"
+                      // variant="primary"
                       className="btn-subscribe d-flex align-items-center"
                       onClick={() => navigate("/pricing")}
                       style={{
-                        background:
-                          "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
-                        color: "white",
                         fontWeight: "500",
                         borderRadius: "10px",
                         padding: "8px 16px",

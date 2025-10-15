@@ -1232,7 +1232,7 @@ const MySpacePage = memo(() => {
         style={{
           height: "100vh",
           width: "100vw",
-          background: "#f4f8fb",
+          // background: "#f4f8fb",
           overflowY: "auto",
           display: "flex",
           // marginBottom: "20px",

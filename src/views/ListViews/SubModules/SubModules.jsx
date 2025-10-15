@@ -7,6 +7,7 @@ import { FixedBackButton } from "../../../utilities/BackButton";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 import { OpenAI } from "openai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -1342,7 +1343,7 @@ const SubModuleView = () => {
                   gap: "2px",
                 }}
               >
-                <button
+                <Button
                   style={{
                     flex: 1,
                     padding: "8px 8px",
@@ -1365,18 +1366,17 @@ const SubModuleView = () => {
                 >
                   <FaTh size={14} />
                   List
-                </button>
-                <button
+                </Button>
+                <Button
                   style={{
                     flex: 1,
                     padding: "8px 8px",
-                    backgroundColor:
-                      view === "atlas" ? "	#B0E0E6" : "transparent",
-                    color: view === "atlas" ? "black" : "black",
+                    backgroundColor: view === "atlas" ? "" : "transparent",
+                    color: view === "atlas" ? "white" : "black",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "14px",
-                    fontWeight: "600",
+                    fontWeight: "500",
                     cursor: "pointer",
                     transition: "all 0.2s",
                   }}
@@ -1386,7 +1386,7 @@ const SubModuleView = () => {
                 >
                   <GiAtlas style={{ fontSize: 18 }} />
                   Atlas
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -1533,7 +1533,7 @@ const SubModuleView = () => {
                               aria-pressed={currentView === "difficulty"}
                               aria-label="Assessment menu item"
                             >
-                              {/* Text Label */}
+                              <AssessmentIcon />
                               <span
                                 style={{
                                   flex: 1,
@@ -1719,12 +1719,12 @@ const SubModuleView = () => {
                     <div key={i} className="assessment-card-content">
                       <h3 className="assessment-card-title">{card.title}</h3>
                       <p className="assessment-card-description">{card.desc}</p>
-                      <button
+                      <Button
                         className="assessment-card-button"
                         onClick={() => handleDifficultyCardClick(card.title)}
                       >
                         Start Now
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -1758,7 +1758,7 @@ const SubModuleView = () => {
                   </h2>
 
                   {activeModuleName && (
-                    <button
+                    <Button
                       onClick={() => {
                         if (selectedSubModuleId) {
                           setSelectedSubModuleId(null);
@@ -1778,7 +1778,7 @@ const SubModuleView = () => {
                       {selectedSubModuleId
                         ? `Back to ${activeModuleName} Pathologies`
                         : `Back to Modules`}
-                    </button>
+                    </Button>
                   )}
                 </div>
 

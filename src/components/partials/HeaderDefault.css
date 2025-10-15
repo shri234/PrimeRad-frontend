@@ -90,14 +90,14 @@
 .polished-nav .btn {
   border-radius: 10px;
   /* padding: 10px 20px; */
-  background-color: darkslategray;
+  /* background-color: darkslategray; */
   transition: all 0.3s ease-in-out;
   color: white;
 }
 
 .polished-nav .btn:hover {
-  background-color: lightgray;
-  color: darkslategrey;
+  /* background-color: lightgray; */
+  /* color: darkslategrey; */
 }
 
 .user-icon-button {

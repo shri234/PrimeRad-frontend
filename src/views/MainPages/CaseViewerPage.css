@@ -1,0 +1,316 @@
+
+.case-viewer-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.case-viewer-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.case-viewer-grid {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  align-items: stretch;
+  flex-wrap: nowrap;
+}
+
+.case-viewer-left-column {
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.case-viewer-right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Video/DICOM viewer section */
+.case-viewer-video-card {
+  background: white;
+  box-shadow: 3px 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  border-radius: 12px;
+  height: 100%;
+}
+
+.case-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.case-viewer-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.case-viewer-nav-buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.case-viewer-nav-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1000;
+  display: inline-block;
+  font-weight: 600;
+}
+
+@media (max-width: 568px) {
+  .case-viewer-nav-btn {
+    padding: 4px 6px;
+  }
+}
+
+/* Video container */
+.case-viewer-video-container {
+  position: relative;
+  margin-top: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  min-height: 550px;
+  max-height: 550px;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.case-viewer-video-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.case-viewer-icon-btn {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  width: 30%;
+  height: 20%;
+  color: navy;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+
+.case-viewer-icon-btn:hover {
+  background: #f0f4ff;
+}
+
+.case-viewer-dicom-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Observations sidebar */
+.case-viewer-observations-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: calc(100vh - 190px);
+}
+
+.case-viewer-observations-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.case-viewer-observations-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.case-viewer-form-group label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.case-viewer-textarea {
+  font-size: 14px;
+  border-radius: 8px;
+  height: 100px;
+  resize: none;
+}
+
+.case-viewer-textarea.error {
+  border-color: red;
+}
+
+.case-viewer-error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.case-viewer-submit-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.case-viewer-submit-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 70%;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Tabs section */
+.case-viewer-tabs-card {
+  background: white;
+  border-radius: 8px;
+  margin-top: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.case-viewer-nav-pills {
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.case-viewer-nav-link {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 20px;
+}
+
+/* Overview tab */
+.case-viewer-overview-content {
+  line-height: 1.8;
+}
+
+.case-viewer-section-title {
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.case-viewer-description {
+  font-size: 1rem;
+}
+
+/* Instructor card */
+.case-viewer-instructor-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  position: sticky;
+}
+
+.case-viewer-instructor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.case-viewer-instructor-header h5 {
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.case-viewer-instructor-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.case-viewer-instructor-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.case-viewer-instructor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.case-viewer-instructor-info {
+  flex-grow: 1;
+}
+
+.case-viewer-instructor-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.case-viewer-instructor-specialization {
+  margin-bottom: 8px;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.case-viewer-instructor-rating {
+  font-size: 0.85rem;
+}
+
+.case-viewer-instructor-rating .star {
+  color: #ffb300;
+  margin-right: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .case-viewer-grid {
+    flex-direction: column;
+  }
+  
+  .case-viewer-observations-card {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 620px) {
+  .case-viewer-nav-btn {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .case-viewer-title {
+    font-size: 20px;
+  }
+  
+  .case-viewer-video-container {
+    min-height: 300px;
+    max-height: 300px;
+  }
+}

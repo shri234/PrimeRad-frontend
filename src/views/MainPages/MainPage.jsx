@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../context/FilterContext";
 import { FaExclamationCircle, FaTh } from "react-icons/fa";
 import { GiAtlas } from "react-icons/gi";
+import "./MainPage.css";
+import { Button } from "react-bootstrap";
 import isFirstRender from "./hooks/useIsFirstRender";
 import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
 import FloatingActionButton from "../ExtraPages/FloatingActionButton";
@@ -33,290 +35,6 @@ const THEME = {
   text: "#263238", // dark blue-gray
   border: "#e0e0e0",
 };
-
-// CSS styles for video cards (UNCHANGED)
-const videoCardStyles = `
-  .video-card {
-    position: relative;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0;
-    // transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
-    boxshadow: 
-    max-width: 200px;
-    min-width: 100px;
-    border-radius: 20px;
-  }
-  .video-card.list-view {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    max-width: 600px;
-    min-width: 0;
-    width: 100%;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border-radius: 18px;
-    // margin-bottom: 12px;
-    padding: 0;
-  }
-  .video-container {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    border-radius: 18px;
-    overflow: hidden;
-    background: #000;
-    // margin-bottom: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .video-card.list-view .video-container {
-    width: 180px;
-    min-width: 100px;
-    height: 30px;
-    padding-top: 0;
-    border-radius: 14px 0 0 14px;
-    margin: 0;
-    box-shadow: none;
-  }
-  .video-card.list-view .video-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 14px 0 0 14px;
-    position: static;
-  }
-  .video-card.list-view .video-content {
-    flex: 1;
-    // padding: 16px 18px 16px 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-  }
-  .video-card.list-view .video-title {
-    font-size: 14px;
-    margin-top: 0;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #222;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .video-card:hover {
-    background:  !important;
-    // box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  }
-  .video-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 18px;
-    display: block;
-    background: #000;
-  }
-  .duration-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 14px;
-    background: ivory;
-    color: gray;
-    border-radius: 8px;
-    padding: 2px 10px;
-    font-size: 15px;
-    font-weight: 600;
-    z-index: 2;
-    letter-spacing: 0.5px;
-  }
-  .live-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 14px;
-    background: #ff1744;
-    color: #fff;
-    border-radius: 8px;
-    padding: 2px 10px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 2;
-    letter-spacing: 0.5px;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-  }
-  .category-badge {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
-    color: navy;
-    border-radius: 8px;
-    padding: 4px 14px;
-    font-size: 12px;
-    // font-weight: 500;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(25,118,210,0.10);
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
-  }
-  .badges-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    // margin-bottom: 6px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .content-type-badge {
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 12px;
-    // font-weight: 500;
-    // text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
-    color: navy;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .label-badge {
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 12px;
-    // font-weight: 500;
-    // text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: inline-block;
-  }
-  .label-badge.level-beginner {
-    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
-    color: navy;
-  }
-  .label-badge.level-advanced {
-    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
-    color: navy;
-  }
-  .label-badge.status-free {
-    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
-    color: navy;
-  }
-  .label-badge.status-locked {
-    background: #ffe0b2;
-    color: #ffb300;
-  }
-  .days-ago {
-    color: #666;
-    font-size: 13px;
-    margin-top: 2px;
-    margin-bottom: 0;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
-  .video-title {
-    font-weight: 600;
-    font-size: 18px;
-    color: #222;
-    margin-top: 14px;
-    margin-bottom: 0;
-    line-height: 1.2;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .video-cards-outer-card {
-    background: ;
-    border-radius: 28px;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
-    padding: 18px 18px 18px 18px;
-    gap:20px;
-    max-width: 1400px;
-    margin: isAuthenticated ? -10px auto 0 auto : 28px auto 0 auto;
-    width: 100%;
-    /* height: calc(100vh - 170px); */
-    /* min-height: 0; */
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    /* overflow: hidden; */
-  }
-  .video-cards-outer-card .video-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 36px 24px;
-    width: 100%;
-  }
-  
-  /* Mobile responsive grid */
-  @media (max-width: 768px) {
-    .video-cards-outer-card .video-cards-grid {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-    
-    .video-cards-outer-card {
-      padding: 12px;
-      margin: 16px auto 0 auto;
-      border-radius: 20px;
-    }
-    
-    .video-card {
-      max-width: 100%;
-      min-width: 0;
-    }
-    
-    .video-card.list-view {
-      max-width: 100%;
-      margin-bottom: 16px;
-    }
-  }
-  
-  /* Small mobile devices */
-  @media (max-width: 480px) {
-    .video-cards-outer-card .video-cards-grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-  }
-  .video-card {
-    /* height: 100%; */
-    min-width: 0;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media (min-width: 769px) {
-    .main-page-desktop-layout {
-      display: flex;
-    }
-    .desktop-sidebar {
-      width: 250px;
-      flex-shrink: 0;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    .desktop-main-content {
-      flex: 1;
-      min-height: 100vh;
-      overflow-y: auto; /* This is the key for the scrollable area */
-      padding-top: 70px;
-      // padding-right: 18px;
-    }
-  }
-`;
 
 const ImageLoader = () => (
   <div
@@ -779,11 +497,11 @@ const MainPage = memo(() => {
   };
 
   return (
-    <div style={{ background: THEME.background }}>
-      <style>{videoCardStyles}</style>
+    <div>
+      {/* <style>{videoCardStyles}</style> */}
 
       {isMobile && (
-        <button
+        <Button
           style={{
             position: "fixed",
             top: "68px",
@@ -791,10 +509,10 @@ const MainPage = memo(() => {
             zIndex: 1001,
             width: "28px",
             height: "28px",
-            background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+            // background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
             border: "none",
             borderRadius: "0px 12px 12px 0px",
-            color: "white",
+            // color: "white",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -811,7 +529,7 @@ const MainPage = memo(() => {
               <path d="M10 18H14V16H10V18ZM3 6V8H21V6H3ZM6 13H18V11H6V13Z" />
             </svg>
           )}
-        </button>
+        </Button>
       )}
       <div className={!isMobile ? "main-page-desktop-layout" : ""}>
         <div
@@ -846,17 +564,17 @@ const MainPage = memo(() => {
                 gap: "2px",
               }}
             >
-              <button
+              <Button
                 style={{
                   flex: 1,
                   padding: "8px 8px",
-                  backgroundColor: view === "atlas" ? "#B0E0E6" : "#B0E0E6",
-                  color: view === "atlas" ? "black" : "black",
+                  backgroundColor: view === "atlas" ? "" : "#B0E0E6",
+                  color: view === "atlas" ? "white" : "black",
                   border: "none",
                   borderRadius: "8px",
                   gap: "6px",
                   fontSize: "14px",
-                  fontWeight: "600",
+                  fontWeight: "500",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   display: "flex",
@@ -869,13 +587,13 @@ const MainPage = memo(() => {
               >
                 <FaTh size={14} />
                 List
-              </button>
-              <button
+              </Button>
+              <Button
                 style={{
                   flex: 1,
                   padding: "8px 8px",
                   backgroundColor: "white",
-                  color: "black",
+                  // color: "black",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "14px",
@@ -889,7 +607,7 @@ const MainPage = memo(() => {
               >
                 <GiAtlas style={{ fontSize: 18 }} />
                 Atlas
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -941,7 +659,7 @@ const MainPage = memo(() => {
               {isAuthenticated ? (
                 <div
                   style={{
-                    background: "antiquewhite",
+                    backgroundColor: "antiquewhite",
                     marginLeft: isMobile ? "8px" : isTablet ? "12px" : "18px",
                     marginBottom: "20px",
                     marginTop: isMobile ? " -18px" : "-20px",
@@ -976,10 +694,11 @@ const MainPage = memo(() => {
                       minWidth: isMobile ? "auto" : isTablet ? 160 : 180,
                       textAlign: isMobile ? "center" : "left",
                       whiteSpace: isMobile ? "normal" : "nowrap",
+                      color: "black",
                     }}
                   >
                     Current Belt:{" "}
-                    <span style={{ fontWeight: 700, color: "#1976d2" }}>
+                    <span style={{ fontWeight: 700, color: "black" }}>
                       Green
                     </span>
                   </div>
@@ -1025,6 +744,7 @@ const MainPage = memo(() => {
                       fontWeight: 400,
                       minWidth: isMobile ? "auto" : isTablet ? 140 : 180,
                       textAlign: isMobile ? "center" : "right",
+                      color: "black",
                       whiteSpace: isMobile
                         ? "normal"
                         : isTablet
@@ -1033,7 +753,7 @@ const MainPage = memo(() => {
                     }}
                   >
                     {totalPoints} / {maxPoints} pts to{" "}
-                    <span style={{ fontWeight: 700, color: "#222" }}>
+                    <span style={{ fontWeight: 700, color: "black" }}>
                       Black
                     </span>
                   </div>
@@ -1164,15 +884,15 @@ const MainPage = memo(() => {
                   width: isMobile ? "100%" : "auto",
                 }}
               >
-                <button
+                <Button
                   style={{
                     padding: isMobile
                       ? "6px 10px"
                       : isTablet
                       ? "7px 11px"
                       : "8px 12px",
-                    backgroundColor: view === "atlas" ? "lightblue" : "#f0f0f0",
-                    color: view === "atlas" ? "black" : "#333",
+                    backgroundColor: view === "atlas" ? "" : "#f0f0f0",
+                    color: view === "atlas" ? "white" : "#333",
                     border: "none",
                     borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
@@ -1190,16 +910,16 @@ const MainPage = memo(() => {
                   <FaTh size={isMobile ? 12 : isTablet ? 13 : 14} />
                   {!isMobile && "Grid"}
                   {isMobile && "Grid"}
-                </button>
-                <button
+                </Button>
+                <Button
                   style={{
                     padding: isMobile
                       ? "6px 10px"
                       : isTablet
                       ? "7px 11px"
                       : "8px 12px",
-                    backgroundColor: view === "list" ? "lightblue" : "#f0f0f0",
-                    color: view === "list" ? "black" : "#333",
+                    backgroundColor: view === "list" ? "" : "#f0f0f0",
+                    color: view === "list" ? "white" : "#333",
                     border: "none",
                     borderRadius: isMobile ? "6px" : isTablet ? "7px" : "8px",
                     display: "flex",
@@ -1217,7 +937,7 @@ const MainPage = memo(() => {
                   <FaList size={isMobile ? 12 : isTablet ? 13 : 14} />
                   {!isMobile && "List"}
                   {isMobile && "List"}
-                </button>
+                </Button>
               </div>
             </div>
             {initialLoading && filteredCards.length === 0 ? (

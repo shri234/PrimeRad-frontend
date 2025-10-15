@@ -29,6 +29,7 @@ import dicomParser from "dicom-parser";
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 import { FixedBackButton } from "../../utilities/BackButton";
 import { Info, BookOpen, Star } from "lucide-react";
+import "./CaseViewerPage.css";
 
 const CORS_PROXY = "https://corsproxy.io/?";
 const DICOM_AUTH_URL = "http://localhost:5000/api/dicom-auth";
@@ -38,38 +39,6 @@ const DICOM_USERNAME = "info@vidocto.com";
 const DICOM_PASSWORD = "dic@vid123";
 const DICOM_WORKSPACE_ID = 40426;
 
-// // THEME COLORS
-// const THEME = {
-//   primary: "#1976d2", // blue
-//   secondary: "#00bfae", // teal
-//   background: "#f4f8fb", // light blue/gray
-//   card: "#fff",
-//   accent: "#ffb300", // amber
-//   text: "#263238", // dark blue-gray
-//   border: "#e0e0e0",
-// };
-
-// const tabStyles = `
-//    .custom-nav-btn, .custom-nav-btn * {
-//       cursor: pointer !important;
-//     }
-//       button {
-//   transition: all 0.25s ease;
-// }
-// button:hover {
-//   transform: translateY(-1px);
-//   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-// }
-
-//     // .nav-pills .nav-link { transition: all 0.3s ease; }
-//     // .nav-pills .nav-link:not(.active) { background: transparent !important; color: ${THEME.primary} !important; }
-//     // .nav-pills .nav-link.active { background: ${THEME.primary} !important; color: white !important; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4); transform: translateY(-2px); }
-//     // .nav-pills .nav-link:hover:not(.active) { background: rgba(25, 118, 210, 0.1) !important; transform: translateY(-1px); }
-//     // .sessions-sidebar::-webkit-scrollbar { width: 2px; }
-//     // .sessions-sidebar::-webkit-scrollbar-track {  }
-//     // .sessions-sidebar::-webkit-scrollbar-thumb { background: ${THEME.primary}; border-radius: 10px; }
-//     // .sessions-sidebar::-webkit-scrollbar-thumb:hover { background: #1565c0; }
-//   `;
 const medicaiOrigin = "https://app.medicai.io";
 
 const CaseViewerPage = () => {
@@ -101,7 +70,6 @@ const CaseViewerPage = () => {
   const videoUrl = "https://player.vimeo.com/video/1102457741";
   const [startDate, setStartDate] = useState(null);
   const [sessionId, setSessionId] = useState(null);
-  // const [faculty, setFaculty] = useState(null);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectUser);
   const [contentType, setContentType] = useState("dicom");
@@ -148,6 +116,7 @@ const CaseViewerPage = () => {
       yearsExp: 12,
     },
   ]);
+
   const indexOfLastSession = currentPage * sessionsPerPage;
   const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
   const currentSessions = relatedSessions.slice(
@@ -155,11 +124,11 @@ const CaseViewerPage = () => {
     indexOfLastSession
   );
   const totalPages = Math.ceil(totalSessions / sessionsPerPage);
-  // setSessionId(session._id)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   useEffect(() => {
     const currentId = sessionId || caseId;
 
@@ -185,6 +154,7 @@ const CaseViewerPage = () => {
   useEffect(() => {
     setStartDate("2025-07-15T10:00:00Z");
   }, []);
+
   const saveTokens = (access, refresh) => {
     setToken(access);
     setRefreshToken(refresh);
@@ -239,7 +209,6 @@ const CaseViewerPage = () => {
   };
 
   const handleConfirmSubmission = () => {
-    // Save observations to localStorage or send to backend
     localStorage.setItem(
       `case_${caseId}_observations`,
       JSON.stringify(observations)
@@ -260,7 +229,6 @@ const CaseViewerPage = () => {
     setShowComparisonModal(false);
   };
 
-  // Function to fetch Study ID
   async function getStudyId(accessToken, dicomName) {
     const url =
       "https://app.medicai.io/api/resources/my-drive?discriminator=STUDY&searchInTrash=false&size=500&page=0&sort=uploadedDate%2Cdesc";
@@ -309,7 +277,6 @@ const CaseViewerPage = () => {
             return;
           }
         }
-        // Fallback to password grant
         const params = new URLSearchParams();
         params.append("grant_type", "password");
         params.append("client_id", DICOM_CLIENT_ID);
@@ -371,20 +338,18 @@ const CaseViewerPage = () => {
         .catch((err) => setError(err.message));
     }
     console.log(studyId);
-    // eslint-disable-next-line
   }, [token]);
 
-  const iframeRef = useRef(null); // Reference to the DICOM viewer iframe for sending authentication data
+  const iframeRef = useRef(null);
   const [authSent, setAuthSent] = useState(false);
   console.log(token);
   console.log(studyId, "stu");
-  // Example: get these from your logic or props
-  const dicom_caseId = null; // or a real caseId if you have one
-  const workspaceId = 40426; // your workspaceId
-  const accessToken = token; // from your auth logic
+
+  const dicom_caseId = null;
+  const workspaceId = 40426;
+  const accessToken = token;
   const studyIds = studyId ? [studyId] : [];
 
-  // Build authData
   const authData = dicom_caseId
     ? {
         type: "send-gallery-auth-data",
@@ -419,23 +384,19 @@ const CaseViewerPage = () => {
       }
     }
 
-    // Send on iframe load
     const handleLoad = () => sendAuthData();
     const iframe = iframeRef.current;
     if (iframe) {
       iframe.addEventListener("load", handleLoad);
     }
 
-    // Try sending on mount and when authData changes
     sendAuthData();
 
-    // Cleanup
     return () => {
       if (iframe) {
         iframe.removeEventListener("load", handleLoad);
       }
     };
-    // eslint-disable-next-line
   }, [accessToken, studyId]);
 
   const handleTabChange = (key) => {
@@ -448,9 +409,9 @@ const CaseViewerPage = () => {
           block: "start",
         });
       }
-    }, 200); // wait 200ms for tab to render
+    }, 200);
   };
-  // Periodically resend authData if not sent
+
   useEffect(() => {
     if (authSent) return;
     const interval = setInterval(() => {
@@ -468,11 +429,7 @@ const CaseViewerPage = () => {
   }, [accessToken, studyId, dicom_caseId, authSent]);
 
   useEffect(() => {
-    // This interval seems to be empty, so it won't do anything.
-    // If it's intended to refresh tokens, the logic should be inside.
-    const refreshInterval = setInterval(async () => {
-      // Logic to refresh token here if needed
-    }, 240000);
+    const refreshInterval = setInterval(async () => {}, 240000);
     return () => clearInterval(refreshInterval);
   }, []);
 
@@ -488,20 +445,19 @@ const CaseViewerPage = () => {
     return () => clearTimeout(timeout);
   }, [accessToken]);
 
-  // Adjust number of displayed cases based on screen width
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
-        setDisplayCaseCount(3); // Show fewer on small screens
+        setDisplayCaseCount(3);
       } else if (window.innerWidth <= 1024) {
-        setDisplayCaseCount(4); // Medium screens
+        setDisplayCaseCount(4);
       } else {
-        setDisplayCaseCount(5); // Large screens
+        setDisplayCaseCount(5);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on mount to set initial count
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -515,8 +471,7 @@ const CaseViewerPage = () => {
   ];
 
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
-  const [touched, setTouched] = useState(Array(questions.length).fill(false)); // tracks which were interacted with
-  // const [showErrors, setShowErrors] = useState(false);
+  const [touched, setTouched] = useState(Array(questions.length).fill(false));
 
   const handleChange = (index, value) => {
     const updated = [...answers];
@@ -530,13 +485,15 @@ const CaseViewerPage = () => {
     setTouched(updated);
   };
 
+  const [showErrors, setShowErrors] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowErrors(true);
 
     const hasEmpty = answers.some((ans) => ans.trim() === "");
     if (hasEmpty) {
-      return; // prevent submission
+      return;
     }
 
     alert("✅ All observations saved successfully!");
@@ -592,7 +549,7 @@ const CaseViewerPage = () => {
       thumbnail: "/assets/images/continue-watch/07.jpg",
     },
     {
-      id: 6, // Added for potential larger screens
+      id: 6,
       type: "Meniscus",
       category: "Knee",
       level: "Intermediate",
@@ -600,7 +557,7 @@ const CaseViewerPage = () => {
       thumbnail: "/assets/images/continue-watch/04.jpg",
     },
     {
-      id: 7, // Added for potential larger screens
+      id: 7,
       type: "Rotator Cuff",
       category: "Shoulder",
       level: "Advanced",
@@ -608,8 +565,6 @@ const CaseViewerPage = () => {
       thumbnail: "/assets/images/continue-watch/06.jpg",
     },
   ];
-
-  const [showErrors, setShowErrors] = useState(false);
 
   const casesToDisplay = dicomCases.slice(0, displayCaseCount);
 
@@ -619,92 +574,20 @@ const CaseViewerPage = () => {
     }
   };
 
-  const iconButtonStyle = {
-    background: "white",
-    border: "1px solid #ddd",
-    borderRadius: "50%",
-    padding: "6px",
-    cursor: "pointer",
-    width: "30%",
-    height: "20%",
-    color: "navy",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-    transition: "all 0.2s ease-in-out",
-  };
-
   return (
     <Fragment>
-      {/* <style>{tabStyles}</style> */}
-      <div
-        style={{
-          // backgroundColor: THEME.background,
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <FixedBackButton customPath="/main-page"></FixedBackButton>
-        <Container
-          fluid
-          className="py-3"
-          // style={{
-          //   flex: 1,
-          //   display: "flex",
-          //   flexDirection: "column",
-          // }}
-        >
-          <div
-            className="g-2"
-            style={{
-              display: "flex",
-              // flexDirection: "column",
-              flex: 1,
-              gap: "4px",
-              alignItems: "stretch",
-              flexWrap: "nowrap",
-            }}
-          >
-            <div className="flex-grow-2 d-flex flex-column">
-              <div
-                style={{
-                  background: "white",
-                  boxShadow: "3px 4px 16px rgba(0,0,0,0.08)",
-                  padding: "24px",
-                  // marginTop: "20px",
-                  borderRadius: "12px",
-                  height: "100%",
-                }}
-              >
-                <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                  <h2
-                    style={{
-                      // color: "navy",
-                      fontSize: "24px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {title}
-                  </h2>
+      <div className="case-viewer-container">
+        <FixedBackButton customPath="/main-page" />
+        <Container fluid className="py-3 case-viewer-main-content">
+          <div className="case-viewer-grid">
+            <div className="case-viewer-left-column">
+              <div className="case-viewer-video-card">
+                <div className="case-viewer-header">
+                  <h2 className="case-viewer-title">{title}</h2>
 
-                  <div
-                    className="d-flex gap-2"
-                    style={{
-                      flexShrink: 0,
-                    }}
-                  >
+                  <div className="case-viewer-nav-buttons">
                     <Button
-                      style={{
-                        // color: "black",
-                        // backgroundColor: "lightblue",
-                        padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
-                        borderRadius: "10px",
-                        border: "none",
-                        cursor: "pointer",
-                        position: "relative",
-                        zIndex: 1000,
-                        display: "inline-block",
-                        fontWeight: 600,
-                      }}
+                      className="case-viewer-nav-btn"
                       onClick={() => {
                         if (!relatedSessions.length) return;
                         const currentIndex = relatedSessions.findIndex(
@@ -722,18 +605,7 @@ const CaseViewerPage = () => {
                     </Button>
 
                     <Button
-                      style={{
-                        // color: "black",
-                        // backgroundColor: "lightblue",
-                        padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
-                        borderRadius: "10px",
-                        border: "none",
-                        cursor: "pointer",
-                        position: "relative",
-                        zIndex: 1000,
-                        display: "inline-block",
-                        fontWeight: 600,
-                      }}
+                      className="case-viewer-nav-btn"
                       onClick={() => {
                         if (!relatedSessions.length) return;
                         const currentIndex = relatedSessions.findIndex(
@@ -752,43 +624,12 @@ const CaseViewerPage = () => {
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    position: "relative",
-                    // backgroundColor: "black",
-                    marginTop: "5px",
-                    // width: "100%",
-                    // aspectRatio: "16/9",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                    display: "flex",
-                    justifyContent: "center",
-                    minHeight: "550px",
-                    maxHeight: "550px",
-                    alignItems: "center",
-                    flexGrow: 1,
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "12px",
-                      right: "12px",
-                      display: "flex",
-                      gap: "10px",
-                      zIndex: 3,
-                    }}
-                  >
+                <div className="case-viewer-video-container">
+                  <div className="case-viewer-video-controls">
                     <button
                       title="Description"
                       onClick={() => handleTabChange("description")}
-                      style={iconButtonStyle}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "#f0f4ff")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = "white")
-                      }
+                      className="case-viewer-icon-btn"
                     >
                       <Info size={16} />
                     </button>
@@ -796,7 +637,7 @@ const CaseViewerPage = () => {
                     <button
                       title="Resources"
                       onClick={() => handleTabChange("resources")}
-                      style={iconButtonStyle}
+                      className="case-viewer-icon-btn"
                     >
                       <BookOpen size={16} />
                     </button>
@@ -804,7 +645,7 @@ const CaseViewerPage = () => {
                     <button
                       title="Reviews"
                       onClick={() => handleTabChange("reviews")}
-                      style={iconButtonStyle}
+                      className="case-viewer-icon-btn"
                     >
                       <Star size={16} />
                     </button>
@@ -813,86 +654,43 @@ const CaseViewerPage = () => {
                   <img
                     src="/assets/images/dicomm.jpg"
                     alt="DICOM preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
+                    className="case-viewer-dicom-img"
                   />
                 </div>
               </div>
             </div>
 
-            <Col lg={4} md={12} className="d-flex flex-column">
-              <div
-                style={{
-                  // backgroundColor: "white",
-                  borderRadius: "10px",
-                  // marginTop: "20px",
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-                  padding: "24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  overflowY: "auto",
-                  maxHeight: "calc(100vh - 190px)",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginBottom: "16px",
-                  }}
-                >
+            <Col lg={4} md={12} className="case-viewer-right-column">
+              <div className="case-viewer-observations-card">
+                <h2 className="case-viewer-observations-title">
                   User Observations
                 </h2>
 
                 <form
                   onSubmit={handleSubmit}
-                  className="d-flex flex-column gap-3"
-                  style={{ width: "100%" }}
+                  className="case-viewer-observations-form"
                 >
                   {questions.map((question, index) => {
                     const isEmpty = answers[index].trim() === "";
                     const showError = showErrors && isEmpty;
 
                     return (
-                      <div key={index}>
-                        <label
-                          style={{
-                            fontWeight: "500",
-                            fontSize: "14px",
-                            marginBottom: "6px",
-                            display: "block",
-                          }}
-                        >
-                          {question}
-                        </label>
+                      <div key={index} className="case-viewer-form-group">
+                        <label>{question}</label>
 
                         <textarea
-                          className="form-control"
+                          className={`form-control case-viewer-textarea ${
+                            showError ? "error" : ""
+                          }`}
                           rows={3}
                           placeholder="Type your answer here..."
                           value={answers[index]}
                           onChange={(e) => handleChange(index, e.target.value)}
                           onBlur={() => handleBlur(index)}
-                          style={{
-                            fontSize: "14px",
-                            borderRadius: "8px",
-                            height: "100px",
-                            resize: "none",
-                            borderColor: showError ? "red" : "#ced4da",
-                          }}
-                        ></textarea>
+                        />
 
                         {showError && (
-                          <div
-                            style={{
-                              color: "red",
-                              fontSize: "12px",
-                              marginTop: "4px",
-                            }}
-                          >
+                          <div className="case-viewer-error-text">
                             ⚠️ Please fill out this field.
                           </div>
                         )}
@@ -900,26 +698,10 @@ const CaseViewerPage = () => {
                     );
                   })}
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className="case-viewer-submit-container">
                     <button
                       type="submit"
-                      className="btn btn-primary mt-2"
-                      style={{
-                        // backgroundColor: "lightblue",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "8px 12px",
-                        width: "70%",
-                        // color: "black",
-                        fontWeight: "bold",
-                        fontSize: "14px",
-                      }}
+                      className="btn btn-primary case-viewer-submit-btn"
                     >
                       Save Observations
                     </button>
@@ -928,26 +710,14 @@ const CaseViewerPage = () => {
               </div>
             </Col>
           </div>
-          <div
-            style={{
-              background: "white",
-              borderRadius: "8px",
-              marginTop: "12px",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-              padding: "24px",
-            }}
-          >
+
+          <div className="case-viewer-tabs-card">
             <Tab.Container defaultActiveKey="overview">
-              <Nav variant="pills" className="mb-4" style={{ gap: "8px" }}>
+              <Nav variant="pills" className="case-viewer-nav-pills">
                 <Nav.Item>
                   <Nav.Link
                     eventKey="overview"
-                    style={{
-                      borderRadius: "10px",
-                      fontWeight: 600,
-                      // color: "black",
-                      padding: "10px 20px",
-                    }}
+                    className="case-viewer-nav-link"
                   >
                     {t("Overview")}
                   </Nav.Link>
@@ -955,26 +725,13 @@ const CaseViewerPage = () => {
                 <Nav.Item>
                   <Nav.Link
                     eventKey="resources"
-                    style={{
-                      borderRadius: "10px",
-                      fontWeight: 600,
-                      // color: "black",
-                      padding: "10px 20px",
-                    }}
+                    className="case-viewer-nav-link"
                   >
                     {t("Resources")}
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link
-                    eventKey="reviews"
-                    style={{
-                      borderRadius: "10px",
-                      fontWeight: 600,
-                      // color: "black",
-                      padding: "10px 20px",
-                    }}
-                  >
+                  <Nav.Link eventKey="reviews" className="case-viewer-nav-link">
                     {t("Reviews")}
                   </Nav.Link>
                 </Nav.Item>
@@ -982,87 +739,32 @@ const CaseViewerPage = () => {
 
               <Tab.Content>
                 <Tab.Pane eventKey="overview">
-                  <div style={{ lineHeight: 1.8 }}>
-                    <h5 className="fw-bold mb-3">{t("About this Session")}</h5>
-                    <p style={{ fontSize: "1rem" }}>{description}</p>
-                    <div
-                      style={{
-                        background: "white",
-                        borderRadius: "8px",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-                        padding: "20px",
-                        position: "sticky",
-                        // bottom: "20px",
-                      }}
-                    >
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="fw-bold mb-0" style={{}}>
-                          {t("Meet Your Instructor")}
-                        </h5>
+                  <div className="case-viewer-overview-content">
+                    <h5 className="case-viewer-section-title">
+                      {t("About this Session")}
+                    </h5>
+                    <p className="case-viewer-description">{description}</p>
+
+                    <div className="case-viewer-instructor-card">
+                      <div className="case-viewer-instructor-header">
+                        <h5>{t("Meet Your Instructor")}</h5>
                       </div>
 
                       {faculty.length > 0 && (
-                        <div className="d-flex align-items-center gap-3">
-                          <div
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              borderRadius: "50%",
-                              overflow: "hidden",
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                              // border: `3px solid ${THEME.primary}`,
-                              flexShrink: 0,
-                            }}
-                          >
-                            <img
-                              src={faculty[0].image}
-                              alt={faculty[0].name}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
+                        <div className="case-viewer-instructor-content">
+                          <div className="case-viewer-instructor-avatar">
+                            <img src={faculty[0].image} alt={faculty[0].name} />
                           </div>
-                          <div className="flex-grow-1">
-                            <h6
-                              className="fw-bold mb-1"
-                              style={{
-                                // color: THEME.darkText,
-                                fontSize: "1rem",
-                              }}
-                            >
+                          <div className="case-viewer-instructor-info">
+                            <h6 className="case-viewer-instructor-name">
                               {faculty[0].name}
                             </h6>
-                            <p
-                              className="mb-2 text-muted"
-                              style={{ fontSize: "0.9rem" }}
-                            >
+                            <p className="case-viewer-instructor-specialization">
                               {faculty[0].specializations?.join(", ")}
                             </p>
-                            <div
-                              style={{
-                                fontSize: "0.85rem",
-                                // color: THEME.lightText,
-                              }}
-                            >
-                              <span
-                                style={{
-                                  color: "#ffb300",
-                                  marginRight: "4px",
-                                }}
-                              >
-                                ⭐
-                              </span>
-                              <strong
-                                style={{
-                                  // color: THEME.darkText,
-                                  marginRight: "4px",
-                                }}
-                              >
-                                {faculty[0].rating}
-                              </strong>
-                              {t("Rating")}
+                            <div className="case-viewer-instructor-rating">
+                              <span className="star">⭐</span>
+                              <strong>{faculty[0].rating}</strong> {t("Rating")}
                             </div>
                           </div>
                         </div>

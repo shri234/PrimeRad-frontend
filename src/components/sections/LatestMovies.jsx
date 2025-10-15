@@ -30,8 +30,6 @@ const LatestMovies = (props) => {
     }
   };
 
-  // --- Data fetching functions (wrapped in useCallback for stability) ---
-
   const fetchSessions = useCallback(async () => {
     try {
       const res = await axios.get(
@@ -165,7 +163,7 @@ const LatestMovies = (props) => {
         <h5
           className="main-title text-capitalize mb-0"
           style={{
-            color: "#003366",
+            // color: "#003366",
             fontWeight: "bold",
             fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
             marginLeft: "24px",
