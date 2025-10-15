@@ -1647,192 +1647,86 @@ const SubModuleView = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "24px",
-                  padding: "32px",
+                  padding: "16px",
                   backgroundColor: "#f9fafb",
                   borderRadius: "16px",
                   // border: "1px solid #e5e7eb",
-                  margin: "20px",
+                  // margin: "20px",
                   animation: "slideIn 0.3s ease-out",
                 }}
               >
-                <button
-                  onClick={() => setCurrentView("main")}
+                <div
+                  className="d-flex flex-row align-items-center "
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "none",
-                    border: "none",
-                    color: "#4f46e5",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    width: "fit-content",
-                    transition: "background 0.2s ease, color 0.2s ease",
+                    gap: "24px",
+                    width: "100%",
                   }}
-                  onMouseEnter={(e) => (e.target.style.color = "#3730a3")}
-                  onMouseLeave={(e) => (e.target.style.color = "#4f46e5")}
                 >
-                  ← Back to Pathologies
-                </button>
+                  <button
+                    onClick={() => setCurrentView("main")}
+                    className="assessment-back-button"
+                  >
+                    ← Back to Pathologies
+                  </button>
 
-                {/* Header */}
-                <div style={{ marginBottom: "16px" }}>
-                  <h2
+                  <h3
                     style={{
-                      fontSize: "28px",
-                      fontWeight: "700",
+                      fontSize: "20px",
+                      fontWeight: "600",
+                      margin: 0,
                       color: "#1f2937",
-                      marginBottom: "8px",
                     }}
                   >
-                    Choose Assessment Level
-                  </h2>
-                  <p style={{ fontSize: "16px", color: "#6b7280", margin: 0 }}>
-                    Select the difficulty level that matches your expertise in{" "}
-                    <span style={{ color: "#111827", fontWeight: "600" }}>
-                      {activeModuleName}
-                    </span>{" "}
-                    pathologies.
-                  </p>
+                    Choose Assessment
+                  </h3>
                 </div>
 
                 <div
                   style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "24px",
-                    justifyContent: "center",
+                    width: "100%",
+                    borderTop: "1px solid lightgray",
+                    margin: "0px 0",
                   }}
-                >
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "24px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                      borderRadius: "12px",
-                      flex: "1 1 280px",
-                      maxWidth: "320px",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      textAlign: "center",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 20px rgba(99, 102, 241, 0.2)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(0, 0, 0, 0.08)";
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: "700",
-                        color: "#1e293b",
-                      }}
-                    >
-                      Beginner Assessment
-                    </h3>
-                    <p
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "15px",
-                        margin: "12px 0 20px",
-                      }}
-                    >
-                      Perfect for learners starting out. Focuses on identifying
-                      basic findings and patterns.
-                    </p>
-                    <button
-                      onClick={() => handleDifficultyCardClick("Beginner")}
-                      style={{
-                        backgroundColor: "#e0e7ff",
-                        color: "#1e3a8a",
-                        padding: "10px 16px",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.backgroundColor = "#c7d2fe")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.target.style.backgroundColor = "#e0e7ff")
-                      }
-                    >
-                      Start Beginner Level
-                    </button>
-                  </div>
+                ></div>
 
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "24px",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                      borderRadius: "12px",
-                      flex: "1 1 280px",
-                      maxWidth: "320px",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      textAlign: "center",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 20px rgba(251, 191, 36, 0.25)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 12px rgba(0, 0, 0, 0.08)";
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: "700",
-                        color: "#1e293b",
-                      }}
-                    >
-                      Advanced Assessment
-                    </h3>
-                    <p
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "15px",
-                        margin: "12px 0 20px",
-                      }}
-                    >
-                      Designed for experienced users. Includes complex DICOM
-                      cases and multi-system analysis.
-                    </p>
-                    <button
-                      onClick={() => handleDifficultyCardClick("Advanced")}
-                      style={{
-                        backgroundColor: "#fef3c7",
-                        color: "#92400e",
-                        padding: "10px 16px",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        transition: "background 0.2s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.backgroundColor = "#fde68a")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.target.style.backgroundColor = "#fef3c7")
-                      }
-                    >
-                      Start Advanced Level
-                    </button>
-                  </div>
+                <div className="assessment-grid-cards">
+                  {[
+                    {
+                      title: "Beginner Assessment",
+                      desc: "Perfect for learners starting out. Focuses on identifying basic findings and patterns.",
+                    },
+                    {
+                      title: "Intermediate Assessment",
+                      desc: "Ideal for those with some experience. Includes moderately complex cases for deeper analysis.",
+                    },
+                    {
+                      title: "Advanced Assessment",
+                      desc: "Designed for experienced users. Includes complex DICOM cases and multi-system analysis.",
+                    },
+                    {
+                      title: "Expert Challenge",
+                      desc: "Test your diagnostic accuracy with rare and high-difficulty pathologies.",
+                    },
+                    {
+                      title: "Case Review Mode",
+                      desc: "Review curated real-world cases and compare your findings with expert interpretations.",
+                    },
+                    {
+                      title: "Timed Quiz",
+                      desc: "Assess your speed and accuracy under timed conditions across multiple case types.",
+                    },
+                  ].map((card, i) => (
+                    <div key={i} className="assessment-card-content">
+                      <h3 className="assessment-card-title">{card.title}</h3>
+                      <p className="assessment-card-description">{card.desc}</p>
+                      <button
+                        className="assessment-card-button"
+                        onClick={() => handleDifficultyCardClick(card.title)}
+                      >
+                        Start Now
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
