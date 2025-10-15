@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -8,7 +9,6 @@ export default defineConfig(({ mode }) => {
   return {
     base: baseUrl,
     plugins: [react()],
-    // Remove or fix the define section!
     build: {
       outDir: "build",
       minify: true,
@@ -24,12 +24,32 @@ export default defineConfig(({ mode }) => {
       },
     },
     resolve: {
+      alias: {
+        // Root src alias
+        "@": path.resolve(__dirname, "./src"),
+        
+        // Specific folder aliases based on your structure
+        "@assets": path.resolve(__dirname, "./src/assets"),
+        "@components": path.resolve(__dirname, "./src/components"),
+        "@context": path.resolve(__dirname, "./src/context"),
+        "@lang": path.resolve(__dirname, "./src/lang"),
+        "@layouts": path.resolve(__dirname, "./src/layouts"),
+        "@router": path.resolve(__dirname, "./src/router"),
+        "@services": path.resolve(__dirname, "./src/services"),
+        "@staticData": path.resolve(__dirname, "./src/StaticData"),
+        "@store": path.resolve(__dirname, "./src/store"),
+        "@utilities": path.resolve(__dirname, "./src/utilities"),
+        "@views": path.resolve(__dirname, "./src/views"),
+        
+        // CSS/SCSS specific aliases
+        "@scss": path.resolve(__dirname, "./src/assets/scss"),
+        "@images": path.resolve(__dirname, "./src/assets/images"),
+      },
       dedupe: ["react", "react-dom", "react-router-dom"],
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react-router-dom", "react-redux"],
     },
-    // Add this to prevent React version conflicts
     define: {
       global: "globalThis",
     },
