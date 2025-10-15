@@ -678,7 +678,7 @@ const CaseViewerPage = () => {
                 <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
                   <h2
                     style={{
-                      color: "navy",
+                      // color: "navy",
                       fontSize: "24px",
                       fontWeight: "bold",
                     }}
@@ -692,10 +692,10 @@ const CaseViewerPage = () => {
                       flexShrink: 0,
                     }}
                   >
-                    <button
+                    <Button
                       style={{
-                        color: "black",
-                        backgroundColor: "lightblue",
+                        // color: "black",
+                        // backgroundColor: "lightblue",
                         padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
                         borderRadius: "10px",
                         border: "none",
@@ -719,12 +719,12 @@ const CaseViewerPage = () => {
                       }}
                     >
                       {window.innerWidth < 620 ? "<" : "< Prev"}
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       style={{
-                        color: "black",
-                        backgroundColor: "lightblue",
+                        // color: "black",
+                        // backgroundColor: "lightblue",
                         padding: window.innerWidth < 568 ? "4x 6x" : "6px 10px",
                         borderRadius: "10px",
                         border: "none",
@@ -748,14 +748,14 @@ const CaseViewerPage = () => {
                       }}
                     >
                       {window.innerWidth < 620 ? ">" : "Next >"}
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
                 <div
                   style={{
                     position: "relative",
-                    backgroundColor: "black",
+                    // backgroundColor: "black",
                     marginTop: "5px",
                     // width: "100%",
                     // aspectRatio: "16/9",
@@ -826,7 +826,7 @@ const CaseViewerPage = () => {
             <Col lg={4} md={12} className="d-flex flex-column">
               <div
                 style={{
-                  backgroundColor: "white",
+                  // backgroundColor: "white",
                   borderRadius: "10px",
                   // marginTop: "20px",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
@@ -911,12 +911,12 @@ const CaseViewerPage = () => {
                       type="submit"
                       className="btn btn-primary mt-2"
                       style={{
-                        backgroundColor: "lightblue",
+                        // backgroundColor: "lightblue",
                         border: "none",
                         borderRadius: "8px",
                         padding: "8px 12px",
                         width: "70%",
-                        color: "black",
+                        // color: "black",
                         fontWeight: "bold",
                         fontSize: "14px",
                       }}
@@ -945,7 +945,7 @@ const CaseViewerPage = () => {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >
@@ -958,7 +958,7 @@ const CaseViewerPage = () => {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >
@@ -971,7 +971,7 @@ const CaseViewerPage = () => {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >

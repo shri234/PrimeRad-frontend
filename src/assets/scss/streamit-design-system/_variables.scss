@@ -1,12 +1,3 @@
-// Variablesbase
-//
-// Variables should follow the `$component-state-property-size` formula for
-// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
-
-// Color system
-
-// Variables
-
 :root {
   --table-bg: white;
   --table-text: darkslategray;
@@ -18,6 +9,54 @@
   --table-text: white;
   --table-header-bg: #1f1f1f;
 }
+
+// ===================================
+// 🎨 Theme Colors
+// ===================================
+
+// Brand / Primary Colors
+$primary-bg: #f9fafb !default;   // Very light gray — for main background
+$primary: #d5896f !default;      // Warm terracotta — main accent color
+$secondary: #dab785 !default;    // Soft beige-gold — secondary accent
+
+// Supporting Colors
+$success: #28a745 !default;
+$info: #20c997 !default;
+$warning: #ffc107 !default;
+$danger: #dc3545 !default;
+$light: #ffffff !default;
+$dark: #000000 !default;
+
+// Neutral Grays
+$gray-100: #f9fafb !default;
+$gray-200: #f3f4f6 !default;
+$gray-300: #e5e7eb !default;
+$gray-400: #d1d5db !default;
+$gray-500: #9ca3af !default;
+$gray-600: #6b7280 !default;
+$gray-700: #4b5563 !default;
+$gray-800: #374151 !default;
+$gray-900: #1f2937 !default;
+
+// Bootstrap / Global Color Map
+$colors: (
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark,
+  "gray":       $gray-600,
+  "gray-dark":  $gray-800,
+  "white":      $light,
+  "black":      $dark
+) !default;
+
+// Default Background & Text
+$body-bg: $primary-bg !default;
+$body-color: $gray-900 !default;
 
 
 // Primary theme colors

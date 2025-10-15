@@ -206,9 +206,9 @@ button:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 .nav-btn {
-  background: white;
+  // background: white;
   border: none;
-  color: black;
+  // color: black;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -217,7 +217,7 @@ button:hover {
 }
 
 .nav-btn:hover {
-  background-color: #d0e4ff; /* soft blue hover */
+  // background-color: #d0e4ff; /* soft blue hover */
 }
 
 
@@ -407,30 +407,23 @@ button:hover {
   return (
     <Fragment>
       <style>{tabStyles}</style>
-      <div style={{ backgroundColor: THEME.background, minHeight: "100vh" }}>
+      <div style={{ minHeight: "100vh" }}>
         <FixedBackButton customPath="/main-page"></FixedBackButton>
 
         <Container fluid className="py-3">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "6px",
-              marginBottom: "10px",
-              maxHeight: "600px",
-            }}
-          >
+          <div className="grid-container">
             <div
               className="flex-grow-1"
               style={{
                 display: "flex",
                 flexDirection: "Column",
+                maxHeight: "600px",
               }}
             >
               <div
                 className="flex-grow-1 d-flex flex-column"
                 style={{
-                  backgroundColor: "white",
+                  // backgroundColor: "white",
                   borderRadius: "8px",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                   padding: "20px",
@@ -454,7 +447,7 @@ button:hover {
                     <h4
                       className="fw-bold mb-0"
                       style={{
-                        color: THEME.darkText,
+                        // color: THEME.darkText,
                         fontSize:
                           window.innerWidth < 560 ? "0.81rem" : "1.4rem",
                         lineHeight: 1.3,
@@ -468,7 +461,7 @@ button:hover {
                       className="badge"
                       style={{
                         background: "#e3f2fd",
-                        color: THEME.primary,
+                        // color: THEME.primary,
                         padding: "4px 10px",
                         borderRadius: "6px",
                         fontSize: "0.8rem",
@@ -490,19 +483,20 @@ button:hover {
                         // isolation: "isolate",
                       }}
                     >
-                      <button
+                      <Button
                         style={{
-                          color: "black",
-                          backgroundColor: "lightblue",
+                          // color: "#fff",
+                          // background:
+                          //   "linear-gradient(135deg, rgb(25, 118, 210) 0%, rgb(21, 101, 192) 100%)",
                           padding:
-                            window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                            window.innerWidth < 568 ? "4x 6x" : "6px 20px",
                           borderRadius: "10px",
                           border: "none",
                           cursor: "pointer",
                           position: "relative",
                           zIndex: 1000,
                           display: "inline-block",
-                          fontWeight: 600,
+                          fontWeight: 400,
                         }}
                         onClick={() => {
                           if (!relatedSessions.length) return;
@@ -518,17 +512,18 @@ button:hover {
                         }}
                       >
                         {window.innerWidth < 620 ? null : "< Prev"}
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
                         style={{
-                          color: "black",
-                          backgroundColor: "lightblue",
+                          // color: "#fff",
+                          // background:
+                          //   "linear-gradient(135deg, rgb(25, 118, 210) 0%, rgb(21, 101, 192) 100%)",
                           padding:
-                            window.innerWidth < 568 ? "4x 6x" : "6px 10px",
+                            window.innerWidth < 568 ? "4x 6x" : "6px 20px",
                           borderRadius: "10px",
                           border: "none",
-                          fontWeight: 600,
+                          fontWeight: 400,
                           position: "relative",
                           zIndex: 1000,
                           display: "inline-block",
@@ -547,7 +542,7 @@ button:hover {
                         }}
                       >
                         {window.innerWidth < 620 ? null : "Next >"}
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -557,7 +552,7 @@ button:hover {
                     borderRadius: "8px",
                     overflow: "hidden",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                    backgroundColor: "#000",
+                    // backgroundColor: "#000",
                   }}
                 >
                   {!isAuthenticated ? (
@@ -636,20 +631,16 @@ button:hover {
                   ) : vimeoVideoId ? (
                     <div
                       style={{
-                        position: "relative",
-                        width: "100%",
-                        aspectRatio: "16/9",
-                        minHeight: "500px",
-                        maxHeight: "500px",
                         pointerEvents: isVideoLoading ? "none" : "auto",
                       }}
+                      className="course-video-card"
                     >
                       {isVideoLoading && (
                         <div
                           style={{
                             position: "absolute",
                             inset: 0,
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
+                            // backgroundColor: "rgba(255, 255, 255, 0.8)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -664,7 +655,7 @@ button:hover {
                             style={{
                               width: "3rem",
                               height: "3rem",
-                              color: THEME.primary,
+                              // color: THEME.primary,
                             }}
                           >
                             <span className="visually-hidden">Loading...</span>
@@ -683,8 +674,8 @@ button:hover {
                         width: "100%",
                         aspectRatio: "16/9",
                         minHeight: "400px",
-                        background: "#333",
-                        color: "#fff",
+                        // background: "#333",
+                        // color: "#fff",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -707,6 +698,8 @@ button:hover {
               className="flex-grow-1"
               style={{
                 display: "flex",
+
+                maxHeight: "600px",
                 // flexDirection: "column",
               }}
               // style={{ gap: "16px" }}
@@ -729,7 +722,7 @@ button:hover {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h5
                     className="fw-bold mb-0"
-                    style={{ color: THEME.darkText }}
+                    // style={{ color: THEME.darkText }}
                   >
                     {t("Next Sessions")}
                   </h5>
@@ -780,7 +773,7 @@ button:hover {
                             style={{
                               fontSize: "0.9rem",
                               fontWeight: session._id === sessionId ? 600 : 500,
-                              color: THEME.darkText,
+                              // color: THEME.darkText,
                               marginBottom: "4px",
                             }}
                           >
@@ -791,7 +784,7 @@ button:hover {
                               className="badge"
                               style={{
                                 background: "#e3f2fd",
-                                color: THEME.primary,
+                                // color: THEME.primary,
                                 padding: "2px 8px",
                                 borderRadius: "4px",
                                 fontSize: "0.7rem",
@@ -804,7 +797,7 @@ button:hover {
                               <span
                                 style={{
                                   fontSize: "0.75rem",
-                                  color: THEME.lightText,
+                                  // color: THEME.lightText,
                                 }}
                               >
                                 {session.sessionDuration}
@@ -814,8 +807,8 @@ button:hover {
                               <span
                                 className="badge"
                                 style={{
-                                  background: "#e8f5e9",
-                                  color: "#2e7d32",
+                                  // background: "#e8f5e9",
+                                  // color: "#2e7d32",
                                   padding: "2px 8px",
                                   borderRadius: "4px",
                                   fontSize: "0.7rem",
@@ -835,7 +828,7 @@ button:hover {
                       style={{
                         background: "#f8f9fa",
                         borderRadius: "12px",
-                        color: THEME.lightText,
+                        // color: THEME.lightText,
                       }}
                     >
                       {t("Loading sessions...")}
@@ -856,7 +849,7 @@ button:hover {
                         fontWeight: 600,
                         fontSize: "0.85rem",
                         border: `2px solid ${THEME.primary}`,
-                        color: THEME.primary,
+                        // color: THEME.primary,
                       }}
                     >
                       ←
@@ -886,15 +879,15 @@ button:hover {
                               fontWeight: 600,
                               fontSize: "0.85rem",
                               minWidth: "36px",
-                              backgroundColor:
-                                currentPage === pageNum
-                                  ? THEME.primary
-                                  : "transparent",
+                              // backgroundColor:
+                              //   currentPage === pageNum
+                              //     ? THEME.primary
+                              //     : "transparent",
                               border: `2px solid ${THEME.primary}`,
-                              color:
-                                currentPage === pageNum
-                                  ? "white"
-                                  : THEME.primary,
+                              // color:
+                              //   currentPage === pageNum
+                              //     ? "white"
+                              //     : THEME.primary,
                             }}
                           >
                             {pageNum}
@@ -907,7 +900,7 @@ button:hover {
                         return (
                           <span
                             key={pageNum}
-                            style={{ color: THEME.lightText }}
+                            // style={{ color: THEME.lightText }}
                           >
                             ...
                           </span>
@@ -927,7 +920,7 @@ button:hover {
                         fontWeight: 600,
                         fontSize: "0.85rem",
                         border: `2px solid ${THEME.primary}`,
-                        color: THEME.primary,
+                        // color: THEME.primary,
                       }}
                     >
                       →
@@ -953,7 +946,7 @@ button:hover {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >
@@ -966,7 +959,7 @@ button:hover {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >
@@ -979,7 +972,7 @@ button:hover {
                     style={{
                       borderRadius: "10px",
                       fontWeight: 600,
-                      color: "black",
+                      // color: "black",
                       padding: "10px 20px",
                     }}
                   >
@@ -990,11 +983,9 @@ button:hover {
 
               <Tab.Content>
                 <Tab.Pane eventKey="overview">
-                  <div style={{ color: THEME.text, lineHeight: 1.8 }}>
+                  <div style={{ lineHeight: 1.8 }}>
                     <h5 className="fw-bold mb-3">{t("About this Session")}</h5>
-                    <p style={{ fontSize: "1rem", color: THEME.lightText }}>
-                      {description}
-                    </p>
+                    <p style={{ fontSize: "1rem" }}>{description}</p>
                     <div
                       style={{
                         background: "white",
@@ -1008,7 +999,7 @@ button:hover {
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <h5
                           className="fw-bold mb-0"
-                          style={{ color: THEME.darkText }}
+                          // style={{ color: THEME.darkText }}
                         >
                           {t("Meet Your Instructor")}
                         </h5>
@@ -1041,7 +1032,7 @@ button:hover {
                             <h6
                               className="fw-bold mb-1"
                               style={{
-                                color: THEME.darkText,
+                                // color: THEME.darkText,
                                 fontSize: "1rem",
                               }}
                             >
@@ -1056,12 +1047,12 @@ button:hover {
                             <div
                               style={{
                                 fontSize: "0.85rem",
-                                color: THEME.lightText,
+                                // color: THEME.lightText,
                               }}
                             >
                               <span
                                 style={{
-                                  color: "#ffb300",
+                                  // color: "#ffb300",
                                   marginRight: "4px",
                                 }}
                               >
@@ -1069,7 +1060,7 @@ button:hover {
                               </span>
                               <strong
                                 style={{
-                                  color: THEME.darkText,
+                                  // color: THEME.darkText,
                                   marginRight: "4px",
                                 }}
                               >

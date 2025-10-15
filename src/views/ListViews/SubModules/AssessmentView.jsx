@@ -1,9 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import { FixedBackButton } from "../../../utilities/BackButton";
 import { useLocation } from "react-router-dom";
 import CompareObservationsModal from "./CompareObservationsModal";
-import axios from "axios";
 
 const AssessmentView = ({}) => {
   const location = useLocation();
@@ -12,15 +11,16 @@ const AssessmentView = ({}) => {
   const [showAISummary, setShowAISummary] = useState(false);
   const [aiResponse, setAiResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Streaming functionality states
+  const [streamedContent, setStreamedContent] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  
   const {
     THEME,
     selectedDifficulty,
     userObs,
     facultyObs,
-    // showModal,
-    // showAISummary,
-    // aiComparison,
-    // loading,
     showFeedbackModal,
     selectedFeedback,
   } = location.state || {};
@@ -30,36 +30,233 @@ const AssessmentView = ({}) => {
     setSaved(true);
   };
 
+  // Real streaming function for HTML string response
   const handleAICompare = async () => {
-    setAiComparison(""); // Clear previous summary
+    setStreamedContent(""); // Clear previous content
     setLoading(true);
+    setIsStreaming(false);
     setShowAISummary(true); // Open modal immediately
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         "https://primerad-backend.onrender.com/api/sessions/compare-observations",
         {
-          userObservations: userObs,
-          facultyObservations: facultyObs,
-        },
-        {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            userObservations: userObs,
+            facultyObservations: facultyObs,
+          }),
         }
       );
 
-      const data = response.data;
+      if (!response.ok) {
+        throw new Error(`HTTP status ${response.status}`);
+      }
 
-      setAiComparison(data.report || "<p>No summary generated.</p>");
+      setLoading(false);
+      setIsStreaming(true);
+
+      // Get the reader from the response body
+      const reader = response.body.getReader();
+      let accumulatedContent = "";
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk using TextDecoder
+          const chunk = new TextDecoder("utf-8").decode(value, { stream: true });
+          accumulatedContent += chunk;
+
+          // Update the displayed content in real-time
+          setStreamedContent(accumulatedContent);
+        }
+
+        // Set final content and stop streaming
+        setAiComparison(accumulatedContent);
+        setIsStreaming(false);
+
+      } finally {
+        reader.releaseLock();
+      }
+      
     } catch (err) {
       console.error("AI Summary Error:", err);
-      setAiComparison(
-        "<p>⚠️ Failed to generate AI report. Please try again later.</p>"
-      );
-    } finally {
       setLoading(false);
+      setIsStreaming(false);
+      
+      const errorContent = "<p>⚠️ Failed to generate AI report. Please try again later.</p>";
+      setAiComparison(errorContent);
+      setStreamedContent(errorContent);
     }
+  };
+
+  // Alternative method if you want character-by-character streaming after getting full response
+  const handleAICompareWithCharStreaming = async () => {
+    setStreamedContent("");
+    setLoading(true);
+    setIsStreaming(false);
+    setShowAISummary(true);
+
+    try {
+      const response = await fetch(
+        "https://primerad-backend.onrender.com/api/sessions/compare-observations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userObservations: userObs,
+            facultyObservations: facultyObs,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP status ${response.status}`);
+      }
+
+      setLoading(false);
+      setIsStreaming(true);
+
+      const reader = response.body.getReader();
+      let fullContent = "";
+
+      try {
+        // First, collect all the content
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = new TextDecoder("utf-8").decode(value, { stream: true });
+          fullContent += chunk;
+        }
+
+        // Now stream it character by character for visual effect
+        await streamTextCharByChar(fullContent);
+        setAiComparison(fullContent);
+
+      } finally {
+        reader.releaseLock();
+      }
+      
+    } catch (err) {
+      console.error("AI Summary Error:", err);
+      setLoading(false);
+      setIsStreaming(false);
+      
+      const errorContent = "<p>⚠️ Failed to generate AI report. Please try again later.</p>";
+      setAiComparison(errorContent);
+      setStreamedContent(errorContent);
+    }
+  };
+
+  // Method for word-by-word streaming (more natural for HTML content)
+  const handleAICompareWordStreaming = async () => {
+    setStreamedContent("");
+    setLoading(true);
+    setIsStreaming(false);
+    setShowAISummary(true);
+
+    try {
+      const response = await fetch(
+        "https://primerad-backend.onrender.com/api/sessions/compare-observations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userObservations: userObs,
+            facultyObservations: facultyObs,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP status ${response.status}`);
+      }
+
+      setLoading(false);
+      setIsStreaming(true);
+
+      const reader = response.body.getReader();
+      let fullContent = "";
+
+      try {
+        // Collect all content first
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = new TextDecoder("utf-8").decode(value, { stream: true });
+          fullContent += chunk;
+        }
+
+        // Stream word by word for better HTML handling
+        await streamWordByWord(fullContent);
+        setAiComparison(fullContent);
+
+      } finally {
+        reader.releaseLock();
+      }
+      
+    } catch (err) {
+      console.error("AI Summary Error:", err);
+      setLoading(false);
+      setIsStreaming(false);
+      
+      const errorContent = "<p>⚠️ Failed to generate AI report. Please try again later.</p>";
+      setAiComparison(errorContent);
+      setStreamedContent(errorContent);
+    }
+  };
+
+  // Character-by-character streaming
+  const streamTextCharByChar = (content) => {
+    return new Promise((resolve) => {
+      let currentIndex = 0;
+      
+      const streamInterval = setInterval(() => {
+        if (currentIndex >= content.length) {
+          clearInterval(streamInterval);
+          setIsStreaming(false);
+          resolve();
+          return;
+        }
+
+        setStreamedContent(content.slice(0, currentIndex + 1));
+        currentIndex++;
+      }, 25); // Fast character streaming
+    });
+  };
+
+  // Word-by-word streaming (better for HTML content)
+  const streamWordByWord = (content) => {
+    return new Promise((resolve) => {
+      // Split content into words while preserving HTML tags
+      const tokens = content.split(/(\s+|<[^>]*>)/);
+      let currentTokenIndex = 0;
+      let accumulatedContent = "";
+      
+      const streamInterval = setInterval(() => {
+        if (currentTokenIndex >= tokens.length) {
+          clearInterval(streamInterval);
+          setIsStreaming(false);
+          resolve();
+          return;
+        }
+
+        accumulatedContent += tokens[currentTokenIndex];
+        setStreamedContent(accumulatedContent);
+        currentTokenIndex++;
+      }, 80); // Adjust speed (lower = faster)
+    });
   };
 
   return (
@@ -68,27 +265,12 @@ const AssessmentView = ({}) => {
         style={{
           backgroundColor: THEME.background,
           minHeight: "100vh",
-          //   marginTop: "-55px",
-          // display: "flex",
-          // flexDirection: "column",
         }}
       >
         <FixedBackButton />
 
-        <Container
-          fluid
-          className="py-3"
-          // style={{ flex: 1, display: "flex", flexDirection: "column" }}
-        >
-          <Row
-            className="g-2"
-            //   style={{
-            //     display: "flex",
-            //     flex: 1,
-            //     alignItems: "stretch",
-            //     flexWrap: "nowrap",
-            //   }}
-          >
+        <Container fluid className="py-3">
+          <Row className="g-2">
             <Col lg={9} md={12}>
               <div
                 style={{
@@ -244,7 +426,7 @@ const AssessmentView = ({}) => {
                           backgroundColor: "lightblue",
                           border: "none",
                         }}
-                        onClick={handleAICompare}
+                        onClick={handleAICompare} // Use direct streaming
                         disabled={loading}
                       >
                         {loading
@@ -278,11 +460,13 @@ const AssessmentView = ({}) => {
                   facultyObservations={facultyObs}
                 />
 
-                {/* AI Summary Modal */}
+                {/* AI Summary Modal with HTML String Streaming */}
                 <Modal
                   show={showAISummary}
                   onHide={() => {
                     setShowAISummary(false);
+                    setIsStreaming(false);
+                    setStreamedContent("");
                     setTimeout(() => setShowFeedbackModal(true), 300);
                   }}
                   centered
@@ -290,7 +474,21 @@ const AssessmentView = ({}) => {
                   contentClassName="custom-ai-modal"
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>AI Summary Report</Modal.Title>
+                    <Modal.Title>
+                      AI Summary Report
+                      {isStreaming && (
+                        <span 
+                          style={{ 
+                            marginLeft: "10px", 
+                            fontSize: "14px", 
+                            color: "#007bff",
+                            animation: "pulse 1.5s infinite" 
+                          }}
+                        >
+                          ●
+                        </span>
+                      )}
+                    </Modal.Title>
                   </Modal.Header>
 
                   <Modal.Body
@@ -306,10 +504,26 @@ const AssessmentView = ({}) => {
                         <div>Generating your report...</div>
                       </div>
                     ) : (
-                      <div
-                        className="ai-report-container"
-                        dangerouslySetInnerHTML={{ __html: aiComparison }}
-                      />
+                      <div className="ai-report-container">
+                        <div
+                          dangerouslySetInnerHTML={{ 
+                            __html: streamedContent || aiComparison 
+                          }}
+                        />
+                        {isStreaming && (
+                          <span 
+                            style={{ 
+                              color: "#007bff", 
+                              animation: "blink 1s infinite",
+                              fontSize: "16px",
+                              fontWeight: "bold",
+                              marginLeft: "2px"
+                            }}
+                          >
+                            |
+                          </span>
+                        )}
+                      </div>
                     )}
                   </Modal.Body>
                 </Modal>
@@ -372,6 +586,20 @@ const AssessmentView = ({}) => {
             </Col>
           </Row>
         </Container>
+
+        {/* CSS for animations */}
+        <style jsx>{`
+          @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+          }
+          
+          @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+        `}</style>
       </div>
     </Fragment>
   );
