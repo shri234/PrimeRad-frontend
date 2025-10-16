@@ -7,7 +7,15 @@ import React, {
   useCallback,
 } from "react";
 import Player from "@vimeo/player";
-import { Row, Col, Container, Nav, Tab, Button, Collapse } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Container,
+  Nav,
+  Tab,
+  Button,
+  Collapse,
+} from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
@@ -15,15 +23,19 @@ import ReviewComponent from "../../components/ReviewComponent";
 import Sources from "../../components/Sources";
 import LatestMovies from "../../components/sections/LatestMovies";
 import { FixedBackButton } from "../../utilities/BackButton";
-import { FaExclamationCircle, FaGraduationCap, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {
+  FaExclamationCircle,
+  FaGraduationCap,
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
 import { useEnterExit } from "../../utilities/usePage";
 import { useTranslation } from "react-i18next";
 import { FaBars, FaTimes, FaLock } from "react-icons/fa";
 import axios from "axios";
 import "./css/movieDetails.css"; // Import the CSS file
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import MobileBreadcrumb from "@components/breadcrumb/MobileBreadcrumb"
-
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import MobileBreadcrumb from "@components/breadcrumb/MobileBreadcrumb";
 
 const MovieDetail = memo(() => {
   const { t } = useTranslation();
@@ -219,19 +231,19 @@ const MovieDetail = memo(() => {
     const buildPlayerOptions = (vid) => {
       const numericId = String(vid).match(/^\d+$/);
       return numericId
-        ? { 
-            id: Number(vid), 
+        ? {
+            id: Number(vid),
             responsive: true,
             controls: true,
             pip: true,
-            playsinline: true
+            playsinline: true,
           }
-        : { 
-            url: vid, 
+        : {
+            url: vid,
             responsive: true,
             controls: true,
             pip: true,
-            playsinline: true
+            playsinline: true,
           };
     };
 
@@ -301,17 +313,15 @@ const MovieDetail = memo(() => {
                 <div className="main-card video-card">
                   {/* Video Header */}
                   <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 video-header">
-                    <div className="d-flex flex-wrap align-items-center gap-2" style={{ flex: "1 1 auto", minWidth: "250px" }}>
-                      <h4 className="video-title mb-0">
-                        {t(title)}
-                      </h4>
+                    <div
+                      className="d-flex flex-wrap align-items-center gap-2"
+                      style={{ flex: "1 1 auto", minWidth: "250px" }}
+                    >
+                      <h4 className="video-title mb-0">{t(title)}</h4>
 
-                      <span className="module-badge">
-                        {t(module)}
-                      </span>
+                      <span className="module-badge">{t(module)}</span>
                     </div>
 
-                    {/* Navigation Buttons - Desktop Only */}
                     {window.innerWidth > 560 && (
                       <div className="d-flex gap-2" style={{ flexShrink: 0 }}>
                         <Button
@@ -371,9 +381,7 @@ const MovieDetail = memo(() => {
                     ) : isLocked ? (
                       <div className="lock-screen">
                         <FaLock size={48} className="lock-icon" />
-                        <h5 className="lock-title">
-                          This session is locked
-                        </h5>
+                        <h5 className="lock-title">This session is locked</h5>
                         <button
                           className="lock-button"
                           onClick={() => navigate("/pricing")}
@@ -383,17 +391,28 @@ const MovieDetail = memo(() => {
                       </div>
                     ) : vimeoVideoId ? (
                       <div
-                        style={{ pointerEvents: isVideoLoading ? "none" : "auto", height: "100%" }}
+                        style={{
+                          pointerEvents: isVideoLoading ? "none" : "auto",
+                          height: "100%",
+                        }}
                         className="course-video-card"
                       >
                         {isVideoLoading && (
                           <div className="video-loading-overlay">
-                            <div className="spinner-border loading-spinner" role="status">
-                              <span className="visually-hidden">Loading...</span>
+                            <div
+                              className="spinner-border loading-spinner"
+                              role="status"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
                             </div>
                           </div>
                         )}
-                        <div ref={videoContainerRef} style={{ width: "100%", height: "100%" }} />
+                        <div
+                          ref={videoContainerRef}
+                          style={{ width: "100%", height: "100%" }}
+                        />
                       </div>
                     ) : (
                       <div className="video-error-state">
@@ -411,9 +430,7 @@ const MovieDetail = memo(() => {
               <div className="sessions-sidebar">
                 <div className="main-card sessions-card">
                   <div className="d-flex justify-content-between align-items-center sessions-sidebar-header">
-                    <h5 className="sessions-title">
-                      {t("Next Sessions")}
-                    </h5>
+                    <h5 className="sessions-title">{t("Next Sessions")}</h5>
                     <span className="sessions-count-badge">
                       {totalSessions} {t("items")}
                     </span>
@@ -424,15 +441,23 @@ const MovieDetail = memo(() => {
                       currentSessions.map((session) => (
                         <div
                           key={session._id}
-                          className={`session-item d-flex align-items-center ${session._id === sessionId ? 'active' : 'inactive'}`}
+                          className={`session-item d-flex align-items-center ${
+                            session._id === sessionId ? "active" : "inactive"
+                          }`}
                           onClick={() => handleSessionClick(session)}
                         >
                           <div className="session-play-icon">
                             {/* <img src="/assets/images/play.png" alt="play" /> */}
-                            <PlayCircleOutlineIcon sx={{ color: '#d5896f' }} />
+                            <PlayCircleOutlineIcon sx={{ color: "#d5896f" }} />
                           </div>
                           <div className="session-content">
-                            <div className={`session-title ${session._id === sessionId ? 'active' : 'inactive'}`}>
+                            <div
+                              className={`session-title ${
+                                session._id === sessionId
+                                  ? "active"
+                                  : "inactive"
+                              }`}
+                            >
                               {session.title}
                             </div>
                             <div className="session-meta">
@@ -445,9 +470,7 @@ const MovieDetail = memo(() => {
                                 </span>
                               )}
                               {session.isFree && (
-                                <span className="session-free-badge">
-                                  Free
-                                </span>
+                                <span className="session-free-badge">Free</span>
                               )}
                             </div>
                           </div>
@@ -477,19 +500,25 @@ const MovieDetail = memo(() => {
                         if (
                           pageNum === 1 ||
                           pageNum === totalPages ||
-                          (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                          (pageNum >= currentPage - 1 &&
+                            pageNum <= currentPage + 1)
                         ) {
                           return (
                             <Button
                               key={pageNum}
-                              className={`pagination-btn ${currentPage === pageNum ? 'filled' : 'outline'}`}
+                              className={`pagination-btn ${
+                                currentPage === pageNum ? "filled" : "outline"
+                              }`}
                               size="sm"
                               onClick={() => handlePageChange(pageNum)}
                             >
                               {pageNum}
                             </Button>
                           );
-                        } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                        } else if (
+                          pageNum === currentPage - 2 ||
+                          pageNum === currentPage + 2
+                        ) {
                           return (
                             <span key={pageNum} className="pagination-ellipsis">
                               ...
@@ -517,10 +546,14 @@ const MovieDetail = memo(() => {
           {/* Mobile Sessions Accordion */}
           <div className="d-lg-none sessions-mobile-accordion">
             <button
-              className={`accordion-header ${isMobileAccordionOpen ? 'open' : 'closed'}`}
+              className={`accordion-header ${
+                isMobileAccordionOpen ? "open" : "closed"
+              }`}
               onClick={() => setIsMobileAccordionOpen(!isMobileAccordionOpen)}
             >
-              <span>{t("Next Sessions")} ({totalSessions})</span>
+              <span>
+                {t("Next Sessions")} ({totalSessions})
+              </span>
               {isMobileAccordionOpen ? <FaChevronUp /> : <FaChevronDown />}
             </button>
 
@@ -531,14 +564,20 @@ const MovieDetail = memo(() => {
                     currentSessions.map((session) => (
                       <div
                         key={session._id}
-                        className={`session-item d-flex align-items-center ${session._id === sessionId ? 'active' : 'inactive'}`}
+                        className={`session-item d-flex align-items-center ${
+                          session._id === sessionId ? "active" : "inactive"
+                        }`}
                         onClick={() => handleSessionClick(session)}
                       >
                         <div className="session-play-icon">
-                        <PlayCircleOutlineIcon sx={{ color: '#d5896f' }} />
+                          <PlayCircleOutlineIcon sx={{ color: "#d5896f" }} />
                         </div>
                         <div className="session-content">
-                          <div className={`session-title ${session._id === sessionId ? 'active' : 'inactive'}`}>
+                          <div
+                            className={`session-title ${
+                              session._id === sessionId ? "active" : "inactive"
+                            }`}
+                          >
                             {session.title}
                           </div>
                           <div className="session-meta">
@@ -585,10 +624,8 @@ const MovieDetail = memo(() => {
                     <h5 className="overview-title">
                       {t("About this Session")}
                     </h5>
-                    <p className="overview-description">
-                      {description}
-                    </p>
-                    
+                    <p className="overview-description">{description}</p>
+
                     {/* Faculty Section */}
                     <div className="faculty-section">
                       <h5 className="faculty-title">
@@ -601,9 +638,7 @@ const MovieDetail = memo(() => {
                             <img src={faculty[0].image} alt={faculty[0].name} />
                           </div>
                           <div className="faculty-info">
-                            <h6 className="faculty-name">
-                              {faculty[0].name}
-                            </h6>
+                            <h6 className="faculty-name">{faculty[0].name}</h6>
                             <p className="faculty-specialization">
                               {faculty[0].specializations?.join(", ")}
                             </p>

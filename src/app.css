@@ -6,8 +6,8 @@
 
 :root {
   /* Brand / Primary Colors */
-  --primary-bg: #f9fafb;     /* Very light gray — for main background */
-  --primary: #d5896f;        /* Warm terracotta — main accent color */
+  --primary-bg: #f9fafb;     
+  --primary: #d5896f;        
   --secondary: #dab785;
 }
 
@@ -26,7 +26,6 @@
   font-style: normal;
   font-display: swap;
 }
-
 
 body {
   font-family: 'Gilroy', 'Jost', sans-serif;

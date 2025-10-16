@@ -21,518 +21,32 @@ import ProgressBar from "./ProgressBar";
 import { ChevronDown, ChevronUp } from "react-feather";
 import { FaPlay } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-
-const videoCardStyles = `
-.sidebar-container {
-  position: relative;
-  display: flex;
-}
-
-.arrow-toggle {
-  position: fixed;
-  top: 80px;
-  left: 10px;
-  z-index: 1000;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-}
-
-.arrow-toggle:hover {
-  background: #f5f5f5;
-  transform: scale(1.05);
-}
-
-.arrow-toggle.open {
-  left: 260px; /* Adjust based on sidebar width + margin */
-}
-
-.sidebar {
-  transition: transform 0.3s ease;
-}
-
-.sidebar.hidden {
-  transform: translateX(-100%);
-}
-
-/* Media queries for responsive behavior */
-@media (min-width: 350px) and (max-width: 890px) {
-  .arrow-toggle {
-    display: flex;
-  }
-}
-
-@media (max-width: 349px) {
-  .arrow-toggle {
-    display: none;
-  }
-}
-
-@media (min-width: 890px) {
-  .arrow-toggle {
-    display: none;
-  }
-  
-  .sidebar {
-    transform: translateX(0) !important;
-  }
-}
-  .video-card {
-    position: relative;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-    max-width: 320px;
-    min-width: 260px;
-    border-radius: 20px;
-  }
-  .video-card:hover {
-    background: #f5f5f5 !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  }
-  .video-container {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    border-radius: 18px;
-    overflow: hidden;
-    background: #000;
-    margin-bottom: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .video-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 18px;
-    display: block;
-    background: #000;
-  }
-  .duration-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 14px;
-    background: ivory;
-    color: gray;
-    border-radius: 8px;
-    padding: 2px 10px;
-    font-size: 15px;
-    font-weight: 600;
-    z-index: 2;
-    letter-spacing: 0.5px;
-  }
-  .category-badge {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    // background: #1976d2;
-    // color: #fff;
-    border-radius: 8px;
-    padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(25,118,210,0.10);
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
-  }
-  .badges-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .label-badge {
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    // background: #e3f2fd;
-    // color: #1976d2;
-    display: inline-block;
-  }
-  .label-badge.status-free {
-    background: #e0f7fa;
-    color: #00bfae;
-  }
-  .label-badge.status-locked {
-    background: #ffe0b2;
-    color: #ffb300;
-  }
-  .days-ago {
-    color: #666;
-    font-size: 15px;
-    margin-top: 2px;
-    margin-bottom: 0;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
-  .video-title {
-    font-weight: 700;
-    font-size: 20px;
-    // color: #222;
-    margin-top: 14px;
-    margin-bottom: 0;
-    line-height: 1.2;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .video-cards-outer-card {
-    background: ;
-    border-radius: 28px;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
-    padding: 18px 18px 18px 18px;
-    max-width: 1400px;
-    margin: 28px auto 0 auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .video-cards-outer-card .video-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 32px 24px;
-    width: 100%;
-  }
-  
-  /* Mobile responsive grid */
-  @media (max-width: 580px) {
-    .video-cards-outer-card .video-cards-grid {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    
-    .video-cards-outer-card {
-      padding: 12px;
-      margin: 16px auto 0 auto;
-      border-radius: 20px;
-    }
-    
-    .video-card {
-      max-width: 100%;
-      min-width: 0;
-    }
-  }
-
-  .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    font-size: 18px;
-    color: #666;
-  }
-
-  .error-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    color: #f44336;
-    text-align: center;
-  }
-
-  .no-data-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    color: #666;
-    text-align: center;
-    font-size: 18px;
-  }
-
-  /* New List View Styles */
-  .list-view-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .module-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .module-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
-  }
-
-  .module-header {
-    padding: 28px 24px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 2px solid #dee2e6;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-  }
-
-  .module-header:hover {
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-  }
-
-  .module-title {
-    font-size: 18px;
-    font-weight: 700;
-    // color: #1976d2;
-    margin: 0;
-  }
-
-  .module-stats {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    font-size: 14px;
-    color: #666;
-  }
-
-  .pathology-section {
-    padding: 10px 24px;
-    background: #fafbfc;
-  }
-
-  .pathology-card {
-    border-bottom: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-  }
-
-  .pathology-card:last-child {
-    border-bottom: none;
-  }
-
-  .pathology-header {
-    padding: 16px 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-  }
-
-  .pathology-header:hover {
-    background: rgba(25, 118, 210, 0.05);
-    margin: 0 -24px;
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  .pathology-title {
-    font-size: 16px;
-    font-weight: 600;
-    // color: #333;
-    margin: 0;
-  }
-
-  .pathology-stats {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    font-size: 13px;
-    color: #666;
-  }
-
-  .session-list {
-    padding: 16px 0 16px 24px;
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-  }
-
-  .session-item {
-    display: flex;
-    align-items: center;
-    padding: 16px 16px;
-    margin-bottom: 8px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .session-item:hover {
-    // border-color: #1976d2;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
-    transform: translateY(-1px);
-  }
-
-  .session-thumbnail {
-    width: 60px;
-    height: 36px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-right: 16px;
-    background: #000;
-  }
-
-  .session-info {
-    flex: 1;
-  }
-
-  .session-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 4px 0;
-    line-height: 1.3;
-  }
-
-  .session-meta {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    font-size: 12px;
-    color: #666;
-  }
-
-  .progress-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 120px;
-    justify-content: flex-end;
-  }
-
-  .progress-bar-small {
-    width: 60px;
-    height: 4px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill-small {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
-
-  .chevron-icon {
-    transition: transform 0.3s ease;
-  }
-
-  .chevron-icon.expanded {
-    transform: rotate(180deg);
-  }
-
-  @media (max-width: 768px) {
-    .module-header {
-      padding: 16px 16px;
-    }
-    
-    .module-stats {
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
-    }
-    
-    .pathology-section {
-      padding: 0 16px;
-    }
-    
-    .pathology-stats {
-      flex-direction: column;
-      gap: 4px;
-      align-items: flex-end;
-    }
-    
-    .session-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    
-    .progress-indicator {
-      width: 100%;
-      justify-content: space-between;
-    }
-  }
-`;
-
-// const THEME = {
-//   primary: "#1976d2", // blue
-//   secondary: "#00bfae", // teal
-//   background: "#f4f8fb", // light blue/gray
-//   card: "#fff",
-//   accent: "#ffb300", // amber
-//   text: "#263238", // dark blue-gray
-//   border: "#e0e0e0",
-// };
+import "./MySpacePage.css";
 
 const ModuleStatusCard = memo(({ module }) => {
   console.log(module);
   const isCompleted = module.progressPercentage === 100;
 
-  const cardStyles = {
-    padding: "16px",
-    background: "#e8f5e9",
-    borderRadius: "16px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-    border: `1px solid ${isCompleted ? "#4caf50" : "#e0e0e0"}`,
-  };
-
-  const progressBarWrapperStyles = {
-    width: "100%",
-    height: "8px",
-    background: "#e0e0e0",
-    borderRadius: "4px",
-    overflow: "hidden",
-    marginTop: "8px",
-  };
-
-  const progressBarStyles = {
-    width: `${Math.round(module.progressPercentage) || 50}%`,
-    height: "100%",
-    background: isCompleted ? "#4caf50" : "#1976d2",
-    transition: "width 0.3s ease-in-out",
-  };
-
   if (module?.totalSessionsCount > 0) {
     return (
-      <div style={cardStyles}>
-        <div style={{ fontWeight: 600, fontSize: "14px" }}>
-          {module.moduleName}
-        </div>
-        <div
-          style={{
-            fontSize: "14px",
-            fontWeight: "500",
-            // color: "darkslategrey",
-          }}
-        >
+      <div
+        className={`module-status-card ${
+          isCompleted ? "completed" : "in-progress"
+        }`}
+      >
+        <div className="module-status-card-title">{module.moduleName}</div>
+        <div className="module-status-card-sessions">
           1 / {module.totalSessionsCount} Sessions
         </div>
-        <div style={progressBarWrapperStyles}>
-          <div style={progressBarStyles} />
+        <div className="module-status-progress-wrapper">
+          <div
+            className={`module-status-progress-bar ${
+              isCompleted ? "completed" : "in-progress"
+            }`}
+            style={{ width: `${Math.round(module.progressPercentage) || 50}%` }}
+          />
         </div>
-        <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
+        <div className="module-status-progress-text">
           {Math.round(module.progressPercentage) || 50}% Complete
         </div>
       </div>
@@ -858,7 +372,6 @@ const MySpacePage = memo(() => {
       }
       modules[moduleName].totalSessions += 1;
 
-      // Assuming progress is 100% when playbackPercentage is >= 1
       const isCompleted =
         session.playbackProgress &&
         session.playbackProgress.progressPercentage >= 1;
@@ -893,6 +406,7 @@ const MySpacePage = memo(() => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -978,7 +492,6 @@ const MySpacePage = memo(() => {
         const sessions = data.data || [];
         console.log(data, data.count);
         setCompletedCount(parseInt(data.count));
-        // setModuleProgress(getModuleProgress(sessions));
       } catch (err) {
         console.error("Error fetching watched sessions:", err);
         setError(err.message);
@@ -993,7 +506,7 @@ const MySpacePage = memo(() => {
   useEffect(() => {
     if (!isAuthenticated || !userId) return;
     console.log(completedCount, "completed");
-    // if (completedCount) {
+
     const fetchModuleSessions = async () => {
       try {
         setLoading(true);
@@ -1006,8 +519,6 @@ const MySpacePage = memo(() => {
         const data = response.data;
         const sessions = data.data || [];
         console.log(sessions, typeof sessions);
-        // sessions[0].completedCount = completedCount;
-        // sessions[1].completedCount = completedCount;
 
         console.log(sessions);
         setModuleSessions(sessions);
@@ -1162,61 +673,22 @@ const MySpacePage = memo(() => {
   if (!isAuthenticated) {
     return (
       <div>
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%)",
-            padding: "20px",
-          }}
-        >
-          <div style={{ textAlign: "center", maxWidth: "400px" }}>
+        <div className="auth-message-container">
+          <div className="auth-message-content">
             <h2
-              style={{
-                fontSize: isMobile ? "24px" : "32px",
-                fontWeight: "bold",
-                // color: "#1565c0",
-                marginBottom: "16px",
-                fontFamily: "system-ui, -apple-system, sans-serif",
-              }}
+              className={`auth-message-title ${
+                isMobile ? "mobile" : "desktop"
+              }`}
+              style={{ fontSize: isMobile ? "24px" : "32px" }}
             >
               Login to view your Watched Sessions
             </h2>
-            <p
-              style={{
-                // color: "#546e7a",
-                marginBottom: "32px",
-                fontSize: "16px",
-                lineHeight: "1.5",
-              }}
-            >
+            <p className="auth-message-text">
               Module progress and compete with others!
             </p>
             <button
               onClick={() => navigate("/login")}
-              style={{
-                padding: "12px 24px",
-                // background: "linear-gradient(135deg, #1976d2, #1565c0)",
-                // color: "white",
-                border: "none",
-                borderRadius: "8px",
-                fontSize: "16px",
-                fontWeight: "600",
-                cursor: "pointer",
-                boxShadow: "0 4px 16px rgba(25,118,210,0.3)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 8px 24px rgba(25,118,210,0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "0 4px 16px rgba(25,118,210,0.3)";
-              }}
+              className="auth-message-button"
             >
               Get Started
             </button>
@@ -1228,51 +700,11 @@ const MySpacePage = memo(() => {
 
   return (
     <>
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          // background: "#f4f8fb",
-          overflowY: "auto",
-          display: "flex",
-          // marginBottom: "20px",
-        }}
-      >
-        <style>{videoCardStyles}</style>
-        <style jsx>{`
-          @keyframes shimmer {
-            0% {
-              transform: translateX(-100%);
-            }
-            100% {
-              transform: translateX(100%);
-            }
-          }
-        `}</style>
+      <div className="myspace-page-container">
         {isResponsiveRange && (
           <button
             className={`sidebar-toggle ${sidebarOpen ? "open" : ""}`}
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{
-              position: "fixed",
-              top: "20px",
-              left: "20px",
-              marginTop: "35px",
-              marginLeft: "-10px",
-              zIndex: 1001,
-              width: "32px",
-              height: "32px",
-              background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-              border: "none",
-              borderRadius: "12px",
-              color: "white",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 4px 16px rgba(59,130,246,0.3)",
-              transition: "all 0.2s ease",
-            }}
           >
             {sidebarOpen ? (
               <FaTimes size={18} />
@@ -1291,22 +723,12 @@ const MySpacePage = memo(() => {
 
         {(!isMobile || (isResponsiveRange && sidebarOpen)) && (
           <div
-            className="sidebar-wrapper"
+            className={`sidebar-wrapper ${
+              isResponsiveRange ? "mobile" : "desktop"
+            } ${isResponsiveRange && !sidebarOpen ? "closed" : "open"}`}
             style={{
-              width: "250px",
-              // display: "flex",
-              flexShrink: 0,
-              position: isResponsiveRange ? "fixed" : "sticky",
               top: isMobile ? "80px" : "90px",
-              marginLeft: "5px",
               left: isResponsiveRange && !sidebarOpen ? "-250px" : "0",
-              height: "100vh",
-              overflowY: "hidden",
-              zIndex: 1000,
-              transition: "left 0.3s ease",
-              boxShadow: isResponsiveRange
-                ? "2px 0 10px rgba(0,0,0,0.1)"
-                : "none",
             }}
           >
             <NavCategories />
@@ -1317,141 +739,54 @@ const MySpacePage = memo(() => {
           <div
             className="sidebar-overlay"
             onClick={() => setSidebarOpen(false)}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              zIndex: 999,
-            }}
           />
         )}
 
         <div
-          style={{
-            display: "flex",
-            background: "transparent",
-            flex: 1,
-            paddingTop: isMobile ? "100px" : "70px",
-            paddingRight: isMobile ? "12px" : "10px",
-            paddingLeft: isMobile ? "12px" : "0px",
-            // marginBottom: "30px",
-          }}
+          className={`main-content-myspace ${isMobile ? "mobile" : "desktop"}`}
         >
-          <div
-            style={{
-              flex: 1,
-              padding: isMobile ? "4px" : "8px",
-              // paddingRight: isMobile ? "4px" : "18px",
-              backgroundColor: "transparent",
-              // overflowY: "hidden",
-            }}
-          >
+          <div className={`content-inner ${isMobile ? "mobile" : "desktop"}`}>
             <div
-              style={{
-                marginBottom: isMobile ? "16px" : "20px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: isMobile ? "16px" : "24px",
-                flexWrap: "wrap",
-              }}
+              className={`header-section ${isMobile ? "mobile" : "desktop"}`}
             >
               <div
-                style={{
-                  background: "antiquewhite",
-                  borderRadius: isProgressBarMobile ? 12 : 16,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  padding: isProgressBarMobile ? "12px 16px" : "18px 28px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: isProgressBarMobile ? 16 : 24,
-                  marginTop: isMobile ? "10px" : "-20px",
-                  // maxWidth: 900,
-                  width: "100%",
-                  minWidth: isProgressBarMobile ? 280 : 320,
-                  flex: 1,
-                  flexDirection: isProgressBarMobile ? "column" : "row",
-                }}
+                className={`progress-container ${
+                  isProgressBarMobile ? "mobile" : "desktop"
+                }`}
               >
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: isMobile ? 8 : 12,
-                    padding: isMobile ? "12px 16px" : "16px 20px",
-                    background: subscription.isSubscribed
-                      ? "linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%)"
-                      : "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
-                    borderRadius: isMobile ? 12 : 16,
-                    border: `2px solid ${
-                      subscription.isSubscribed ? "#4caf50" : "#e0e0e0"
-                    }`,
-                    boxShadow: subscription.isSubscribed
-                      ? "0 4px 20px rgba(76, 175, 80, 0.15)"
-                      : "0 4px 16px rgba(0, 0, 0, 0.08)",
-                    minWidth: isMobile ? 140 : 200,
-                    textAlign: "left",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    cursor: "default",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
+                  className={`subscription-badge ${
+                    subscription.isSubscribed ? "subscribed" : "unsubscribed"
+                  } ${isMobile ? "mobile" : "desktop"}`}
                 >
                   <div
-                    style={{
-                      width: isMobile ? 24 : 28,
-                      height: isMobile ? 24 : 28,
-                      borderRadius: "50%",
-                      background: subscription.isSubscribed
-                        ? "linear-gradient(135deg, #4caf50, #66bb6a)"
-                        : "linear-gradient(135deg, #9e9e9e, #bdbdbd)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-                      flexShrink: 0,
-                    }}
+                    className={`subscription-icon ${
+                      subscription.isSubscribed ? "subscribed" : "unsubscribed"
+                    } ${isMobile ? "mobile" : "desktop"}`}
                   >
                     <div
-                      style={{
-                        width: isMobile ? 8 : 10,
-                        height: isMobile ? 8 : 10,
-                        background: "white",
-                        borderRadius: "50%",
-                        opacity: subscription.isSubscribed ? 1 : 0.7,
-                      }}
+                      className={`subscription-icon-inner ${
+                        subscription.isSubscribed
+                          ? "subscribed"
+                          : "unsubscribed"
+                      } ${isMobile ? "mobile" : "desktop"}`}
                     />
                   </div>
 
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="subscription-info">
                     <div
-                      style={{
-                        fontSize: isMobile ? 12 : 13,
-                        fontWeight: 500,
-                        color: "#666",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
-                        marginBottom: 2,
-                        lineHeight: 1,
-                      }}
+                      className={`subscription-label ${
+                        isMobile ? "mobile" : "desktop"
+                      }`}
                     >
                       Subscription
                     </div>
                     <div
-                      style={{
-                        fontSize: isMobile ? 16 : 18,
-                        fontWeight: 700,
-                        color: subscription.isSubscribed
-                          ? "#2e7d32"
-                          : "#5f6368",
-                        lineHeight: 1.2,
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                      }}
+                      className={`subscription-plan ${
+                        subscription.isSubscribed
+                          ? "subscribed"
+                          : "unsubscribed"
+                      } ${isMobile ? "mobile" : "desktop"}`}
                     >
                       {subscription.planName}
                     </div>
@@ -1459,126 +794,79 @@ const MySpacePage = memo(() => {
 
                   {subscription.isSubscribed && (
                     <div
-                      style={{
-                        position: "absolute",
-                        top: -1,
-                        right: -1,
-                        background: "linear-gradient(135deg, #ffd700, #ffb300)",
-                        color: "#333",
-                        fontSize: isProgressBarMobile ? 8 : 9,
-                        fontWeight: 700,
-                        padding: "2px 6px",
-                        borderRadius: "0 14px 0 8px",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.3px",
-                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                      }}
+                      className={`subscription-active-badge ${
+                        isProgressBarMobile ? "mobile" : "desktop"
+                      }`}
                     >
                       Active
                     </div>
                   )}
 
                   <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      // marginTop: "10px",
-                      bottom: 0,
-                      background: subscription.isSubscribed
-                        ? "linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)"
-                        : "none",
-                      animation: subscription.isSubscribed
-                        ? "shimmer 3s infinite"
-                        : "none",
-                      pointerEvents: "none",
-                    }}
+                    className={`subscription-shimmer ${
+                      subscription.isSubscribed ? "active" : ""
+                    }`}
                   />
-                </div>
-                <div
-                  style={{
-                    fontSize: isProgressBarMobile ? 16 : 20,
-                    fontWeight: 400,
-                    minWidth: isProgressBarMobile ? 120 : 180,
-                    textAlign: isProgressBarMobile ? "center" : "left",
-                  }}
-                >
-                  Current Belt: <span style={{ fontWeight: 700 }}>Green</span>
                 </div>
 
                 <div
-                  style={{
-                    flex: 1,
-                    minWidth: isProgressBarMobile ? 100 : 120,
-                    margin: isProgressBarMobile ? "0 8px" : "0 18px",
-                  }}
+                  className={`belt-status ${
+                    isProgressBarMobile ? "mobile" : "desktop"
+                  }`}
+                >
+                  Current Belt: <span className="belt-status-value">Green</span>
+                </div>
+
+                <div
+                  className={`main-progress-bar ${
+                    isProgressBarMobile ? "mobile" : "desktop"
+                  }`}
                 >
                   <div
-                    style={{
-                      width: "100%",
-                      height: isMobile ? 6 : 16,
-                      background: "ghostwhite",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                      position: "relative",
-                    }}
+                    className={`main-progress-bar-wrapper ${
+                      isMobile ? "mobile" : "desktop"
+                    }`}
                   >
                     <div
+                      className="main-progress-bar-fill"
                       style={{
                         width: `${Math.min(
                           Math.round((totalPoints / maxPoints) * 100),
                           100
                         )}%`,
-                        height: "100%",
-                        background: "#1976d2",
-                        borderRadius: 8,
-                        transition: "width 0.4s",
                       }}
                     />
                   </div>
                 </div>
 
                 <div
-                  style={{
-                    fontSize: isProgressBarMobile ? 12 : 16,
-                    fontWeight: 400,
-                    minWidth: isProgressBarMobile ? 80 : 100,
-                    textAlign: isProgressBarMobile ? "center" : "center",
-                  }}
+                  className={`points-display ${
+                    isProgressBarMobile ? "mobile" : "desktop"
+                  }`}
                 >
                   {totalPoints} / {maxPoints} pts to{" "}
-                  <span style={{ fontWeight: 700, color: "#222" }}>Black</span>
+                  <span className="points-display-target">Black</span>
                 </div>
               </div>
             </div>
 
             {moduleProgress.length > 0 && view !== "saved" && viewMode && (
               <div
-                style={{
-                  marginBottom: isMobile ? "24px" : "32px",
-                  padding: isMobile ? "12px" : "18px",
-                  background: "#e5eaf0",
-                  borderRadius: isMobile ? "12px" : "16px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                }}
+                className={`module-progress-section ${
+                  isMobile ? "mobile" : "desktop"
+                }`}
               >
                 <h3
-                  style={{
-                    fontSize: isMobile ? "20px" : "24px",
-                    marginBottom: "16px",
-                    fontWeight: 700,
-                    // color: THEME.text,
-                  }}
+                  className={`module-progress-title ${
+                    isMobile ? "mobile" : "desktop"
+                  }`}
                 >
                   Module Progress
                 </h3>
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: isMobile ? "12px" : "20px",
-                  }}
+                  className={`module-progress-grid ${
+                    isMobile ? "mobile" : "desktop"
+                  }`}
                 >
                   {moduleSessions.map((mod) => (
                     <ModuleStatusCard key={mod.moduleName} module={mod} />
@@ -1587,119 +875,57 @@ const MySpacePage = memo(() => {
               </div>
             )}
 
-            {/* <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            > */}
             <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: isProgressBarMobile ? "6px" : "8px",
-                marginBottom: "10px",
-              }}
+              className={`view-mode-buttons ${
+                isProgressBarMobile ? "mobile" : "desktop"
+              }`}
             >
               <button
-                style={{
-                  padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                  // backgroundColor:
-                  // view === "watching" ? "darkslategray" : "lightgray",
-                  // color: view === "watching" ? "white" : "black",
-                  border: "none",
-                  borderRadius: isProgressBarMobile ? "8px" : "10px",
-                  fontSize: isProgressBarMobile ? "12px" : "14px",
-                  fontWeight: "600",
-                }}
+                className={`view-button ${
+                  isProgressBarMobile ? "mobile" : "desktop"
+                }`}
                 onClick={() => setView("watching")}
               >
                 Watching ({watchingCards.length})
               </button>
               <button
-                style={{
-                  padding: isProgressBarMobile ? "8px 10px" : "8px 10px",
-                  // backgroundColor:
-                  // view === "completed" ? "darkslategray" : "lightgray",
-                  // color: view === "completed" ? "white" : "black",
-                  border: "none",
-                  borderRadius: isProgressBarMobile ? "8px" : "10px",
-                  fontSize: isProgressBarMobile ? "12px" : "14px",
-                  fontWeight: "600",
-                }}
+                className={`view-button ${
+                  isProgressBarMobile ? "mobile" : "desktop"
+                }`}
                 onClick={() => setView("completed")}
               >
                 Completed ({completedCards.length})
               </button>
               <button
-                style={{
-                  padding: isProgressBarMobile ? "6px 8px" : "8px 10px",
-                  // backgroundColor:
-                  // view === "saved" ? "darkslategray" : "lightgray",
-                  // color: view === "saved" ? "white" : "black",
-                  border: "none",
-                  borderRadius: isProgressBarMobile ? "8px" : "10px",
-                  fontSize: isProgressBarMobile ? "12px" : "14px",
-                  fontWeight: "600",
-                }}
+                className={`view-button ${
+                  isProgressBarMobile ? "mobile" : "desktop"
+                }`}
                 onClick={() => setView("saved")}
               >
                 Saved ({savedCards.length})
               </button>
             </div>
+
             <div
-              style={{
-                marginBottom: isMobile ? "16px" : "20px",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                gap: "8px",
-              }}
+              className={`view-toggle-buttons ${
+                isMobile ? "mobile" : "desktop"
+              }`}
             >
               <button
-                style={{
-                  padding: "8px 12px",
-                  // backgroundColor:
-                  // viewMode === "grid" ? "darkslategrey" : "#f0f0f0",
-                  // color: viewMode === "grid" ? "white" : "#333",
-                  border: "none",
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  transition: "all 0.3s ease",
-                }}
+                className="view-toggle-button"
                 onClick={() => setViewMode("grid")}
               >
                 <FaTh size={14} />
                 Grid
               </button>
               <button
-                style={{
-                  padding: "8px 12px",
-                  // backgroundColor:
-                  // viewMode === "list" ? "darkslategrey" : "#f0f0f0",
-                  // color: viewMode === "list" ? "white" : "#333",
-                  border: "none",
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  transition: "all 0.3s ease",
-                }}
+                className="view-toggle-button"
                 onClick={() => setViewMode("list")}
               >
                 <FaList size={14} />
                 List
               </button>
             </div>
-            {/* </div> */}
 
             {/* Content Area */}
             <div className="video-cards-outer-card">
@@ -1715,15 +941,7 @@ const MySpacePage = memo(() => {
                   </div>
                   <div style={{ fontSize: 14 }}>{error}</div>
                   <button
-                    style={{
-                      marginTop: 16,
-                      padding: "8px 16px",
-                      // background: "#1976d2",
-                      // color: "white",
-                      border: "none",
-                      borderRadius: 8,
-                      cursor: "pointer",
-                    }}
+                    className="error-retry-button"
                     onClick={() => window.location.reload()}
                   >
                     Retry
@@ -1766,11 +984,10 @@ const MySpacePage = memo(() => {
                     <div
                       key={card.id}
                       className="video-card"
-                      style={{ cursor: "pointer" }}
                       onClick={() => handleCardClick(card)}
                     >
                       {/* Video Thumbnail */}
-                      <div className="video-container">
+                      <div className="video-container-myspace">
                         <img
                           src={card.thumbnail}
                           alt={card.type + " thumbnail"}
@@ -1779,29 +996,18 @@ const MySpacePage = memo(() => {
                               "/assets/images/continue-watch/01.jpg";
                           }}
                         />
-                        {/* Time left badge at bottom right */}
                         <span className="duration-badge">{card.timeLeft}</span>
                       </div>
 
                       {/* Progress bar */}
-                      <div style={{ width: "100%", margin: "8px 0 0 0" }}>
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "6px",
-                            background: "#e0e0e0",
-                            borderRadius: "4px",
-                            overflow: "hidden",
-                          }}
-                        >
+                      <div className="video-card-progress">
+                        <div className="video-card-progress-wrapper">
                           <div
+                            className={`video-card-progress-fill ${
+                              card.progress >= 1 ? "completed" : "in-progress"
+                            }`}
                             style={{
                               width: `${Math.round(card.progress * 100)}%`,
-                              height: "100%",
-                              background:
-                                card.progress >= 1 ? "#4caf50" : "#1976d2",
-                              borderRadius: "4px",
-                              transition: "width 0.3s",
                             }}
                           />
                         </div>
@@ -1810,19 +1016,13 @@ const MySpacePage = memo(() => {
                       {/* Title and badges */}
                       <div className="video-title">{card.type}</div>
                       <div className="badges-row">
-                        {/* Level badge */}
                         <span className="label-badge">{card.level}</span>
 
-                        {/* Status */}
                         {card.status === "Locked" ? (
                           <span
                             data-tip
                             data-for={`locked-tip-${card.id}`}
-                            style={{
-                              fontSize: 18,
-                              marginRight: 6,
-                              cursor: "pointer",
-                            }}
+                            className="lock-icon-container"
                           >
                             <span role="img" aria-label="Locked">
                               🔒
@@ -1832,20 +1032,12 @@ const MySpacePage = memo(() => {
                               effect="solid"
                               clickable={true}
                             >
-                              <div style={{ padding: 8, textAlign: "center" }}>
-                                <div style={{ marginBottom: 8 }}>
+                              <div className="lock-tooltip-content">
+                                <div className="lock-tooltip-message">
                                   This content is locked.
                                 </div>
                                 <button
-                                  style={{
-                                    // background: "#1976d2",
-                                    // color: "#fff",
-                                    border: "none",
-                                    borderRadius: 6,
-                                    padding: "6px 18px",
-                                    fontWeight: 600,
-                                    cursor: "pointer",
-                                  }}
+                                  className="lock-tooltip-button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     navigate("/pricing");

@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, useRef, useCallback } from "react"; // Import useRef and useCallback
+import { memo, useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFilter } from "../../context/FilterContext";
 import { FaExclamationCircle, FaTh } from "react-icons/fa";
@@ -6,7 +6,7 @@ import { GiAtlas } from "react-icons/gi";
 import "./MainPage.css";
 import { Button } from "react-bootstrap";
 import isFirstRender from "./hooks/useIsFirstRender";
-import { FaGlobeAmericas, FaPlus } from "react-icons/fa"; // Make sure to import the new icons
+import { FaGlobeAmericas, FaPlus } from "react-icons/fa";
 import FloatingActionButton from "../ExtraPages/FloatingActionButton";
 import { FaPlay, FaUnlockAlt, FaSignInAlt } from "react-icons/fa";
 import {
@@ -24,15 +24,15 @@ import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import LockIcon from "@mui/icons-material/Lock";
 import { useSelector } from "react-redux";
-import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors"; // selectUser is not used but kept from original
+import { selectIsAuthenticated, selectUser } from "../../store/auth/selectors";
 
 const THEME = {
-  primary: "#1976d2", // blue
-  secondary: "#00bfae", // teal
-  background: "#f4f8fb", // light blue/gray
+  primary: "var(--primary)",
+  secondary: "var(--secondary)",
+  background: "#f4f8fb",
   card: "#fff",
-  accent: "#ffb300", // amber
-  text: "#263238", // dark blue-gray
+  accent: "#ffb300",
+  text: "#263238",
   border: "#e0e0e0",
 };
 
@@ -56,7 +56,7 @@ const ImageLoader = () => (
         width: 22,
         height: 22,
         border: "4px solid #ccc",
-        borderTop: "4px solid #1976d2",
+        borderTop: "4px solid var(--primary)",
         borderRadius: "50%",
         animation: "spin 1s linear infinite",
       }}
@@ -96,7 +96,7 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
       {view === "list" ? (
         <>
           <div
-            className="video-container"
+            className="video-container-main-page"
             style={{
               width: 90,
               minWidth: 90,
@@ -132,7 +132,6 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              // Add padding for the content area to the right of the image
               paddingRight: "20px",
             }}
           >
@@ -141,7 +140,10 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
         </>
       ) : (
         <>
-          <div className="video-container" style={{ position: "relative" }}>
+          <div
+            className="video-container-main-page"
+            style={{ position: "relative" }}
+          >
             {!imgLoaded && <ImageLoader />}
             <img
               src={card.thumbnail}
@@ -156,10 +158,7 @@ const VideoCard = ({ card, view, isMobile, handleCardClick, children }) => {
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgLoaded(true)}
             />
-            {
-              card.isLive ? <span className="live-badge">LIVE</span> : null
-              // <span className="duration-badge">{card.duration}</span>
-            }
+            {card.isLive ? <span className="live-badge">LIVE</span> : null}
             <span className="category-badge">{card.category}</span>
           </div>
           {children}
@@ -189,70 +188,7 @@ const MainPage = memo(() => {
 
   const LIMIT = 12;
 
-  const staticLiveCards = [
-    //   {
-    //     id: "live-1",
-    //     type: "Live Cardiac Surgery Demonstration",
-    //     contentType: "Live",
-    //     level: "Advanced",
-    //     status: "Free",
-    //     thumbnail:
-    //       "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    //     duration: "",
-    //     isLive: true,
-    //     isFree: true,
-    //     category: "Cardiology",
-    //     timeAgo: "Live now",
-    //     vimeoVideoId: null,
-    //     description: "Live cardiac surgery demonstration with expert commentary.",
-    //     faculty: "Dr. Sarah Johnson",
-    //     module: "Cardiology",
-    //     submodule: "Surgery",
-    //     startDate: new Date().toISOString(),
-    //     liveDate: "Dec 15, 2024",
-    //   },
-    //   {
-    //     id: "live-2",
-    //     type: "Emergency Radiology Workshop",
-    //     contentType: "Live",
-    //     level: "Beginner",
-    //     status: "Free",
-    //     thumbnail: "/assets/images/emergency.jpg",
-    //     duration: "",
-    //     isLive: true,
-    //     isFree: true,
-    //     category: "Emergency",
-    //     timeAgo: "Live now",
-    //     vimeoVideoId: null,
-    //     description: "Interactive emergency radiology workshop for beginners.",
-    //     faculty: "Dr. Michael Chen",
-    //     module: "Radiology",
-    //     submodule: "Emergency",
-    //     startDate: new Date().toISOString(),
-    //     liveDate: "Dec 16, 2024",
-    //   },
-    //   {
-    //     id: "live-3",
-    //     type: "Neurology Case Discussion",
-    //     contentType: "Live",
-    //     level: "Advanced",
-    //     status: "Locked",
-    //     thumbnail:
-    //       "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    //     duration: "",
-    //     isLive: true,
-    //     isFree: false,
-    //     category: "Neurology",
-    //     timeAgo: "Live now",
-    //     vimeoVideoId: null,
-    //     description: "Advanced neurology case discussion with Q&A session.",
-    //     faculty: "Dr. Emily Rodriguez",
-    //     module: "Neurology",
-    //     submodule: "Cases",
-    //     startDate: new Date().toISOString(),
-    //     liveDate: "Dec 17, 2024",
-    //   },
-  ];
+  const staticLiveCards = [];
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -374,13 +310,10 @@ const MainPage = memo(() => {
       setIsFetchingMore(false);
       console.log("Fetch finished. isFetchingMore set to false.");
     }
-  }, []); // Dependencies for useCallback
+  }, []);
 
-  // Effect for initial session fetch
   useEffect(() => {
-    // Only perform the fetch if it's truly the first render
     if (isFirstRender) {
-      // <--- NEW GUARD
       fetchSessions(1, false);
     }
   }, [fetchSessions, isFirstRender]);
@@ -420,14 +353,12 @@ const MainPage = memo(() => {
     };
   }, [isMobile, hasMore, isFetchingMore, initialLoading]);
 
-  // Effect to trigger fetching more sessions when page changes
   useEffect(() => {
     if (page > 1) {
       fetchSessions(page, true);
     }
-  }, [page, fetchSessions]); // Add fetchSessions to dependencies
+  }, [page, fetchSessions]);
 
-  // Combine static live cards with sessions
   const allCards = [...staticLiveCards, ...sessions];
 
   const filteredCards = allCards.filter((card) => {
@@ -498,21 +429,16 @@ const MainPage = memo(() => {
 
   return (
     <div>
-      {/* <style>{videoCardStyles}</style> */}
-
       {isMobile && (
         <Button
           style={{
             position: "fixed",
             top: "68px",
-            // left: "0px",
             zIndex: 1001,
             width: "28px",
             height: "28px",
-            // background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
             border: "none",
             borderRadius: "0px 12px 12px 0px",
-            // color: "white",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -549,18 +475,14 @@ const MainPage = memo(() => {
           <div
             style={{
               padding: "14px",
-              // borderBottom: "1px solid #e0e0e0",
               marginTop: isAuthenticated ? "50px" : "40px",
-              // background: "#fff",
             }}
           >
             <div
               style={{
                 display: "flex",
-                // background: "#f5f5f5",
                 borderRadius: "12px",
                 padding: "4px",
-                // marginTop: 90,
                 gap: "2px",
               }}
             >
@@ -593,7 +515,6 @@ const MainPage = memo(() => {
                   flex: 1,
                   padding: "8px 8px",
                   backgroundColor: "white",
-                  // color: "black",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "14px",
@@ -731,7 +652,7 @@ const MainPage = memo(() => {
                             100
                           )}%`,
                           height: "100%",
-                          background: "#1976d2",
+                          background: "var(--primary)",
                           borderRadius: isMobile ? 6 : isTablet ? 7 : 8,
                           transition: "width 0.4s",
                         }}
@@ -1002,7 +923,6 @@ const MainPage = memo(() => {
                               fontSize: 16,
                               fontWeight: 600,
                               color: "#222",
-                              // marginBottom: 6,
                             }}
                           >
                             {card.type}
@@ -1072,7 +992,7 @@ const MainPage = memo(() => {
                                       </div>
                                       <button
                                         style={{
-                                          background: "#1976d2",
+                                          background: "var(--primary)",
                                           color: "#fff",
                                           border: "none",
                                           borderRadius: 6,
@@ -1121,7 +1041,6 @@ const MainPage = memo(() => {
                                   style={{
                                     width: "15px",
                                     height: "20px",
-                                    // marginRight: 4,
                                   }}
                                 />
                               )}
@@ -1167,7 +1086,7 @@ const MainPage = memo(() => {
                                     </div>
                                     <button
                                       style={{
-                                        background: "#1976d2",
+                                        background: "var(--primary)",
                                         color: "#fff",
                                         border: "none",
                                         borderRadius: 6,
@@ -1213,7 +1132,7 @@ const MainPage = memo(() => {
                     width: 32,
                     height: 32,
                     border: "4px solid #ccc",
-                    borderTop: "4px solid #1976d2",
+                    borderTop: "4px solid var(--primary)",
                     borderRadius: "50%",
                     animation: "spin 1s linear infinite",
                     margin: "10px auto",

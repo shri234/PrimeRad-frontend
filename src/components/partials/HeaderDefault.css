@@ -1,3 +1,11 @@
+/* Import brand colors from app.css */
+:root {
+  --primary: #d5896f;        /* Warm terracotta — main accent color */
+  --secondary: #dab785;      /* Secondary accent color */
+  --primary-bg: #f9fafb;     /* Very light gray — for main background */
+  --gray-900: #1f2937;       /* Dark gray for text */
+}
+
 .sub-drop {
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -67,11 +75,11 @@
 }
 
 .polished-nav .nav-link:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(213, 137, 111, 0.1);
 }
 
 .polished-nav .nav-link.active-link {
-  background-color: lightblue;
+  background-color: var(--primary);
   color: white;
 }
 
@@ -90,14 +98,14 @@
 .polished-nav .btn {
   border-radius: 10px;
   /* padding: 10px 20px; */
-  /* background-color: darkslategray; */
+  /* background-color: var(--primary); */
   transition: all 0.3s ease-in-out;
   color: white;
 }
 
 .polished-nav .btn:hover {
-  /* background-color: lightgray; */
-  /* color: darkslategrey; */
+  /* background-color: #c17a5e; */
+  /* color: white; */
 }
 
 .user-icon-button {
@@ -129,7 +137,7 @@
 }
 
 .mobile-menu-toggle:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(213, 137, 111, 0.1);
   color: #495057;
 }
 
@@ -185,8 +193,8 @@
 }
 
 .mobile-nav-item.active {
-  background-color: #e3f2fd;
-  border-left: 4px solid #1976d2;
+  background-color: rgba(213, 137, 111, 0.1);
+  border-left: 4px solid var(--primary);
 }
 
 .mobile-nav-icon {
@@ -198,7 +206,7 @@
 }
 
 .mobile-nav-item.active .mobile-nav-icon {
-  color: #1976d2;
+  color: var(--primary);
 }
 
 .mobile-nav-label {
@@ -208,7 +216,7 @@
 }
 
 .mobile-nav-item.active .mobile-nav-label {
-  color: #1976d2;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -220,7 +228,7 @@
 }
 
 .mobile-subscribe-btn {
-  background-color: darkslategray;
+  background-color: var(--primary);
   border: none;
   padding: 12px 20px;
   font-weight: 600;
@@ -228,7 +236,7 @@
 }
 
 .mobile-subscribe-btn:hover {
-  background-color: #2c3e50;
+  background-color: #c17a5e;
   transform: translateY(-1px);
 }
 
@@ -389,4 +397,3 @@
     padding: 0.5rem 0;
   } */
 }
-

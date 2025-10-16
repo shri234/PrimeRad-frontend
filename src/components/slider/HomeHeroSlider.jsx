@@ -4,6 +4,7 @@ import FsLightbox from "fslightbox-react";
 import { useSelector } from "react-redux";
 import { theme_scheme_direction } from "../../store/setting/selectors";
 import { useTranslation } from "react-i18next";
+import "./HomeHeroSlider.css";
 
 const API_URL =
   "https://primerad-backend.onrender.com/api/sessions/getTopRatedLectures";
@@ -328,45 +329,20 @@ const HomeHeroSlider = memo(() => {
                     }}
                   >
                     {currentSlideContent.cmeCredits && (
-                      <span
-                        className="badge  text-white text-uppercase px-3 py-2"
-                        style={{
-                          background: "#0d47a1",
-                          fontWeight: 600,
-                          letterSpacing: 0.5,
-                          borderRadius: "10px",
-                          fontSize: "0.85rem",
-                        }}
-                      >
+                      <span className="badge hero-slider-badge-assessment text-white text-uppercase px-3 py-2">
                         {currentSlideContent.cmeCredits}
                       </span>
                     )}
 
                     {currentSlideContent.movieTime && (
-                      <span
-                        className="badge  text-white text-uppercase px-3 py-2"
-                        style={{
-                          background: "#6a1b9a",
-                          fontWeight: 500,
-                          borderRadius: "10px",
-                          fontSize: "0.8rem",
-                        }}
-                      >
+                      <span className="badge hero-slider-badge-duration text-white text-uppercase px-3 py-2">
                         <i className="fa-regular fa-clock me-1"></i>
                         {currentSlideContent.movieTime}
                       </span>
                     )}
 
                     {currentSlideContent.level && (
-                      <span
-                        className="badge text-black text-uppercase px-3 py-2"
-                        style={{
-                          background: "lightblue", // Orange
-                          fontWeight: 500,
-                          fontSize: "0.8rem",
-                          borderRadius: "10px",
-                        }}
-                      >
+                      <span className="badge hero-slider-badge-level text-uppercase px-3 py-2">
                         <i className="fa-solid fa-layer-group me-1"></i>
                         {t(currentSlideContent.level)}
                       </span>
@@ -399,16 +375,7 @@ const HomeHeroSlider = memo(() => {
                     }}
                   >
                     {currentSlideContent.category && (
-                      <span
-                        className="badge text-black text-uppercase p-2"
-                        style={{
-                          backgroundColor: "limegreen ",
-                          fontWeight: "bold",
-                          color: "black",
-                          letterSpacing: 0.5,
-                          borderRadius: "8px",
-                        }}
-                      >
+                      <span className="badge hero-slider-badge-module text-uppercase p-2">
                         {t("Module")}: {t(currentSlideContent.category)}
                       </span>
                     )}
@@ -431,20 +398,10 @@ const HomeHeroSlider = memo(() => {
                   <div>
                     <div className="iq-button">
                       <button
+                        className="hero-slider-view-button"
                         onClick={() =>
                           handleViewContentClick(currentSlideContent)
                         }
-                        style={{
-                          color: "black",
-                          fontWeight: 700,
-                          borderRadius: "8px",
-                          padding: "10px 12px",
-                          fontSize: "1.1rem",
-                          boxShadow: "0 2px 12px rgba(25,118,210,0.18)",
-                          background: "lightblue",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
                       >
                         <span className="button-text">
                           {t("buttons.view_content")}{" "}
@@ -466,61 +423,18 @@ const HomeHeroSlider = memo(() => {
         {totalSlides > 1 && (
           <>
             {/* Desktop Carousel with Navigation - Only show 4 items */}
-            <div
-              className="hero-carousel-container d-none d-md-flex"
-              style={{
-                position: "absolute",
-                bottom: "20px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 10,
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "16px 24px",
-                background: "rgba(0,0,0,0.7)",
-                borderRadius: "16px",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                maxWidth: "90vw",
-              }}
-            >
+            <div className="hero-carousel-container d-none d-md-flex">
               {/* Previous Arrow */}
               {canGoCarouselPrev && (
                 <button
+                  className="hero-carousel-nav-button"
                   onClick={handleCarouselPrev}
-                  style={{
-                    background: "rgba(255, 255, 255, 0.2)",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
-                    borderRadius: "8px",
-                    padding: "8px 10px",
-                    color: "white",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.3s ease",
-                    fontSize: "14px",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = "rgba(255, 255, 255, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = "rgba(255, 255, 255, 0.2)";
-                  }}
                 >
                   <i className="fa-solid fa-chevron-left"></i>
                 </button>
               )}
 
-              <div
-                className="hero-carousel-thumbnails"
-                style={{
-                  display: "flex",
-                  gap: "12px",
-                  transition: "all 0.3s ease",
-                }}
-              >
+              <div className="hero-carousel-thumbnails">
                 {visibleCarouselItems.map((slide, visibleIndex) => {
                   const actualIndex = carouselStartIndex + visibleIndex;
                   const slideData = mapSlideData(slide);
@@ -529,37 +443,10 @@ const HomeHeroSlider = memo(() => {
                   return (
                     <div
                       key={slide._id || actualIndex}
+                      className={`hero-carousel-thumbnail ${
+                        isActive ? "active" : ""
+                      }`}
                       onClick={() => handleCarouselItemClick(actualIndex)}
-                      style={{
-                        cursor: "pointer",
-                        borderRadius: "12px",
-                        overflow: "hidden",
-                        border: isActive
-                          ? "rgba(0, 123, 255, 0.8)"
-                          : "3px solid transparent",
-                        transition: "all 0.3s ease",
-                        transform: isActive ? "scale(1.05)" : "scale(1)",
-                        opacity: isActive ? 1 : 0.7,
-                        minWidth: "120px",
-                        boxShadow: isActive
-                          ? "0 0 8px rgba(0, 123, 255, 0.8)"
-                          : "",
-                        width: "120px",
-                        height: "68px",
-                        position: "relative",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.opacity = "0.9";
-                          e.currentTarget.style.transform = "scale(1.02)";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.opacity = "0.7";
-                          e.currentTarget.style.transform = "scale(1)";
-                        }
-                      }}
                     >
                       <img
                         src={slideData.image}
@@ -578,35 +465,10 @@ const HomeHeroSlider = memo(() => {
 
                       {/* Active indicator */}
                       {isActive && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            bottom: "2px",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            width: "20px",
-                            height: "3px",
-                            background: "#fff",
-                            borderRadius: "2px",
-                          }}
-                        />
+                        <div className="hero-carousel-thumbnail-indicator" />
                       )}
 
-                      {slideData.previewVideoUrl && (
-                        <div
-                        // style={{
-                        //   position: "absolute",
-                        //   top: "50%",
-                        //   left: "50%",
-                        //   transform: "translate(-50%, -50%)",
-                        //   color: "white",
-                        //   fontSize: "16px",
-                        //   opacity: 0.8,
-                        // }}
-                        >
-                          {/* ▶ */}
-                        </div>
-                      )}
+                      {slideData.previewVideoUrl && <div></div>}
                     </div>
                   );
                 })}
@@ -615,26 +477,8 @@ const HomeHeroSlider = memo(() => {
               {/* Next Arrow */}
               {canGoCarouselNext && (
                 <button
+                  className="hero-carousel-nav-button"
                   onClick={handleCarouselNext}
-                  style={{
-                    background: "rgba(255, 255, 255, 0.2)",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
-                    borderRadius: "8px",
-                    padding: "8px 10px",
-                    color: "white",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.3s ease",
-                    fontSize: "14px",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = "rgba(255, 255, 255, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = "rgba(255, 255, 255, 0.2)";
-                  }}
                 >
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
@@ -642,40 +486,14 @@ const HomeHeroSlider = memo(() => {
             </div>
 
             {/* Mobile Pagination Dots */}
-            <div
-              className="hero-pagination-dots d-md-none"
-              style={{
-                position: "absolute",
-                bottom: "20px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 10,
-                display: "flex",
-                alignItems: "center",
-                // height: "10px",
-                gap: "6px",
-                // padding: "8px 12px",
-                // background: "rgba(0, 0, 0, 0.6)",
-                borderRadius: "50%",
-                backdropFilter: "blur(8px)",
-              }}
-            >
+            <div className="hero-pagination-dots d-md-none">
               {slides.map((_, index) => (
                 <button
                   key={index}
+                  className={`hero-pagination-dot ${
+                    currentSlideIndex === index ? "active" : ""
+                  }`}
                   onClick={() => handleDotClick(index)}
-                  style={{
-                    minWidth: "10px",
-                    minHeight: "10px",
-                    borderRadius: "50%",
-                    border: "none",
-                    background:
-                      currentSlideIndex === index ? "lightgreen" : "gray",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    padding: 0,
-                    // minWidth: "8px",
-                  }}
                 />
               ))}
             </div>
@@ -684,187 +502,6 @@ const HomeHeroSlider = memo(() => {
       </div>
 
       <FsLightbox toggler={toggler} sources={[currentVideoSource]} />
-
-      <style>{`
-    #home-banner-carousel {
-      height: 100vh;
-      min-height: 560px;
-      padding-top: 0;
-      overflow: hidden;
-    }
-    .slide-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .slider-inner {
-      width: 100%;
-      max-width: 1450px;
-      margin: 0 auto;
-    }
-.row.align-items-center {
-    display: flex;
-    flex-wrap: wrap;
-}
-.col-lg-7,
-.col-lg-5 {
-    flex: 0 0 58%;
-    max-width: 58%;
-}
-.col-lg-5 {
-    flex: 0 0 42%;
-    max-width: 42%;
-}
-
-/* Carousel navigation button styles */
-.hero-carousel-container button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
-}
-
-.hero-carousel-container button:active {
-    transform: scale(0.95);
-}
-
-/* Mobile pagination dots styles */
-.hero-pagination-dots button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
-}
-
-.hero-pagination-dots button:active {
-    transform: scale(0.9);
-}
-
-/* Tablet Styles */
-@media (max-width: 1024px) {
-    #home-banner-carousel {
-        height: 70vh;
-        min-height: 400px;
-
-    }
-    .slider-inner {
-        max-width: 1000px;
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-    .row.align-items-center {
-        flex-direction: column;
-    }
-    .col-lg-7,
-    .col-lg-5 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-    h1.texture-text {
-        font-size: clamp(2rem, 7vw, 3.2rem);
-    }
-    .line-count-3 {
-        font-size: 1rem;
-        line-height: 1.3;
-    }
-    .hero-carousel-container {
-        bottom: 15px;
-        padding: 12px 16px;
-        gap: 8px;
-    }
-    .hero-carousel-thumbnails {
-        gap: 8px;
-    }
-}
-
-/* Mobile Styles */
-@media (max-width: 768px) {
-    #home-banner-carousel {
-        height: 52vh;
-        min-height: 320px;
-        padding-top: 45px;
-    }
-    .slide-content, .slider-inner, .row.align-items-center, .container-fluid {
-        padding: 0 !important;
-        margin: 0 !important;
-        min-width: 0 !important;
-        width: 100% !important;
-        box-sizing: border-box;
-    }
-    .col-lg-7, .col-lg-5 {
-        flex: 0 0 100%;
-        max-width: 100%;
-        align-items: center !important;
-        align-content: center !important;
-        // text-align: center !important;
-    }
-    .col-lg-7 {
-        margin-bottom: 0;
-    }
-    h1.texture-text {
-        font-size: clamp(1.7rem, 16vw, 2.6rem) !important;
-        padding-left: 4px;
-        padding-right: 4px;
-    }
-    .line-count-3 {
-        font-size: 0.95rem !important;
-        line-height: 1.7 !important;
-        margin: 0 2vw !important;
-    }
-    .iq-button button, .iq-button .btn {
-        font-size: 0.8rem !important;
-        // height: 5px !important;
-        // padding: 5px 8px !important;
-        border-radius: 6px !important;
-    }
-    .badge {
-        font-size: 0.8rem !important;
-        padding: 6px 10px !important;
-        border-radius: 8px !important;
-        margin: 2px 4px !important;
-        display: inline-block !important;
-    }
-    /* Hide video preview area on small screens to save space */
-    .trailor-video.iq-slider, .col-lg-5.d-none.d-lg-block {
-        display: none !important;
-    }
-    
-    /* Mobile pagination dots positioning */
-    .hero-pagination-dots {
-        bottom: 15px !important;
-        // padding: 10px 16px !important;
-    }
-}
-
-/* Extra mobile tweaks for portrait phones */
-@media (max-width: 480px) {
-    #home-banner-carousel {
-        // height: 36vh;
-        min-height: 110px;
-        max-height: 730px
-    }
-    h1.texture-text {
-        font-size: 2.1rem !important;
-    }
-    .slide-content {
-        min-height: 210px !important;
-    }
-    .hero-pagination-dots {
-        bottom: 12px !important;
-        // padding: 8px 14px !important;
-        gap: 6px !important;
-    }
-}
-
-/* Utility styles */
-.line-count-1 {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.line-count-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-}
-`}</style>
     </Fragment>
   );
 });
